@@ -1,0 +1,8 @@
+*~
+build/
+.kdev4/
+*.kdev4
+*.cmake
+*.moc
+Makefile
+*.sw?
