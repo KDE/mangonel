@@ -60,6 +60,8 @@ int Shell::launch(QVariant selected)
 }
 
 
+namespace
+{
 QHash<QString, QString> walkDir(QString path)
 {
     QHash<QString, QString> binList = QHash<QString, QString>();
@@ -88,6 +90,7 @@ QStringList getPathEnv()
     pathList.append(QDir::homePath() + "/bin");
     return pathList;
 }
+};
 
 
 #include "Shell.moc"

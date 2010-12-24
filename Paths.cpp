@@ -76,6 +76,8 @@ int Paths::launch(QVariant selected)
 }
 
 
+namespace
+{
 QString getDefaultApp(QString location)
 {
     QString cmd = "xdg-mime";
@@ -121,6 +123,7 @@ QString subUser(QString path)
         path = "~" + path.mid(homePath.length(), -1);
     return path;
 }
+};
 
 
 #include "Paths.moc"

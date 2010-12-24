@@ -93,6 +93,8 @@ void Label::paintText(QChar ch, QPainter* painter)
 }
 
 
+namespace
+{
 int max(int i1, int i2)
 {
     if (i1 > i2)
@@ -119,6 +121,7 @@ QPen makeGradient(QPen pen)
     pen.setBrush(QBrush(gradient));
     return pen;
 }
+};
 
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 

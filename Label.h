@@ -24,9 +24,12 @@ private:
     void paintText(QChar ch, QPainter* painter);
 };
 
+namespace
+{
 int max(int i1, int i2);
 QString longest(QString str1, QString str2);
 QPen makeGradient(QPen pen);
+};
 
 #endif
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 
