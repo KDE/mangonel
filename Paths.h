@@ -21,7 +21,6 @@ QString getDefaultApp(QString location);
 QString getShellCmd(QString cmd);
 QString escapePath(QString path);
 QString subUser(QString);
-QString joinPath(QStringList);
 
 #endif //Paths_H
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 
