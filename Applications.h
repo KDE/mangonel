@@ -28,15 +28,15 @@ class Applications : public Provider
 public:
     Applications();
     ~Applications();
+public slots:
+    AppList getResults(QString query);
+    int launch(QVariant selected);
 private:
     void setPopularity(QString entry, popularity pop);
     QHash<QString, popularity> getPopList();
     void storePopularity(QString entryPath, popularity pop);
     AppTable* appTable;
     QHash<QString, popularity> popList;
-public slots:
-    AppList getResults(QString query);
-    int launch(QVariant selected);
 };
 
 
