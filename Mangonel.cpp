@@ -11,6 +11,7 @@
 #include "Applications.h"
 #include "Paths.h"
 #include "Shell.h"
+#include "Calculator.h"
 
 
 int WIDTH = 220;
@@ -46,6 +47,7 @@ Mangonel::Mangonel(QApplication* app)
     this->providers["applications"] = new Applications();
     this->providers["paths"] = new Paths();
     this->providers["shell"] = new Shell();
+    this->providers["Calculator"] = new Calculator();
 }
 
 Mangonel::~Mangonel()
