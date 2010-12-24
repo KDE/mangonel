@@ -42,7 +42,7 @@ AppList Shell::getResults(QString query)
     return list;
 }
 
-void Shell::launch(QVariant selected)
+int Shell::launch(QVariant selected)
 {
     QStringList args = selected.toString().split(" ");
     QString exec = args.takeFirst();
@@ -56,6 +56,7 @@ void Shell::launch(QVariant selected)
         exec,
         args
     );
+    return 0;
 }
 
 

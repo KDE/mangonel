@@ -36,7 +36,7 @@ private:
     QHash<QString, popularity> popList;
 public slots:
     AppList getResults(QString query);
-    void launch(QVariant selected);
+    int launch(QVariant selected);
 };
 
 

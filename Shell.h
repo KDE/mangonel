@@ -15,7 +15,7 @@ public:
     ~Shell();
 public slots:
     AppList getResults(QString query);
-    void launch(QVariant selected);
+    int launch(QVariant selected);
 private:
     QHash<QString, QString> index;
 };

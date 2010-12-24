@@ -14,7 +14,7 @@ public:
     ~Paths();
 public slots:
     AppList getResults(QString query);
-    void launch(QVariant selected);
+    int launch(QVariant selected);
 };
 
 QString getDefaultApp(QString location);

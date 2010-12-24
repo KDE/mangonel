@@ -75,7 +75,7 @@ AppList Applications::getResults(QString query)
     return list;
 }
 
-void Applications::launch(QVariant selected)
+int Applications::launch(QVariant selected)
 {
     QString entryPath = selected.toHash()["entryPath"].toString();
     // Connect to the KLauncher DBus inteface.
@@ -100,6 +100,7 @@ void Applications::launch(QVariant selected)
     pop.count ++;
     this->popList[entryPath] = pop;
     this->storePopularity(entryPath, pop);
+    return 0;
 }
 
 void Applications::setPopularity(QString entry, popularity pop)

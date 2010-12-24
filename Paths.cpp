@@ -53,7 +53,7 @@ AppList Paths::getResults(QString query)
     return list;
 }
 
-void Paths::launch(QVariant selected)
+int Paths::launch(QVariant selected)
 {
     // Connect to the KLauncher DBus inteface.
     QDBusInterface* dbus = new QDBusInterface(
@@ -72,6 +72,7 @@ void Paths::launch(QVariant selected)
                            "",
                            true
                        );
+    return 0;
 }
 
 

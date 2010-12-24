@@ -14,7 +14,7 @@ public:
     virtual ~Provider() {};
 public slots:
     virtual AppList getResults(QString query) = 0;
-    virtual void launch(QVariant selected) = 0;
+    virtual int launch(QVariant selected) = 0;
 };
 
 // Struct stored in AppList.
