@@ -63,67 +63,14 @@ AppList Paths::getResults(QString query)
 
 int Paths::launch(QVariant selected)
 {
-    // Connect to the KLauncher DBus inteface.
-    QDBusInterface* dbus = new QDBusInterface(
-        "org.kde.klauncher",
-        "/KLauncher",
-        "org.kde.KLauncher"
-    );
-    QString exec = getDefaultApp(selected.toString());
-    exec.remove(".desktop");
-    exec.remove("\n");
-    QDBusMessage msg = dbus->call(
-                           "start_service_by_desktop_name",
-                           exec,
-                           selected.toStringList(),
-                           QStringList(),
-                           "",
-                           true
-                       );
+    KFileItem info = KFileItem(KFileItem::Unknown, KFileItem::Unknown, selected.toString());
+    info.run();
     return 0;
 }
 
 
 namespace
 {
-QString getDefaultApp(QString location)
-{
-    QString cmd = "xdg-mime";
-    QString getMime = " query filetype " + escapePath(location);
-    QString mime = getShellCmd(cmd + getMime);
-    QString getApp = " query default " + mime;
-    QString data = getShellCmd(cmd + getApp);
-    return data;
-}
-
-QString getShellCmd(QString cmd)
-{
-    QString data = "";
-    FILE* stream;
-    int MAX_BUFFER = 256;
-    char buffer[MAX_BUFFER];
-    cmd.append(" 2>&1");
-    stream = popen(cmd.toStdString().c_str(), "r");
-    if (stream)
-    {
-        while (!feof(stream))
-        {
-            if (fgets(buffer, MAX_BUFFER, stream) != NULL)
-            {
-                data.append(buffer);
-            }
-        }
-        pclose(stream);
-    }
-    return data;
-}
-
-QString escapePath(QString path)
-{
-    path.replace(" ", "\\ ");
-    return path;
-}
-
 QString subUser(QString path)
 {
     QString homePath = QDir::homePath();

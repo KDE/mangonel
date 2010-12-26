@@ -19,9 +19,6 @@ public slots:
 
 namespace
 {
-QString getDefaultApp(QString location);
-QString getShellCmd(QString cmd);
-QString escapePath(QString path);
 QString subUser(QString);
 };
 
