@@ -4,6 +4,7 @@
 #include <QDBusInterface>
 #include <QSettings>
 #include <KDE/KIcon>
+#include <KDE/KFileItem>
 
 
 Paths::Paths()
@@ -42,8 +43,15 @@ AppList Paths::getResults(QString query)
         result.name = subUser(path.absoluteFilePath());
         result.completion = result.name.left(result.name.lastIndexOf("/")) + "/" + path.fileName();
         if (path.isDir())
+        {
             result.completion += "/";
-        result.icon = "system-file-manager";
+            result.icon = "system-file-manager";
+        }
+        else
+        {
+            KFileItem info = KFileItem(KFileItem::Unknown, KFileItem::Unknown, path.absoluteFilePath());
+            result.icon = info.iconName();
+        }
         result.priority = priority;
         result.object = this;
         result.program = path.absoluteFilePath();
