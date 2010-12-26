@@ -1,4 +1,4 @@
-# Mangonel a simple application launcher for KDE4.
+# Mangonel, a simple application launcher for KDE4.
 
 Mangonel is intended as a light weight replacement for the, in my view bloated and slow, standard KRunner. Sadly you can't actually get rid of KRunner because it's also responsible for your screensaver and power-management.
 
@@ -11,7 +11,7 @@ Mangonel is intended as a light weight replacement for the, in my view bloated a
 
 The default global shortcut to show Mangonel is `CTR+ALT+Space`, you can change this in the KDE4 system settings.
 
-Mangonel came to be because I started to really mis [Katapult][]. I loved Katapult for its simplicity and speed. Those are two points I really can't find in KRunner.
+Mangonel came to be because I started to really mis [Katapult][]. I loved Katapult for its simplicity and speed, those are two points I really can't find in KRunner.
 
 # Installation.
 
@@ -21,12 +21,12 @@ Once you have the files cd into the directory containing the source and follow t
 * Create a build directory and move into it.
 * run: `cmake ../`
 * run: `make`
-* If all went well you now have an executable called mangonel in your build directory. This is the only file that needs to be installed. You can now copy this to the desired `bin` directory.
-* Start it.
-* Enjoy launching your favourite applications in a mater of milliseconds.
+* If all went well you now have an executable called mangonel in your build directory. This is the only file that needs to be installed. You can copy this file to the desired `bin` directory.
+* Start mangonel.
+* Enjoy launching your favourite applications in a matter of milliseconds.
 
 ### Autostart.
-To automatically start Mangonel when you log on to your desktop, follow the steps below.
+To automatically start Mangonel when you log on to your desktop, follow these steps.
 
 * Open 'System Settings'.
 * Go to 'Startup and Shutdown'.
