@@ -3,6 +3,7 @@
 #include <QDBusInterface>
 #include <QSettings>
 #include <KDE/KIcon>
+#include <sys/time.h>
 
 
 const QStringList priorityOrder = (QStringList() << "name" << "genericName" << "categories");
@@ -30,7 +31,7 @@ AppList Applications::getResults(QString query)
 {
     AppList list = AppList();
     int count = 0;
-    int time = QDateTime().currentMSecsSinceEpoch() / 1000;
+    int seconds = time(NULL);
     foreach(QString name, this->appTable->keys())
     {
         Plasma::DataEngine::Data item = this->appTable->value(name);
@@ -38,11 +39,11 @@ AppList Applications::getResults(QString query)
         int priority = 0;
         if (this->popList.contains(item["entryPath"].toString()))
         {
-            priority = time - this->popList[item["entryPath"].toString()].lastUse;
+            priority = seconds - this->popList[item["entryPath"].toString()].lastUse;
             priority -= 3600 * this->popList[item["entryPath"].toString()].count;
         }
         else
-            priority = time;
+            priority = seconds;
         foreach(QString key, priorityOrder)
         {
             if (item.contains(key))
