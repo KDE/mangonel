@@ -53,7 +53,7 @@ void Label::paintEvent(QPaintEvent*)
     {
         offset = 0;
     }
-    if (length > this->width()-80)
+    if (length > this->width()-60)
     {
         position = -(length-this->width()+30);
         Backpen = makeGradient(Backpen);
