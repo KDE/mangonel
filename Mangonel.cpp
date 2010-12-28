@@ -21,6 +21,7 @@ Mangonel::Mangonel(QApplication* app)
 {
     this->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     this->setContextMenuPolicy(Qt::ActionsContextMenu);
+    this->setAttribute(Qt::WA_InputMethodEnabled);
     this->app = app;
     this->processingKey = false;
     this->apps = 0;
@@ -58,6 +59,19 @@ Mangonel::Mangonel(QApplication* app)
 Mangonel::~Mangonel()
 {}
 
+void Mangonel::inputMethodEvent(QInputMethodEvent* event)
+{
+    QString text = this->label->text();
+    text.chop(event->preeditString().length());
+    text = text.mid(0, text.length()+event->replacementStart());
+    text.append(event->commitString());
+    if (text == "~/")
+        text = "";
+    text.append(event->preeditString());
+    this->label->preedit = event->preeditString();
+    this->label->setText(text);
+    this->getApp(text);
+}
 void Mangonel::keyPressEvent(QKeyEvent* event)
 {
     int key = event->key();

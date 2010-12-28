@@ -63,6 +63,7 @@ private:
     QHash<QString, Provider*> providers;
     AppList* apps;
     int current;
+    void inputMethodEvent(QInputMethodEvent* event);
     virtual void keyPressEvent(QKeyEvent* event);
     virtual void focusOutEvent(QFocusEvent* event);
 private slots:
