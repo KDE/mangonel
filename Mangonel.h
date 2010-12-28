@@ -8,6 +8,7 @@
 #include <QGraphicsView>
 #include <QLabel>
 #include <KDE/Plasma/Dialog>
+#include <KDE/KAction>
 
 
 class ProgramView : public QGraphicsItemGroup
@@ -54,6 +55,7 @@ public:
     void launch();
     void getApp(QString query);
 private:
+    KAction* actionShow;
     bool processingKey;
     QApplication* app;
     Label* label;
@@ -65,6 +67,8 @@ private:
     virtual void focusOutEvent(QFocusEvent* event);
 private slots:
     void showHide(bool type = false);
+    void showConfig();
+    void setHotkey(const QKeySequence& hotkey);
 };
 
 #endif // Mangonel_H

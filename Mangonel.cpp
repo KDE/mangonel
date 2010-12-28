@@ -4,9 +4,9 @@
 #include <QDesktopWidget>
 #include <QTimeLine>
 #include <QGraphicsItemAnimation>
-#include <KDE/KAction>
 #include <QDBusInterface>
 
+#include "Config.h"
 //Include the providers.
 #include "Applications.h"
 #include "Paths.h"
@@ -20,6 +20,7 @@ int HEIGHT = 200;
 Mangonel::Mangonel(QApplication* app)
 {
     this->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    this->setContextMenuPolicy(Qt::ActionsContextMenu);
     this->app = app;
     this->processingKey = false;
     this->apps = 0;
@@ -36,18 +37,22 @@ Mangonel::Mangonel(QApplication* app)
     this->label->setMaximumWidth(WIDTH - 42);
 
     // Setup our global shortcut.
-    KAction* action = new KAction(QString("Show Mangonel"), this);
-    action->setObjectName(QString("show"));
-    KShortcut shortcut = action->shortcut();
+    actionShow = new KAction(QString("Show Mangonel"), this);
+    actionShow->setObjectName(QString("show"));
+    KShortcut shortcut = actionShow->shortcut();
     shortcut.setPrimary(QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Space));
-    action->setGlobalShortcut(shortcut);
-    this->connect(action, SIGNAL(triggered(bool)), this, SLOT(showHide(bool)));
+    actionShow->setGlobalShortcut(shortcut);
+    this->connect(actionShow, SIGNAL(triggered(bool)), this, SLOT(showHide(bool)));
 
     // Instantiate the providers.
     this->providers["applications"] = new Applications();
     this->providers["paths"] = new Paths();
     this->providers["shell"] = new Shell();
     this->providers["Calculator"] = new Calculator();
+
+    QAction* actionConfig = new QAction(KIcon("configure"), "Configuration", this);
+    this->addAction(actionConfig);
+    this->connect(actionConfig, SIGNAL(triggered(bool)), this, SLOT(showConfig()));
 }
 
 Mangonel::~Mangonel()
@@ -166,6 +171,25 @@ void Mangonel::showHide(bool type)
 void Mangonel::focusOutEvent(QFocusEvent* event)
 {
     this->showHide();
+}
+
+void Mangonel::showConfig()
+{
+    KShortcut shortcut = actionShow->globalShortcut();
+    ConfigDialog* dialog = new ConfigDialog(this);
+    dialog->setHotkey(shortcut.primary());
+    connect(dialog, SIGNAL(hotkeyChanged(QKeySequence)), this, SLOT(setHotkey(QKeySequence)));
+    int result = dialog->exec();
+    this->activateWindow();
+    this->setFocus();
+}
+
+void Mangonel::setHotkey(const QKeySequence& hotkey)
+{
+    KShortcut shortcut = KShortcut();
+    shortcut.setPrimary(hotkey);
+    actionShow->setGlobalShortcut(shortcut, KAction::ShortcutTypes(KAction::ActiveShortcut|KAction::DefaultShortcut), KAction::NoAutoloading);
+    qDebug() << hotkey.toString();
 }
 
 
