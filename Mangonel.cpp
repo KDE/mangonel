@@ -5,6 +5,7 @@
 #include <QTimeLine>
 #include <QGraphicsItemAnimation>
 #include <QDBusInterface>
+#include <KDE/Plasma/Theme>
 
 #include "Config.h"
 //Include the providers.
@@ -355,7 +356,10 @@ void ProgramView::show()
         this->label = new QGraphicsTextItem(application.name, this);
     if (this->block == 0)
         this->block = new QGraphicsRectItem(this->label->boundingRect(), this);
-    this->block->setBrush(QBrush(Qt::SolidPattern));
+    QBrush brush = QBrush(Qt::SolidPattern);
+    QColor color = Plasma::Theme().color(Plasma::Theme::BackgroundColor);
+    brush.setColor(color);
+    this->block->setBrush(brush);
     this->block->setOpacity(0.7);
     this->label->setZValue(10);
     this->centerItems();

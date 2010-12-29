@@ -2,6 +2,7 @@
 
 #include <QPen>
 #include <qpaintengine.h>
+#include <KDE/Plasma/Theme>
 
 
 Label::Label(QWidget* parent)
@@ -32,9 +33,10 @@ void Label::paintEvent(QPaintEvent*)
         return;
     QPainter* painter = new QPainter(this);
     painter->setFont(this->font());
-    Backpen.setBrush(QPalette().windowText());
-    Frontpen.setBrush(QPalette().windowText());
-    QColor color = QPalette().windowText().color();
+    Backpen.setBrush(QBrush());
+    Frontpen.setBrush(QBrush());
+    QColor color = Plasma::Theme().color(Plasma::Theme::TextColor);
+    Frontpen.setColor(color);
     color.setAlpha(100);
     Backpen.setColor(color);
     int lFront = this->text().length();
