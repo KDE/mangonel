@@ -18,7 +18,7 @@
 int WIDTH = 220;
 int HEIGHT = 200;
 
-Mangonel::Mangonel(QApplication* app)
+Mangonel::Mangonel(KApplication* app)
 {
     this->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     this->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -59,6 +59,7 @@ Mangonel::Mangonel(QApplication* app)
 
 Mangonel::~Mangonel()
 {}
+
 
 void Mangonel::inputMethodEvent(QInputMethodEvent* event)
 {

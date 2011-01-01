@@ -4,11 +4,11 @@
 #include "Label.h"
 #include "Provider.h"
 
-#include <QApplication>
 #include <QGraphicsView>
 #include <QLabel>
 #include <KDE/Plasma/Dialog>
 #include <KDE/KAction>
+#include <KDE/KApplication>
 
 
 class ProgramView : public QGraphicsItemGroup
@@ -50,7 +50,7 @@ class Mangonel : public Plasma::Dialog
 {
     Q_OBJECT
 public:
-    Mangonel(QApplication* app);
+    Mangonel(KApplication* app);
     virtual ~Mangonel();
     void launch();
     void getApp(QString query);

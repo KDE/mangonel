@@ -1,13 +1,19 @@
 #include "Mangonel.h"
 
-#include <QtGui/QApplication>
+#include <KDE/KApplication>
+#include <KDE/KCmdLineArgs>
 
 
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
+    KCmdLineArgs::init(argc, argv,
+                       QByteArray("Mangonel"),
+                       QByteArray("Mangonel"),
+                       ki18n("Mangonel"),
+                       QByteArray("0.1"),
+                       ki18n("A simple application launcher for KDE4."));
+    KApplication app;
     app.setOrganizationName("Tarmack SW");
-    app.setApplicationName("Mangonel");
     Mangonel foo(&app);
     return app.exec();
 }
