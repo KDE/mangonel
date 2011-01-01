@@ -20,6 +20,9 @@ public slots:
 // Struct stored in AppList.
 struct Application
 {
+    Application() : priority(2147483647)
+    {};
+
     QString name;
     QString completion;
     QString icon;

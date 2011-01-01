@@ -28,7 +28,6 @@ QList<Application> Calculator::getResults(QString query)
     Application result = Application();
     result.icon = "accessories-calculator";
     result.name = QString::number(calculate(query), 'g', 12);
-    result.priority = 2147483647;
     result.object = this;
     QList<Application> list = QList<Application>();
     list.append(result);

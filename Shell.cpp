@@ -33,7 +33,6 @@ QList<Application> Shell::getResults(QString query)
             app.name = key + args;
             app.completion = key;
             app.icon = "system-run";
-            app.priority = 2147483647;
             app.object = this;
             app.program = this->index[key] + args;
 
