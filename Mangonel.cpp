@@ -50,6 +50,8 @@ Mangonel::Mangonel(KApplication* app)
     this->providers["shell"] = new Shell();
     this->providers["Calculator"] = new Calculator();
 
+    this->connect(this->label, SIGNAL(textChanged(QString)), this, SLOT(getApp(QString)));
+    
     QAction* actionConfig = new QAction(KIcon("configure"), "Configuration", this);
     this->addAction(actionConfig);
     this->connect(actionConfig, SIGNAL(triggered(bool)), this, SLOT(showConfig()));
@@ -70,7 +72,6 @@ void Mangonel::inputMethodEvent(QInputMethodEvent* event)
     text.append(event->preeditString());
     this->label->preedit = event->preeditString();
     this->label->setText(text);
-    this->getApp(text);
 }
 void Mangonel::keyPressEvent(QKeyEvent* event)
 {
@@ -114,7 +115,6 @@ void Mangonel::keyPressEvent(QKeyEvent* event)
         {
             this->label->setText(this->label->text().append(event->text()));
         }
-        this->getApp(this->label->text());
     }
     this->processingKey = false;
 }

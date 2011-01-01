@@ -8,11 +8,13 @@
 
 class Label : public QLabel
 {
+    Q_OBJECT
 public:
     Label(QWidget* parent = 0);
     virtual ~Label();
     QString completion();
     QString preedit;
+    void setText(QString text);
     void setCompletion(QString string);
     virtual void paintEvent(QPaintEvent*);
 private:
@@ -22,6 +24,8 @@ private:
     int position;
     QPainter* painter;
     void paintText(QChar ch, QPainter* painter);
+signals:
+    void textChanged(QString text);
 };
 
 namespace

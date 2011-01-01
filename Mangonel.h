@@ -60,8 +60,6 @@ class Mangonel : public Plasma::Dialog
 public:
     Mangonel(KApplication* app);
     virtual ~Mangonel();
-    void launch();
-    void getApp(QString query);
 private:
     KAction* actionShow;
     bool processingKey;
@@ -75,6 +73,8 @@ private:
     virtual void keyPressEvent(QKeyEvent* event);
     virtual void focusOutEvent(QFocusEvent* event);
 private slots:
+    void launch();
+    void getApp(QString query);
     void showHide(bool type = false);
     void showConfig();
     void setHotkey(const QKeySequence& hotkey);

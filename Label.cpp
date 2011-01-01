@@ -14,6 +14,15 @@ Label::Label(QWidget* parent)
 Label::~Label()
 {}
 
+void Label::setText(QString text)
+{
+    if (text != this->text())
+    {
+        QLabel::setText(text);
+        emit textChanged(text);
+    }
+}
+
 QString Label::completion()
 {
     return this->completionText;
@@ -124,4 +133,5 @@ QPen makeGradient(QPen pen)
 };
 
 
+#include "Label.moc"
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 
