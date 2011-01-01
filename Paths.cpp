@@ -10,9 +10,9 @@ Paths::Paths()
 Paths::~Paths()
 {}
 
-AppList Paths::getResults(QString query)
+QList<Application> Paths::getResults(QString query)
 {
-    AppList list = AppList();
+    QList<Application> list = QList<Application>();
     QString original = query;
     QDir dir;
     if (query.startsWith("/"))

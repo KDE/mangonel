@@ -12,7 +12,7 @@ public:
     Calculator();
     ~Calculator();
 public slots:
-    AppList getResults(QString query);
+    QList<Application> getResults(QString query);
     int launch(QVariant selected);
 private:
     QHash<char, calcFunct> functions;

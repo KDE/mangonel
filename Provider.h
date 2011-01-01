@@ -5,7 +5,7 @@
 #include <QVariant>
 
 
-class AppList;
+class Application;
 
 // Abstract base class of providers.
 class Provider : public QObject
@@ -13,7 +13,7 @@ class Provider : public QObject
 public:
     virtual ~Provider() {};
 public slots:
-    virtual AppList getResults(QString query) = 0;
+    virtual QList<Application> getResults(QString query) = 0;
     virtual int launch(QVariant selected) = 0;
 };
 
@@ -26,15 +26,6 @@ struct Application
     int priority;
     QVariant program;
     Provider* object; //Pointer to the search provider that provided this result.
-};
-
-// Search providers return an AppList with their results, they do not need to sort the results.
-class AppList : public QList<Application>
-{
-public:
-    AppList();
-    ~AppList();
-    void insertSorted(Application value);
 };
 
 #endif // Provider_H

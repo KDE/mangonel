@@ -130,9 +130,9 @@ void Mangonel::getApp(QString query)
         this->current = -1;
         foreach(Provider* provider, this->providers)
         {
-            AppList list = provider->getResults(query);
+            QList<Application> list = provider->getResults(query);
             foreach(Application app, list)
-            this->apps->insertSorted(app);
+                this->apps->insertSorted(app);
         }
         if (!this->apps->isEmpty())
         {

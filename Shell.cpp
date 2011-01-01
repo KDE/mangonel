@@ -19,9 +19,9 @@ Shell::Shell()
 Shell::~Shell()
 {}
 
-AppList Shell::getResults(QString query)
+QList<Application> Shell::getResults(QString query)
 {
-    AppList list = AppList();
+    QList<Application> list = QList<Application>();
     foreach(QString key, this->index.keys())
     {
         if (key.startsWith(query.left(query.indexOf(" ")), Qt::CaseInsensitive))

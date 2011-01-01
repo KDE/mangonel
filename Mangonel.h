@@ -46,6 +46,14 @@ private:
     int current;
 };
 
+class AppList : public QList<Application>
+{
+public:
+    AppList();
+    ~AppList();
+    void insertSorted(Application value);
+};
+
 class Mangonel : public Plasma::Dialog
 {
     Q_OBJECT

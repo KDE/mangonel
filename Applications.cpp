@@ -27,9 +27,9 @@ Applications::Applications()
 Applications::~Applications()
 {}
 
-AppList Applications::getResults(QString query)
+QList<Application> Applications::getResults(QString query)
 {
-    AppList list = AppList();
+    QList<Application> list = QList<Application>();
     int count = 0;
     int seconds = time(NULL);
     foreach(QString name, this->appTable->keys())

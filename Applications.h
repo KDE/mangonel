@@ -29,7 +29,7 @@ public:
     Applications();
     ~Applications();
 public slots:
-    AppList getResults(QString query);
+    QList<Application> getResults(QString query);
     int launch(QVariant selected);
 private:
     void setPopularity(QString entry, popularity pop);
