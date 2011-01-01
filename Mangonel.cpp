@@ -13,8 +13,8 @@
 #include "Calculator.h"
 
 
-int WIDTH = 220;
-int HEIGHT = 200;
+#define WINDOW_WIDTH 220
+#define WINDOW_HEIGHT 200
 
 Mangonel::Mangonel(KApplication* app)
 {
@@ -33,8 +33,8 @@ Mangonel::Mangonel(KApplication* app)
     // Add all to our layout.
     view->addWidget(this->iconView);
     view->addWidget(this->label);
-    this->resize(WIDTH, HEIGHT);
-    this->label->setMaximumWidth(WIDTH - 42);
+    this->resize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    this->label->setMaximumWidth(WINDOW_WIDTH - 42);
 
     // Setup our global shortcut.
     actionShow = new KAction(QString("Show Mangonel"), this);
@@ -171,7 +171,7 @@ void Mangonel::showHide(bool type)
     }
     else
     {
-        this->resize(WIDTH, HEIGHT);
+        this->resize(WINDOW_WIDTH, WINDOW_HEIGHT);
         QRect screen = this->app->desktop()->screenGeometry(this);
         int x = (screen.width() - this->geometry().width()) / 2;
         int y = (screen.height() - this->geometry().height()) / 2;
