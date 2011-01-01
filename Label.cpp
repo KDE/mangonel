@@ -1,7 +1,5 @@
 #include "Label.h"
 
-#include <QPen>
-#include <qpaintengine.h>
 #include <KDE/Plasma/Theme>
 
 

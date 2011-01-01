@@ -1,9 +1,6 @@
 #include "Paths.h"
 
 #include <QDir>
-#include <QDBusInterface>
-#include <QSettings>
-#include <KDE/KIcon>
 #include <KDE/KFileItem>
 
 

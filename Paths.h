@@ -3,8 +3,6 @@
 
 #include "Provider.h"
 
-#include <QVariant>
-
 
 class Paths : public Provider
 {

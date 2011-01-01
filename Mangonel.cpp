@@ -2,8 +2,6 @@
 
 #include <QVBoxLayout>
 #include <QDesktopWidget>
-#include <QTimeLine>
-#include <QGraphicsItemAnimation>
 #include <QDBusInterface>
 #include <KDE/Plasma/Theme>
 

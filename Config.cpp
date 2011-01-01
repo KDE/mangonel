@@ -1,8 +1,7 @@
 #include "Config.h"
 
-#include <qdialogbuttonbox.h>
-#include <kkeysequencewidget.h>
-#include <QDebug>
+#include <QDialogButtonBox>
+#include <KDE/KKeySequenceWidget>
 #include <QSettings>
 #include <QLabel>
 

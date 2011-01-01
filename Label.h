@@ -2,7 +2,6 @@
 #define Label_H
 
 #include <QLabel>
-#include <QPen>
 #include <QPainter>
 #include <QPaintEvent>
 

@@ -3,7 +3,6 @@
 #include <assert.h>
 #include <math.h>
 #include <QStringList>
-#include <QRegExp>
 
 
 const QList<char> operators = (QList<char>() << '+' << '-' << '/' << '*' << '^' << '%');

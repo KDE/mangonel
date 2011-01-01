@@ -4,7 +4,6 @@
 #include "Provider.h"
 
 #include <QStringList>
-#include <QDir>
 
 
 class Shell : public Provider

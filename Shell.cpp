@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <QDBusInterface>
+#include <QDir>
 
 
 Shell::Shell()
