@@ -70,7 +70,7 @@ void Mangonel::inputMethodEvent(QInputMethodEvent* event)
     if (text == "~/")
         text = "";
     text.append(event->preeditString());
-    this->label->preedit = event->preeditString();
+    this->label->setPreEdit(event->preeditString());
     this->label->setText(text);
 }
 void Mangonel::keyPressEvent(QKeyEvent* event)

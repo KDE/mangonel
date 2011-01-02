@@ -12,18 +12,21 @@ class Label : public QLabel
 public:
     Label(QWidget* parent = 0);
     virtual ~Label();
-    QString completion();
-    QString preedit;
     void setText(QString text);
+    QString completion();
     void setCompletion(QString string);
+    QString preEdit();
+    void setPreEdit(QString preEdit);
     virtual void paintEvent(QPaintEvent*);
 private:
     QString completionText;
+    QString preEditText;
     QPen Frontpen;
     QPen Backpen;
+    QPen preEditPen;
     int position;
     QPainter* painter;
-    void paintText(QChar ch, QPainter* painter);
+    int paintText(QChar ch, QPen pen);
 signals:
     void textChanged(QString text);
 };
