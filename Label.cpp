@@ -144,7 +144,7 @@ QString longest(QString str1, QString str2)
 
 QPen makeGradient(QPen pen)
 {
-    QColor color = QColor();
+    QColor color = pen.color();
     color.setAlpha(0);
     QGradient gradient = QLinearGradient(QPoint(0, 0), QPoint(40, 0));
     gradient.setColorAt(0, color);
