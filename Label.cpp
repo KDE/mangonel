@@ -67,6 +67,8 @@ void Label::paintEvent(QPaintEvent*)
     int offset = this->completionText.indexOf(this->text(), 0, Qt::CaseInsensitive);
     position -= length/2;
     int advance;
+    if (length >= this->contentsRect().width()-60)
+        position = -(length-this->width()+30);
     if (offset >= 0)
     {
         drawComletion = true;
@@ -76,12 +78,8 @@ void Label::paintEvent(QPaintEvent*)
     {
         offset = 0;
     }
-    if (length > this->width()-60)
-    {
-        position = -(length-this->width()+30);
-        Backpen = makeGradient(Backpen);
-        Frontpen = makeGradient(Frontpen);
-    }
+    Backpen = makeGradient(Backpen);
+    Frontpen = makeGradient(Frontpen);
     for (int index = 0; index < max(lFront, lBack); index++)
     {
         QChar ch;
@@ -123,6 +121,18 @@ int Label::paintText(QChar ch, QPen pen)
     return QFontMetrics(this->font()).width(ch);
 }
 
+QPen Label::makeGradient(QPen pen)
+{
+    QColor color = pen.color();
+    color.setAlpha(0);
+    QGradient gradient;
+    gradient = QRadialGradient(this->contentsRect().center(), this->contentsRect().width()/2);
+    gradient.setColorAt(1, color);
+    gradient.setColorAt(0.8, pen.color());
+    pen.setBrush(QBrush(gradient));
+    return pen;
+}
+
 
 namespace
 {
@@ -140,17 +150,6 @@ QString longest(QString str1, QString str2)
         return str1;
     else
         return str2;
-}
-
-QPen makeGradient(QPen pen)
-{
-    QColor color = pen.color();
-    color.setAlpha(0);
-    QGradient gradient = QLinearGradient(QPoint(0, 0), QPoint(40, 0));
-    gradient.setColorAt(0, color);
-    gradient.setColorAt(1, pen.color());
-    pen.setBrush(QBrush(gradient));
-    return pen;
 }
 };
 

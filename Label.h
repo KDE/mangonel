@@ -9,6 +9,7 @@
 class Label : public QLabel
 {
     Q_OBJECT
+    enum side {left, right, both};
 public:
     Label(QWidget* parent = 0);
     virtual ~Label();
@@ -27,6 +28,7 @@ private:
     int position;
     QPainter* painter;
     int paintText(QChar ch, QPen pen);
+    QPen makeGradient(QPen pen);
 signals:
     void textChanged(QString text);
 };
@@ -35,7 +37,6 @@ namespace
 {
 int max(int i1, int i2);
 QString longest(QString str1, QString str2);
-QPen makeGradient(QPen pen);
 };
 
 #endif
