@@ -8,3 +8,7 @@ set(Mangonel_SRCS Mangonel.cpp Label.cpp Config.cpp Applications.cpp Paths.cpp S
 qt4_automoc(${Mangonel_SRCS})
 add_executable(mangonel ${Mangonel_SRCS})
 target_link_libraries(mangonel plasma ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
+
+install(TARGETS mangonel
+        DESTINATION "bin"
+        PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)

@@ -21,7 +21,7 @@ Once you have the files cd into the directory containing the source and follow t
 * Create a build directory and move into it.
 * run: `cmake ../`
 * run: `make`
-* If all went well you now have an executable called mangonel in your build directory. This is the only file that needs to be installed. You can copy this file to the desired `bin` directory.
+* As root, run: `make install`
 * Start mangonel.
 * Enjoy launching your favourite applications in a matter of milliseconds.
 
