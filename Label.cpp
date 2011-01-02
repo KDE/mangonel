@@ -114,11 +114,15 @@ void Label::paintEvent(QPaintEvent*)
 
 int Label::paintText(QChar ch, QPen pen)
 {
-    painter->setPen(pen);
-    QRect rect = this->contentsRect();
-    rect.setLeft(position);
-    painter->drawText(rect, QString(ch));
-    return QFontMetrics(this->font()).width(ch);
+    int width = QFontMetrics(this->font()).width(ch);
+    if (position+width >= 0 and position <= this->contentsRect().width())
+    {
+        painter->setPen(pen);
+        QRect rect = this->contentsRect();
+        rect.setLeft(position);
+        painter->drawText(rect, QString(ch));
+    }
+    return width;
 }
 
 QPen Label::makeGradient(QPen pen)
