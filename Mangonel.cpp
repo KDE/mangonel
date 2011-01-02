@@ -26,6 +26,7 @@ Mangonel::Mangonel(KApplication* app)
     this->apps = 0;
     QVBoxLayout* view = new QVBoxLayout(this);
     this->setLayout(view);
+    view->setContentsMargins(0,10,0,8);
     // Setup the search feedback label.
     this->label = new Label(this);
     // Instantiate the visual feedback field.
@@ -34,7 +35,7 @@ Mangonel::Mangonel(KApplication* app)
     view->addWidget(this->iconView);
     view->addWidget(this->label);
     this->resize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    this->label->setMaximumWidth(WINDOW_WIDTH - 42);
+    this->label->setMaximumWidth(WINDOW_WIDTH - 20);
 
     // Setup our global shortcut.
     actionShow = new KAction(QString("Show Mangonel"), this);
