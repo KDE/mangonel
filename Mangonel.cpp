@@ -345,7 +345,6 @@ void ProgramView::centerItems()
         qreal(iconRect.width() / 2 - labelRect.width() / 2),
         qreal(iconRect.height() / 2 - labelRect.height() / 2)
     );
-    this->setTransformOriginPoint(iconRect.center());
 }
 
 void ProgramView::show()

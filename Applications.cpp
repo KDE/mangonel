@@ -93,11 +93,10 @@ int Applications::launch(QVariant selected)
         "",
         true);
     delete dbus;
-    int time = QDateTime().currentMSecsSinceEpoch() / 1000;
     popularity pop = popularity();
     if (this->popList.contains(entryPath))
         pop = this->popList[entryPath];
-    pop.lastUse = time;
+    pop.lastUse = time(NULL);
     pop.count ++;
     this->popList[entryPath] = pop;
     this->storePopularity(entryPath, pop);
