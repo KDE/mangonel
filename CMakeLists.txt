@@ -7,7 +7,7 @@ include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
 set(Mangonel_SRCS Mangonel.cpp Label.cpp Config.cpp Applications.cpp Paths.cpp Shell.cpp Calculator.cpp main.cpp)
 qt4_automoc(${Mangonel_SRCS})
 add_executable(mangonel ${Mangonel_SRCS})
-target_link_libraries(mangonel plasma ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
+target_link_libraries(mangonel ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} plasma kdeui kdecore)
 
 install(TARGETS mangonel
         DESTINATION "bin"
