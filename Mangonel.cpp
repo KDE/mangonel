@@ -209,7 +209,7 @@ void Mangonel::showConfig()
     dialog->setHotkey(shortcut.primary());
     connect(dialog, SIGNAL(hotkeyChanged(QKeySequence)), this, SLOT(setHotkey(QKeySequence)));
     installEventFilter(this);
-    int result = dialog->exec();
+    dialog->exec();
     removeEventFilter(this);
     this->activateWindow();
     this->setFocus();
