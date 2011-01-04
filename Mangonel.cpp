@@ -224,7 +224,7 @@ void Mangonel::setHotkey(const QKeySequence& hotkey)
 }
 
 
-IconView::IconView(QWidget* parent) : QGraphicsView(parent), current(-1)
+IconView::IconView(QWidget* parent) : current(-1)
 {
     this->scene = new QGraphicsScene(QRectF(0, 0, this->rect().width()*4, this->rect().height()), this);
     this->setScene(this->scene);

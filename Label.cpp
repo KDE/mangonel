@@ -3,7 +3,7 @@
 #include <KDE/Plasma/Theme>
 
 
-Label::Label(QWidget* parent) : QLabel(parent)
+Label::Label(QWidget* parent)
 {
     QFont* font = new QFont();
     font->setPointSize(font->pointSize()+6);
