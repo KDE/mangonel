@@ -185,7 +185,15 @@ void Mangonel::showHide(bool type)
 
 void Mangonel::focusOutEvent(QFocusEvent* event)
 {
-    this->showHide();
+    if (event->reason() != Qt::PopupFocusReason)
+        this->showHide();
+}
+
+bool Mangonel::eventFilter(QObject *object, QEvent *event)
+{
+    if (event->type() == QEvent::FocusOut)
+        return true;
+    return false;
 }
 
 void Mangonel::showConfig()
@@ -194,7 +202,9 @@ void Mangonel::showConfig()
     ConfigDialog* dialog = new ConfigDialog(this);
     dialog->setHotkey(shortcut.primary());
     connect(dialog, SIGNAL(hotkeyChanged(QKeySequence)), this, SLOT(setHotkey(QKeySequence)));
+    installEventFilter(this);
     int result = dialog->exec();
+    removeEventFilter(this);
     this->activateWindow();
     this->setFocus();
 }

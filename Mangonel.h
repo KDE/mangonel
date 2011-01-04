@@ -72,6 +72,7 @@ private:
     void inputMethodEvent(QInputMethodEvent* event);
     virtual void keyPressEvent(QKeyEvent* event);
     virtual void focusOutEvent(QFocusEvent* event);
+    bool eventFilter(QObject *object, QEvent *event);
 private slots:
     void launch();
     void getApp(QString query);
