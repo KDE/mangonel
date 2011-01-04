@@ -43,7 +43,7 @@ Mangonel::Mangonel(KApplication* app)
     KShortcut shortcut = actionShow->shortcut();
     shortcut.setPrimary(QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Space));
     actionShow->setGlobalShortcut(shortcut);
-    this->connect(actionShow, SIGNAL(triggered(bool)), this, SLOT(showHide(bool)));
+    this->connect(actionShow, SIGNAL(triggered()), this, SLOT(showHide()));
 
     // Instantiate the providers.
     this->providers["applications"] = new Applications();
@@ -88,7 +88,7 @@ void Mangonel::keyPressEvent(QKeyEvent* event)
     case Qt::Key_Return:
         this->launch();
     case Qt::Key_Escape:
-        this->showHide();
+        this->hide();
         break;
     case Qt::Key_Left:
         direction = "left";
@@ -160,33 +160,39 @@ void Mangonel::launch()
         app->object->launch(app->program);
 }
 
-void Mangonel::showHide(bool type)
+void Mangonel::showHide()
 {
     if (this->isVisible())
-    {
-        this->label->setText("");
-        this->iconView->clear();
-        delete this->apps;
-        this->apps = 0;
         this->hide();
-    }
     else
-    {
-        this->resize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        QRect screen = this->app->desktop()->screenGeometry(this);
-        int x = (screen.width() - this->geometry().width()) / 2;
-        int y = (screen.height() - this->geometry().height()) / 2;
-        this->move(x, y);
         this->show();
-        this->activateWindow();
-        this->setFocus();
-    }
+}
+
+void Mangonel::show()
+{
+    this->resize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    QRect screen = this->app->desktop()->screenGeometry(this);
+    int x = (screen.width() - this->geometry().width()) / 2;
+    int y = (screen.height() - this->geometry().height()) / 2;
+    this->move(x, y);
+    QWidget::show();
+    this->activateWindow();
+    this->setFocus();
+}
+
+void Mangonel::hide()
+{
+    this->label->setText("");
+    this->iconView->clear();
+    delete this->apps;
+    this->apps = 0;
+    QWidget::hide();
 }
 
 void Mangonel::focusOutEvent(QFocusEvent* event)
 {
     if (event->reason() != Qt::PopupFocusReason)
-        this->showHide();
+        this->hide();
 }
 
 bool Mangonel::eventFilter(QObject *object, QEvent *event)
