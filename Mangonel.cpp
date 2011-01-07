@@ -4,6 +4,7 @@
 #include <QDesktopWidget>
 #include <QDBusInterface>
 #include <KDE/Plasma/Theme>
+#include <KDE/KWindowSystem>
 
 #include "Config.h"
 //Include the providers.
@@ -176,7 +177,7 @@ void Mangonel::show()
     int y = (screen.height() - this->geometry().height()) / 2;
     this->move(x, y);
     QWidget::show();
-    this->activateWindow();
+    KWindowSystem::forceActiveWindow(this->winId());
     this->setFocus();
 }
 
