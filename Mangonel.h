@@ -77,7 +77,7 @@ private:
     virtual void keyPressEvent(QKeyEvent* event);
     virtual void focusInEvent(QFocusEvent* event);
     virtual void focusOutEvent(QFocusEvent* event);
-    void showContextMenu();
+    void showContextMenu(QPoint pos);
     bool eventFilter(QObject *object, QEvent *event);
 private slots:
     void launch();

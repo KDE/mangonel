@@ -64,11 +64,11 @@ Mangonel::Mangonel(KApplication* app)
 Mangonel::~Mangonel()
 {}
 
-void Mangonel::showContextMenu()
+void Mangonel::showContextMenu(QPoint pos)
 {
     QMenu* menu = new QMenu(QApplication::instance()->applicationName(), this);
     menu->addActions(this->actions());
-    menu->exec(QCursor::pos());
+    menu->exec(pos);
 }
 
 void Mangonel::mouseReleaseEvent(QMouseEvent* event)
@@ -82,7 +82,7 @@ void Mangonel::mouseReleaseEvent(QMouseEvent* event)
     {
         if (event->button() == Qt::RightButton)
         {
-            this->showContextMenu();
+            this->showContextMenu(event->globalPos());
         }
     }
     else
@@ -110,6 +110,9 @@ void Mangonel::keyPressEvent(QKeyEvent* event)
     this->processingKey = true;
     switch (event->key())
     {
+    case Qt::Key_Menu:
+        this->showContextMenu(this->geometry().center());
+        break;
     case Qt::Key_Enter:
     case Qt::Key_Return:
         this->launch();
