@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QDesktopWidget>
 #include <QDBusInterface>
+#include <QMenu>
 #include <KDE/Plasma/Theme>
 #include <KDE/KWindowSystem>
 
@@ -16,11 +17,12 @@
 
 #define WINDOW_WIDTH 220
 #define WINDOW_HEIGHT 200
+#include <QClipboard>
 
 Mangonel::Mangonel(KApplication* app)
 {
     this->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-    this->setContextMenuPolicy(Qt::ActionsContextMenu);
+    this->setContextMenuPolicy(Qt::NoContextMenu);
     this->setAttribute(Qt::WA_InputMethodEnabled);
     this->app = app;
     this->processingKey = false;
@@ -62,7 +64,30 @@ Mangonel::Mangonel(KApplication* app)
 Mangonel::~Mangonel()
 {}
 
+void Mangonel::showContextMenu()
+{
+    QMenu* menu = new QMenu(QApplication::instance()->applicationName(), this);
+    menu->addActions(this->actions());
+    menu->exec(QCursor::pos());
+}
 
+void Mangonel::mouseReleaseEvent(QMouseEvent* event)
+{
+    if (event->button() == Qt::MiddleButton)
+    {
+        event->accept();
+        this->label->appendText(QApplication::clipboard()->text(QClipboard::Selection));
+    }
+    else if (this->geometry().contains(event->globalPos()))
+    {
+        if (event->button() == Qt::RightButton)
+        {
+            this->showContextMenu();
+        }
+    }
+    else
+        this->hide();
+}
 void Mangonel::inputMethodEvent(QInputMethodEvent* event)
 {
     QString text = this->label->text();
@@ -113,9 +138,13 @@ void Mangonel::keyPressEvent(QKeyEvent* event)
                 text = "";
             this->label->setText(text);
         }
+        else if (event->matches(QKeySequence::Paste))
+        {
+            this->label->appendText(QApplication::clipboard()->text());
+        }
         else
         {
-            this->label->setText(this->label->text().append(event->text()));
+            this->label->appendText(event->text());
         }
     }
     this->processingKey = false;
@@ -190,8 +219,17 @@ void Mangonel::hide()
     QWidget::hide();
 }
 
+void Mangonel::focusInEvent(QFocusEvent* event)
+{
+    if (event->reason() != Qt::PopupFocusReason)
+    {
+        this->grabMouse();
+    }
+}
+
 void Mangonel::focusOutEvent(QFocusEvent* event)
 {
+    this->releaseMouse();
     if (event->reason() != Qt::PopupFocusReason)
         this->hide();
 }

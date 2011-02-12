@@ -72,9 +72,12 @@ private:
     QHash<QString, Provider*> providers;
     AppList* apps;
     int current;
+    void mouseReleaseEvent(QMouseEvent* event);
     void inputMethodEvent(QInputMethodEvent* event);
     virtual void keyPressEvent(QKeyEvent* event);
+    virtual void focusInEvent(QFocusEvent* event);
     virtual void focusOutEvent(QFocusEvent* event);
+    void showContextMenu();
     bool eventFilter(QObject *object, QEvent *event);
 private slots:
     void launch();
