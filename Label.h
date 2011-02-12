@@ -14,6 +14,7 @@ public:
     Label(QWidget* parent = 0);
     virtual ~Label();
     void setText(QString text);
+    void appendText(QString text);
     QString completion();
     void setCompletion(QString string);
     QString preEdit();

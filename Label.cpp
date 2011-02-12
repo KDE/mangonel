@@ -16,11 +16,17 @@ Label::~Label()
 
 void Label::setText(QString text)
 {
+    text = text.remove('\n');
     if (text != this->text())
     {
         QLabel::setText(text);
         emit textChanged(text);
     }
+}
+
+void Label::appendText(QString text)
+{
+    this->setText(this->text() + text);
 }
 
 QString Label::completion()
