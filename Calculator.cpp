@@ -2,6 +2,8 @@
 
 #include <assert.h>
 #include <math.h>
+#include <QApplication>
+#include <QClipboard>
 #include <QStringList>
 
 
@@ -28,6 +30,7 @@ QList<Application> Calculator::getResults(QString query)
     Application result = Application();
     result.icon = "accessories-calculator";
     result.name = QString::number(calculate(query), 'g', 12);
+    result.program = result.name;
     result.object = this;
     QList<Application> list = QList<Application>();
     list.append(result);
@@ -101,6 +104,8 @@ float Calculator::calculate(QString query)
 
 int Calculator::launch(QVariant selected)
 {
+    QClipboard* clipboard = QApplication::clipboard();
+    clipboard->setText(selected.toString(), QClipboard::Selection);
     return 0;
 }
 
