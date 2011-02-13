@@ -22,8 +22,9 @@
 Mangonel::Mangonel(KApplication* app)
 {
     this->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-    this->setContextMenuPolicy(Qt::NoContextMenu);
+    this->setContextMenuPolicy(Qt::ActionsContextMenu);
     this->setAttribute(Qt::WA_InputMethodEnabled);
+    this->setAttribute(Qt::WA_MouseTracking, false);
     this->app = app;
     this->processingKey = false;
     this->apps = 0;
@@ -64,30 +65,34 @@ Mangonel::Mangonel(KApplication* app)
 Mangonel::~Mangonel()
 {}
 
-void Mangonel::showContextMenu(QPoint pos)
+bool Mangonel::event(QEvent* event)
 {
-    QMenu* menu = new QMenu(QApplication::instance()->applicationName(), this);
-    menu->addActions(this->actions());
-    menu->exec(pos);
-}
-
-void Mangonel::mouseReleaseEvent(QMouseEvent* event)
-{
-    if (event->button() == Qt::MiddleButton)
+    event->ignore();
+    if (event->type() == QEvent::MouseButtonPress)
     {
-        event->accept();
-        this->label->appendText(QApplication::clipboard()->text(QClipboard::Selection));
-    }
-    else if (this->geometry().contains(event->globalPos()))
-    {
-        if (event->button() == Qt::RightButton)
+        QMouseEvent* mouseEvent = static_cast<QMouseEvent*> (event);
+        if (mouseEvent->button() == Qt::MiddleButton)
         {
-            this->showContextMenu(event->globalPos());
+            event->accept();
+            this->label->appendText(QApplication::clipboard()->text(QClipboard::Selection));
+        }
+        else if (!this->geometry().contains(mouseEvent->globalPos()))
+        {
+            this->hide();
+            event->accept();
         }
     }
-    else
-        this->hide();
+    else if (event->type() == QEvent::ContextMenu)
+    {
+        QContextMenuEvent* menuEvent = static_cast<QContextMenuEvent*> (event);
+        if (!this->geometry().contains(menuEvent->globalPos()))
+            event->accept();
+    }
+    if (!event->isAccepted())
+        Plasma::Dialog::event(event);
+    return true;
 }
+
 void Mangonel::inputMethodEvent(QInputMethodEvent* event)
 {
     QString text = this->label->text();
@@ -110,9 +115,6 @@ void Mangonel::keyPressEvent(QKeyEvent* event)
     this->processingKey = true;
     switch (event->key())
     {
-    case Qt::Key_Menu:
-        this->showContextMenu(this->geometry().center());
-        break;
     case Qt::Key_Enter:
     case Qt::Key_Return:
         this->launch();
@@ -224,10 +226,7 @@ void Mangonel::hide()
 
 void Mangonel::focusInEvent(QFocusEvent* event)
 {
-    if (event->reason() != Qt::PopupFocusReason)
-    {
         this->grabMouse();
-    }
 }
 
 void Mangonel::focusOutEvent(QFocusEvent* event)
@@ -251,6 +250,7 @@ void Mangonel::showConfig()
     dialog->setHotkey(shortcut.primary());
     connect(dialog, SIGNAL(hotkeyChanged(QKeySequence)), this, SLOT(setHotkey(QKeySequence)));
     installEventFilter(this);
+    this->releaseMouse();
     dialog->exec();
     removeEventFilter(this);
     this->activateWindow();
