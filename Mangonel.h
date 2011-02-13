@@ -32,11 +32,12 @@ class IconView : public QGraphicsView
 {
     Q_OBJECT
 public:
+    enum direction {left, right};
     IconView(QWidget* parent = 0);
     ~IconView();
     void addProgram(Application application);
     Application* selectedApp();
-    void moveItems(QString direction);
+    void moveItems(IconView::direction direction);
     void clear();
     void setFirst();
     Label* label;

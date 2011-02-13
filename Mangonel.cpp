@@ -108,7 +108,7 @@ void Mangonel::inputMethodEvent(QInputMethodEvent* event)
 void Mangonel::keyPressEvent(QKeyEvent* event)
 {
     int key = event->key();
-    QString direction = "right";
+    IconView::direction direction = IconView::right;
     Application* CurrentApp;
     if (this->processingKey)
         return;
@@ -122,7 +122,7 @@ void Mangonel::keyPressEvent(QKeyEvent* event)
         this->hide();
         break;
     case Qt::Key_Left:
-        direction = "left";
+        direction = IconView::left;
     case Qt::Key_Right:
         this->iconView->moveItems(direction);
         CurrentApp = this->iconView->selectedApp();
@@ -315,7 +315,7 @@ void IconView::setFirst()
     this->centerOn(QPoint(this->rect().width()*1.5, 0));
 }
 
-void IconView::moveItems(QString direction)
+void IconView::moveItems(IconView::direction direction)
 {
     if (this->current < 0)
         return;
@@ -323,7 +323,7 @@ void IconView::moveItems(QString direction)
     int steps =  10;
     int dx = offset / steps;
     int index = 1;
-    if (direction == "right")
+    if (direction == IconView::right)
     {
         if (this->current + 1 >= this->items.length())
             return;
