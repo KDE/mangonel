@@ -33,7 +33,7 @@ class IconView : public QGraphicsView
     Q_OBJECT
 public:
     IconView(QWidget* parent = 0);
-    virtual ~IconView();
+    ~IconView();
     void addProgram(Application application);
     Application* selectedApp();
     void moveItems(QString direction);
@@ -59,7 +59,7 @@ class Mangonel : public Plasma::Dialog
     Q_OBJECT
 public:
     Mangonel(KApplication* app);
-    virtual ~Mangonel();
+    ~Mangonel();
 public slots:
     void show();
     void hide();
@@ -74,9 +74,9 @@ private:
     int current;
     bool event(QEvent* event);
     void inputMethodEvent(QInputMethodEvent* event);
-    virtual void keyPressEvent(QKeyEvent* event);
-    virtual void focusInEvent(QFocusEvent* event);
-    virtual void focusOutEvent(QFocusEvent* event);
+    void keyPressEvent(QKeyEvent* event);
+    void focusInEvent(QFocusEvent* event);
+    void focusOutEvent(QFocusEvent* event);
     bool eventFilter(QObject *object, QEvent *event);
 private slots:
     void launch();

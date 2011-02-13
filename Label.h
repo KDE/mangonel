@@ -12,14 +12,14 @@ class Label : public QLabel
     enum side {left, right, both};
 public:
     Label(QWidget* parent = 0);
-    virtual ~Label();
+    ~Label();
     void setText(QString text);
     void appendText(QString text);
     QString completion();
     void setCompletion(QString string);
     QString preEdit();
     void setPreEdit(QString preEdit);
-    virtual void paintEvent(QPaintEvent*);
+    void paintEvent(QPaintEvent*);
 private:
     QString completionText;
     QString preEditText;
