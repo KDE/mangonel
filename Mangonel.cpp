@@ -9,10 +9,10 @@
 
 #include "Config.h"
 //Include the providers.
-#include "Applications.h"
-#include "Paths.h"
-#include "Shell.h"
-#include "Calculator.h"
+#include "providers/Applications.h"
+#include "providers/Paths.h"
+#include "providers/Shell.h"
+#include "providers/Calculator.h"
 
 
 #define WINDOW_WIDTH 220

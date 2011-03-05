@@ -7,7 +7,12 @@ include (KDE4Defaults)
 
 include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES})
 
-set(Mangonel_SRCS Mangonel.cpp Label.cpp Config.cpp Applications.cpp Paths.cpp Shell.cpp Calculator.cpp main.cpp)
+set(Mangonel_SRCS Mangonel.cpp Label.cpp Config.cpp main.cpp
+providers/Applications.cpp
+providers/Paths.cpp
+providers/Shell.cpp
+providers/Calculator.cpp
+)
 qt4_automoc(${Mangonel_SRCS})
 add_executable(mangonel ${Mangonel_SRCS})
 target_link_libraries(mangonel ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_PLASMA_LIBS} ${KDE4_KIO_LIBS})
