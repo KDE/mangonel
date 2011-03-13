@@ -8,6 +8,7 @@
 
 
 const QList<char> operators = (QList<char>() << '+' << '-' << '/' << '*' << '^' << '%');
+bool succes = false;
 
 
 Calculator::Calculator()
@@ -27,13 +28,18 @@ Calculator::~Calculator()
 
 QList<Application> Calculator::getResults(QString query)
 {
-    Application result = Application();
-    result.icon = "accessories-calculator";
-    result.name = QString::number(calculate(query), 'g', 12);
-    result.program = result.name;
-    result.object = this;
+    succes = false;
     QList<Application> list = QList<Application>();
-    list.append(result);
+    float awnser = calculate(query);
+    if (succes)
+    {
+        Application result = Application();
+        result.icon = "accessories-calculator";
+        result.name = QString::number(awnser, 'g', 12);
+        result.program = result.name;
+        result.object = this;
+        list.append(result);
+    }
     return list;
 }
 
@@ -86,7 +92,7 @@ float Calculator::calculate(QString query)
         }
     }
     if (values.isEmpty())
-        return query.toFloat();
+        return query.toFloat(&succes);
     if (functions.contains(oper))
     {
         if (values[0] == "")
@@ -99,6 +105,7 @@ float Calculator::calculate(QString query)
         return functions[oper](value1, value2);
     }
     else
+        succes = true;
         return 0;
 }
 
