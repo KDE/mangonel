@@ -6,6 +6,8 @@
 #include <QMenu>
 #include <KDE/Plasma/Theme>
 #include <KDE/KWindowSystem>
+#include <QTextDocument>
+#include <QClipboard>
 
 #include "Config.h"
 //Include the providers.
@@ -18,7 +20,6 @@
 
 #define WINDOW_WIDTH 220
 #define WINDOW_HEIGHT 200
-#include <QClipboard>
 
 Mangonel::Mangonel(KApplication* app)
 {
@@ -412,7 +413,12 @@ void ProgramView::show()
     if (this->icon == 0)
         this->icon = new QGraphicsPixmapItem(KIcon(application.icon).pixmap(128), this);
     if (this->label == 0)
+    {
         this->label = new QGraphicsTextItem(application.name, this);
+        if (this->label->boundingRect().width() > WINDOW_WIDTH - 40)
+            this->label->adjustSize();
+        this->label->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
+    }
     if (this->block == 0)
         this->block = new QGraphicsRectItem(this->label->boundingRect(), this);
     QBrush brush = QBrush(Qt::SolidPattern);
