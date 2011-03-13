@@ -420,12 +420,14 @@ void ProgramView::show()
         this->label->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
     }
     if (this->block == 0)
+    {
         this->block = new QGraphicsRectItem(this->label->boundingRect(), this);
-    QBrush brush = QBrush(Qt::SolidPattern);
-    QColor color = Plasma::Theme().color(Plasma::Theme::BackgroundColor);
-    brush.setColor(color);
-    this->block->setBrush(brush);
-    this->block->setOpacity(0.7);
+        QBrush brush = QBrush(Qt::SolidPattern);
+        QColor color = Plasma::Theme().color(Plasma::Theme::BackgroundColor);
+        brush.setColor(color);
+        this->block->setBrush(brush);
+        this->block->setOpacity(0.7);
+    }
     this->label->setZValue(10);
     this->centerItems();
     QGraphicsItemGroup::show();
