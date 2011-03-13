@@ -3,6 +3,8 @@
 #include "providers/units/units.h"
 
 #include <QRegExp>
+#include <QClipboard>
+#include <QApplication>
 
 Units::Units()
 {}
@@ -44,6 +46,8 @@ QList< Application > Units::getResults(QString query)
 
 int Units::launch(QVariant selected)
 {
+    QClipboard* clipboard = QApplication::clipboard();
+    clipboard->setText(selected.toString(), QClipboard::Selection);
     return 0;
 }
 
