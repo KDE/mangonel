@@ -44,7 +44,7 @@ QList<Application> Shell::getResults(QString query)
 
 int Shell::launch(QVariant selected)
 {
-    QStringList args = selected.toString().split(" ");
+    QStringList args = selected.toString().split(" ", QString::SkipEmptyParts);
     QString exec = args.takeFirst();
     QDBusInterface* dbus = new QDBusInterface(
         "org.kde.klauncher",
