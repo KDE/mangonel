@@ -2,16 +2,20 @@
 
 #include <KDE/KApplication>
 #include <KDE/KCmdLineArgs>
+#include <KDE/KAboutData>
 
 
 int main(int argc, char** argv)
 {
-    KCmdLineArgs::init(argc, argv,
+    KAboutData* aboutData = new KAboutData(
                        QByteArray("Mangonel"),
                        QByteArray("Mangonel"),
                        ki18n("Mangonel"),
                        QByteArray("0.1"),
                        ki18n("A simple application launcher for KDE4."));
+    aboutData->setHomepage(QByteArray("www.tarmack.eu/mangonel/"));
+    aboutData->setBugAddress(QByteArray("bugs.mangonel@tarmack.eu"));
+    KCmdLineArgs::init(argc, argv, aboutData);
     KApplication app;
     app.setOrganizationName("Tarmack SW");
     Mangonel foo(&app);
