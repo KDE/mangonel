@@ -2,6 +2,7 @@
 
 #include <QDialogButtonBox>
 #include <KDE/KKeySequenceWidget>
+#include <KDE/KApplication>
 #include <QSettings>
 #include <QLabel>
 
@@ -10,6 +11,7 @@ ConfigDialog::ConfigDialog(QWidget* parent) : QDialog(parent, Qt::Dialog)
 {
     this->setAttribute(Qt::WA_DeleteOnClose);
     this->setAttribute(Qt::WA_QuitOnClose, false);
+    this->setWindowTitle(KApplication::instance()->applicationName() + QString(" - Configuration"));
     layout = new QVBoxLayout(this);
     layout->setAlignment(Qt::AlignHCenter);
 
