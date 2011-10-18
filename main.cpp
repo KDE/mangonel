@@ -1,6 +1,6 @@
 #include "Mangonel.h"
 
-#include <KDE/KApplication>
+#include <KDE/KUniqueApplication>
 #include <KDE/KCmdLineArgs>
 #include <KDE/KAboutData>
 
@@ -16,7 +16,7 @@ int main(int argc, char** argv)
     aboutData->setHomepage(QByteArray("www.tarmack.eu/mangonel/"));
     aboutData->setBugAddress(QByteArray("bugs.mangonel@tarmack.eu"));
     KCmdLineArgs::init(argc, argv, aboutData);
-    KApplication app;
+    KUniqueApplication app;
     app.setOrganizationName("Tarmack SW");
     Mangonel foo(&app);
     return app.exec();
