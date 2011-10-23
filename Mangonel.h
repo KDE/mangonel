@@ -70,6 +70,8 @@ private:
     QApplication* app;
     Label* label;
     IconView* iconView;
+    int historyIndex;
+    QStringList history;
     QHash<QString, Provider*> providers;
     AppList* apps;
     int current;

@@ -51,6 +51,8 @@ Mangonel::Mangonel(KApplication* app)
     actionShow->setGlobalShortcut(shortcut);
     this->connect(actionShow, SIGNAL(triggered()), this, SLOT(showHide()));
 
+    // TODO: Get the stored history.
+
     // Instantiate the providers.
     this->providers["applications"] = new Applications();
     this->providers["paths"] = new Paths();
@@ -66,6 +68,7 @@ Mangonel::Mangonel(KApplication* app)
 }
 
 Mangonel::~Mangonel()
+    // Store history of session.
 {}
 
 bool Mangonel::event(QEvent* event)
@@ -123,6 +126,18 @@ void Mangonel::keyPressEvent(QKeyEvent* event)
         this->launch();
     case Qt::Key_Escape:
         this->hide();
+        break;
+    case Qt::Key_Up:
+        this->historyIndex += 2;
+    case Qt::Key_Down:
+        this->historyIndex -= 1;
+        if (this->historyIndex >= 0)
+        {
+            if (this->historyIndex < this->history.length())
+                this->label->setText(this->history[this->historyIndex]);
+        }
+        else
+            this->historyIndex = -1;
         break;
     case Qt::Key_Left:
         direction = IconView::left;
@@ -193,6 +208,7 @@ void Mangonel::getApp(QString query)
 
 void Mangonel::launch()
 {
+    this->history.insert(0, this->label->text());
     Application* app = this->iconView->selectedApp();
     if (app != 0)
         app->object->launch(app->program);
@@ -208,6 +224,7 @@ void Mangonel::showHide()
 
 void Mangonel::show()
 {
+    this->historyIndex = -1;
     this->resize(WINDOW_WIDTH, WINDOW_HEIGHT);
     QRect screen = this->app->desktop()->screenGeometry(this);
     int x = (screen.width() - this->geometry().width()) / 2;
