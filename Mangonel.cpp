@@ -435,6 +435,8 @@ void ProgramView::show()
         if (this->label->boundingRect().width() > WINDOW_WIDTH - 40)
             this->label->adjustSize();
         this->label->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
+        QColor color = Plasma::Theme().color(Plasma::Theme::TextColor);
+        this->label->setDefaultTextColor(color);
     }
     if (this->block == 0)
     {
