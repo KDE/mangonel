@@ -5,6 +5,7 @@
 
 Label::Label(QWidget* parent)
 {
+    Q_UNUSED(parent);
     QFont* font = new QFont();
     font->setPointSize(font->pointSize()+6);
     this->setFont(*font);

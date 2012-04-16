@@ -7,12 +7,10 @@
 
 Shell::Shell()
 {
-    int len;
     this->index = QHash<QString, QString>();
     foreach(QString dir, getPathEnv())
     {
         this->index.unite(walkDir(dir));
-        len = this->index.size();
     }
 }
 

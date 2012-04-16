@@ -17,6 +17,7 @@
 #include "providers/Calculator.h"
 #include "providers/Units.h"
 
+#include <unistd.h>
 
 #define WINDOW_WIDTH 220
 #define WINDOW_HEIGHT 200
@@ -246,7 +247,8 @@ void Mangonel::hide()
 
 void Mangonel::focusInEvent(QFocusEvent* event)
 {
-        this->grabMouse();
+    Q_UNUSED(event);
+    this->grabMouse();
 }
 
 void Mangonel::focusOutEvent(QFocusEvent* event)
@@ -258,6 +260,7 @@ void Mangonel::focusOutEvent(QFocusEvent* event)
 
 bool Mangonel::eventFilter(QObject *object, QEvent *event)
 {
+    Q_UNUSED(object);
     if (event->type() == QEvent::FocusOut)
         return true;
     return false;
@@ -288,6 +291,7 @@ void Mangonel::setHotkey(const QKeySequence& hotkey)
 
 IconView::IconView(QWidget* parent) : current(-1)
 {
+    Q_UNUSED(parent);
     this->scene = new QGraphicsScene(QRectF(0, 0, this->rect().width()*4, this->rect().height()), this);
     this->setScene(this->scene);
     this->setFrameStyle(QFrame::NoFrame);

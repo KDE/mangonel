@@ -35,15 +35,16 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include<ctype.h>
 
 
 /*  Define a few useful constants  */
-static char *primitivestring="-primitive";
-static char powerchar='^';
-static char *unitNameCharacters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-static char *separators=" \t*-";
-static char *divider="/";
-static char *validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789. \t*^/+-";
+static const char *primitivestring="-primitive";
+static const char powerchar='^';
+static const char *unitNameCharacters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+static const char *separators=" \t*-";
+static const char *divider="/";
+static const char *validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789. \t*^/+-";
 
 
 /*  
@@ -96,7 +97,6 @@ static Prefix *proot = NULL;
  *-----------------------------------------------------------------
  */
 
-static int isspace(char character);
 /*  String manipulation functions  */
 static char *stringcopy _ANSI_ARGS_((CONST char *string));
 static char *stringset _ANSI_ARGS_((char *target, CONST char *source));
@@ -105,18 +105,17 @@ static char *stringappend _ANSI_ARGS_((char *target, CONST char *source));
 /*  Unit and Prefix creation/destruction  */
 static Unit *createunit _ANSI_ARGS_(());
 static void destroyunit _ANSI_ARGS_((Unit *u));
-static Prefix *createprefix _ANSI_ARGS_((char *name, double factor));
+static Prefix *createprefix _ANSI_ARGS_((const char *name, double factor));
 
 /*  Unit untility functions  */
-static Unit *reduceUnit  _ANSI_ARGS_((char *unitString));
+static Unit *reduceUnit  _ANSI_ARGS_((const char *unitString));
 static Unit *sortUnitList _ANSI_ARGS_(( Unit *u));
 static void cancelUnitList _ANSI_ARGS_((Unit **numerator, Unit **denominator));
 static int unitInitialize _ANSI_ARGS_(());
 
  /*  Error Generation Functions  */
-static void throw_exception _ANSI_ARGS_((char *message));
-static void throw_exception1 _ANSI_ARGS_((char *message, char *arg1));
-static void throw_exception2 _ANSI_ARGS_((char *message, char *arg1, char *arg2));
+static void throw_exception1 _ANSI_ARGS_((const char *message, const char *arg1));
+static void throw_exception2 _ANSI_ARGS_((const char *message, const char *arg1, const char *arg2));
 
 
 /*
@@ -131,12 +130,6 @@ static void throw_exception2 _ANSI_ARGS_((char *message, char *arg1, char *arg2)
  *
  *-----------------------------------------------------------------
  */
-
-/*  Return >0 if the provided char is a space.  */
-static int isspace(char character)
-{
-  return (character == ' ');
-}
 
 /*  Make a new copy of a string  */
 static char *stringcopy(string)
@@ -225,7 +218,7 @@ static Unit *createunit() {
  *  Prefixes are only created, not destroyed
  */
 static Prefix *createprefix(name, factor)
-     char *name;        /*  name for prefix   */
+     const char *name;        /*  name for prefix   */
      double factor;     /*  multiple factor (e.g., 1.0E3)  */
 {
   Prefix *p;
@@ -263,16 +256,9 @@ static Prefix *createprefix(name, factor)
 static char error_message[ERRMSGLEN];
 static int error_status = 0;
 
-static void throw_exception(message)
-     char *message;         /*  message string  */
-{
-  strncpy(error_message, message,ERRMSGLEN) ;
-  error_status = 1;
-}
-
 static void throw_exception1(message, arg1)
-     char *message;         /*  message string  */
-     char *arg1;            /*  argument to format into message  */
+     const char *message;         /*  message string  */
+     const char *arg1;            /*  argument to format into message  */
 {
   if ( strlen(message) + strlen(arg1) < ERRMSGLEN-1 ) {
       sprintf(error_message, message, arg1) ;
@@ -283,9 +269,9 @@ static void throw_exception1(message, arg1)
 }
 
 static void throw_exception2(message, arg1, arg2)
-     char *message;         /*  message string  */
-     char *arg1;            /*  argument to format into message  */
-     char *arg2;            /*  argument to format into message  */
+     const char *message;         /*  message string  */
+     const char *arg1;            /*  argument to format into message  */
+     const char *arg2;            /*  argument to format into message  */
 {
   if ( strlen(message) + strlen(arg1) + strlen(arg2) < ERRMSGLEN-1 ) {
       sprintf(error_message, message, arg1, arg2) ;
@@ -481,19 +467,19 @@ char *units_reduce ( unitString )
 /*  local functions  */
 
 static Unit *reduceUnit ( unitString ) 
-     char *unitString;  /*  unit string to reduce  */
+     const char *unitString;  /*  unit string to reduce  */
 {
   Unit *u;                 /*  new reduced unit  */
   char *cp;                /*  for traversing strings  */
   char *tokenString;       /*  tokenized copy of unitString  */
-  int numeratorlen;        /*  for splitting unitString  */
+  unsigned int numeratorlen;        /*  for splitting unitString  */
   char *subunit;           /*  one token from tokenString  */
   char *subunitcopy;       /*  copy of subunit, for plural chopping  */
   double factor;           /*  value of constant factor subunits  */
   int numerflag = 1;       /*  boolean switch between numer/denom  */
   int exponent;            /*  subunit exponent value  */
   int e;                   /*  loop counter for exponents  */
-  int len, pos;            /*  for separating prefix and unit name  */
+  unsigned int len, pos;            /*  for separating prefix and unit name  */
   Unit *up1, *up2;         /*  for searching the unit list  */
   Prefix *p;               /*  for walking prefix list  */
   Unit *usub;              /*  new subunits (added to u)  */
@@ -994,7 +980,7 @@ static void cancelUnitList(numerator, denominator)
 
 /* SI Base Units */
 /* SI Supplementary Units */
-static char *baseUnits[] = {
+static const char *baseUnits[] = {
   "meter",
   "gram",
   "second",
@@ -1005,7 +991,7 @@ static char *baseUnits[] = {
   NULL};
 
 /*  SI Derived Units with Special Names  */
-static char *derivedUnits[] = {
+static const char *derivedUnits[] = {
   "radian",	"meter/meter",
   "steradian",	"meter^2/meter^2",
   "hertz",	"/second",
@@ -1029,7 +1015,7 @@ static char *derivedUnits[] = {
   NULL,         NULL};
 
 /*  Non-SI units  */
-static char *nonSIUnits[] = {
+static const char *nonSIUnits[] = {
   "angstrom",	"1.0E-10meter",
   "astronomicalUnit",	"1.495979E11meter",
   "atmosphere",	"1.01325E5pascal",
@@ -1069,7 +1055,7 @@ static char *nonSIUnits[] = {
 
 
 /*  Abbreviations  */
-static char *abbreviations[] = {
+static const char *abbreviations[] = {
   "m",	"meter",
   "g",	"gram",
   "s",	"second",
@@ -1098,7 +1084,7 @@ static char *abbreviations[] = {
   "Sv",	"sievert",
   NULL, NULL};
 
-static char *nonSIabbreviations[] = {
+static const char *nonSIabbreviations[] = {
   "AU",	"astronomicalUnit",
   "ft",	"foot",
   "gr",	"grain",
@@ -1138,7 +1124,7 @@ static char *nonSIabbreviations[] = {
  *
  *------------------------------------------------------------*/
 
-static char *prefixList[] = {
+static const char *prefixList[] = {
   "yotta",	"1e24",
   "zetta",	"1e21",
   "exa",	"1e18",
@@ -1183,9 +1169,9 @@ static char *prefixList[] = {
   NULL, NULL};
 
 static int unitInitialize() {
-  Unit *u, *up;
-  Prefix *p, *pp;
-  char **name, **value;
+  Unit *u, *up = 0;
+  Prefix *p, *pp = 0;
+  const char **name, **value;
 
   /*  Load the Prefix List  */
   for (name=prefixList,value=name+1; *name!=NULL; name+=2,value+=2) {

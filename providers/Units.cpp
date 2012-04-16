@@ -15,7 +15,7 @@ Units::~Units()
 QList< Application > Units::getResults(QString query)
 {
     QList<Application> list = QList<Application>();
-    QRegExp patern = QRegExp("(.+)\\s+(?:\=|to|is)\\s+(.+)$", Qt::CaseInsensitive);
+    QRegExp patern = QRegExp("(.+)\\s+(?:\\=|to|is)\\s+(.+)$", Qt::CaseInsensitive);
     if (query.contains(patern) && patern.captureCount() == 2)
     {
             Application result = Application();
