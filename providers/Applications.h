@@ -6,12 +6,6 @@
 #include <KDE/Plasma/Applet>
 #include <KDE/Plasma/DataEngine>
 
-struct popularity
-{
-    int lastUse;
-    int count;
-};
-
 class AppTable : Plasma::Applet, public QHash<QString, Plasma::DataEngine::Data>
 {
     Q_OBJECT

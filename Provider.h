@@ -4,6 +4,11 @@
 #include <QObject>
 #include <QVariant>
 
+struct popularity
+{
+    int lastUse;
+    int count;
+};
 
 class Application;
 
