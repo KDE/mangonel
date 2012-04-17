@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QStringList>
+#include <klocalizedstring.h>
 
 
 const QList<char> operators = (QList<char>() << '+' << '-' << '/' << '*' << '^' << '%');
@@ -38,6 +39,7 @@ QList<Application> Calculator::getResults(QString query)
         result.name = QString::number(awnser, 'g', 12);
         result.program = result.name;
         result.object = this;
+        result.type = i18n("Calculation");
         list.append(result);
     }
     return list;

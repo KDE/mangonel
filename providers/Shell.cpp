@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <QDBusInterface>
 #include <QDir>
+#include <klocalizedstring.h>
 
 
 Shell::Shell()
@@ -33,6 +34,7 @@ QList<Application> Shell::getResults(QString query)
             app.icon = "system-run";
             app.object = this;
             app.program = this->index[key] + args;
+            app.type = i18n("Shell command");
 
             list.append(app);
         }

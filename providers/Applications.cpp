@@ -68,6 +68,7 @@ QList<Application> Applications::getResults(QString query)
             app.object = this;
             app.program = item;
             app.completion = app.name;
+            app.type = i18n("Run application");
 
             list.append(app);
             count ++;

@@ -405,6 +405,7 @@ ProgramView::ProgramView(Application application)
     this->icon = 0;
     this->label = 0;
     this->block = 0;
+    m_descriptionLabel = 0;
     this->application = application;
 }
 
@@ -413,6 +414,7 @@ ProgramView::~ProgramView()
     delete this->icon;
     delete this->label;
     delete this->block;
+    delete m_descriptionLabel;
 }
 
 void ProgramView::centerItems()
@@ -421,6 +423,7 @@ void ProgramView::centerItems()
     QRectF iconRect = this->icon->boundingRect();
     QRectF labelRect = this->label->boundingRect();
     QRectF blockRect = this->block->boundingRect();
+    QRectF descriptionRect = m_descriptionLabel->boundingRect();
     this->block->setPos(
         qreal(iconRect.width() / 2 - blockRect.width() / 2),
         qreal(iconRect.height() / 2 - blockRect.height() / 2)
@@ -428,6 +431,10 @@ void ProgramView::centerItems()
     this->label->setPos(
         qreal(iconRect.width() / 2 - labelRect.width() / 2),
         qreal(iconRect.height() / 2 - labelRect.height() / 2)
+    );
+    m_descriptionLabel->setPos(
+        qreal(iconRect.width() / 2 - descriptionRect.width() / 2),
+        qreal(iconRect.height() / 2 - descriptionRect.height() / 2 + labelRect.height())
     );
 }
 
@@ -444,9 +451,21 @@ void ProgramView::show()
         QColor color = Plasma::Theme().color(Plasma::Theme::TextColor);
         this->label->setDefaultTextColor(color);
     }
+    if (m_descriptionLabel == 0)
+    {
+        m_descriptionLabel = new QGraphicsTextItem("(" + application.type + ")", this);
+        if (m_descriptionLabel->boundingRect().width() > WINDOW_WIDTH - 40)
+            m_descriptionLabel->adjustSize();
+        m_descriptionLabel->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
+        QColor color = Plasma::Theme().color(Plasma::Theme::TextColor);
+        m_descriptionLabel->setDefaultTextColor(color);
+    }
     if (this->block == 0)
     {
-        this->block = new QGraphicsRectItem(this->label->boundingRect(), this);
+        QRectF nameRect = label->boundingRect();
+        QRectF descriptionRect = m_descriptionLabel->boundingRect();
+        QRectF rect(nameRect.x(), nameRect.y() +10, qMax(nameRect.width(), descriptionRect.width()), nameRect.height() + descriptionRect.height() + 5);
+        this->block = new QGraphicsRectItem(rect, this);
         QBrush brush = QBrush(Qt::SolidPattern);
         QColor color = Plasma::Theme().color(Plasma::Theme::BackgroundColor);
         brush.setColor(color);
@@ -454,6 +473,7 @@ void ProgramView::show()
         this->block->setOpacity(0.7);
     }
     this->label->setZValue(10);
+    m_descriptionLabel->setZValue(10);
     this->centerItems();
     QGraphicsItemGroup::show();
 }

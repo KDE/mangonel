@@ -41,6 +41,7 @@ QList< Application > ControlModules::getResults(QString term)
         app.icon = service->icon();
         app.object = this;
         app.program = service->exec();
+        app.type = i18n("Open control module");
         
         
         // Same calculation as app

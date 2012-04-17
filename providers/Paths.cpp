@@ -2,6 +2,7 @@
 
 #include <QDir>
 #include <KDE/KFileItem>
+#include <klocale.h>
 
 
 Paths::Paths()
@@ -52,6 +53,7 @@ QList<Application> Paths::getResults(QString query)
         result.priority = priority;
         result.object = this;
         result.program = path.absoluteFilePath();
+        result.type = i18n("Open path");
         priority ++;
         list.append(result);
     }

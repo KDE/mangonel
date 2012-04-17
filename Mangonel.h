@@ -25,6 +25,7 @@ public:
 private:
     QGraphicsPixmapItem* icon;
     QGraphicsTextItem* label;
+    QGraphicsTextItem* m_descriptionLabel;
     QGraphicsRectItem* block;
 };
 
