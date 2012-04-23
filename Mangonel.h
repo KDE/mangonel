@@ -23,10 +23,10 @@ public:
     void centerItems();
     Application application;
 private:
-    QGraphicsPixmapItem* icon;
-    QGraphicsTextItem* label;
+    QGraphicsPixmapItem* m_icon;
+    QGraphicsTextItem* m_label;
     QGraphicsTextItem* m_descriptionLabel;
-    QGraphicsRectItem* block;
+    QGraphicsRectItem* m_block;
 };
 
 class IconView : public QGraphicsView
@@ -43,9 +43,9 @@ public:
     void setFirst();
     Label* label;
 private:
-    QList<ProgramView*> items;
-    QGraphicsScene* scene;
-    int current;
+    QList<ProgramView*> m_items;
+    QGraphicsScene* m_scene;
+    int m_current;
 };
 
 class AppList : public QList<Application>

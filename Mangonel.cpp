@@ -291,11 +291,11 @@ void Mangonel::setHotkey(const QKeySequence& hotkey)
 }
 
 
-IconView::IconView(QWidget* parent) : current(-1)
+IconView::IconView(QWidget* parent) : m_current(-1)
 {
     Q_UNUSED(parent);
-    scene = new QGraphicsScene(QRectF(0, 0, rect().width()*4, rect().height()), this);
-    setScene(scene);
+    m_scene = new QGraphicsScene(QRectF(0, 0, rect().width()*4, rect().height()), this);
+    setScene(m_scene);
     setFrameStyle(QFrame::NoFrame);
     setStyleSheet("background: transparent; border: none");
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -306,44 +306,44 @@ IconView::IconView(QWidget* parent) : current(-1)
 
 IconView::~IconView()
 {
-    delete scene;
+    delete m_scene;
 }
 
 void IconView::clear()
 {
-    scene->clear();
-    items.clear();
-    current = -1;
+    m_scene->clear();
+    m_items.clear();
+    m_current = -1;
 }
 
 void IconView::addProgram(Application application)
 {
     ProgramView* program = new ProgramView(application);
-    items.append(program);
-    scene->addItem(program);
+    m_items.append(program);
+    m_scene->addItem(program);
 }
 
 Application* IconView::selectedApp()
 {
-    if (current >= 0 and current < items.length())
+    if (m_current >= 0 and m_current < m_items.length())
     {
-        return &items[current]->application;
+        return &m_items[m_current]->application;
     }
     else return 0;
 }
 
 void IconView::setFirst()
 {
-    if (!items.empty())
-        current = 0;
-    items[current]->show();
-    items[current]->setPos(rect().width() + (rect().width() - 128) / 2, 0);
+    if (!m_items.empty())
+        m_current = 0;
+    m_items[m_current]->show();
+    m_items[m_current]->setPos(rect().width() + (rect().width() - 128) / 2, 0);
     centerOn(QPoint(rect().width()*1.5, 0));
 }
 
 void IconView::moveItems(IconView::direction direction)
 {
-    if (current < 0)
+    if (m_current < 0)
         return;
     int offset = rect().width();
     int steps =  10;
@@ -351,20 +351,20 @@ void IconView::moveItems(IconView::direction direction)
     int index = 1;
     if (direction == IconView::right)
     {
-        if (current + 1 >= items.length())
+        if (m_current + 1 >= m_items.length())
             return;
         dx = -dx;
         offset *= 2;
     }
     else
     {
-        if (current < 1)
+        if (m_current < 1)
             return;
         offset = 0;
         index = -1;
     }
-    ProgramView* itemNew = items[current+index];
-    ProgramView* itemOld = items[current];
+    ProgramView* itemNew = m_items[m_current+index];
+    ProgramView* itemOld = m_items[m_current];
     itemNew->setPos(offset + (rect().width() - 128) / 2, 0);
     itemNew->show();
     int startposNew = itemNew->pos().x();
@@ -394,7 +394,7 @@ void IconView::moveItems(IconView::direction direction)
     }
     itemOld->hide();
     itemNew->setPos(rect().width() + (rect().width() - 128) / 2, 0);
-    current += index;
+    m_current += index;
     centerOn(QPoint(rect().width()*1.5, 0));
 }
 
@@ -402,33 +402,33 @@ void IconView::moveItems(IconView::direction direction)
 ProgramView::ProgramView(Application application)
 {
     hide();
-    icon = 0;
-    label = 0;
-    block = 0;
+    m_icon = 0;
+    m_label = 0;
+    m_block = 0;
     m_descriptionLabel = 0;
     application = application;
 }
 
 ProgramView::~ProgramView()
 {
-    delete icon;
-    delete label;
-    delete block;
+    delete m_icon;
+    delete m_label;
+    delete m_block;
     delete m_descriptionLabel;
 }
 
 void ProgramView::centerItems()
 {
-    icon->setPos(0, 0);
-    QRectF iconRect = icon->boundingRect();
-    QRectF labelRect = label->boundingRect();
-    QRectF blockRect = block->boundingRect();
+    m_icon->setPos(0, 0);
+    QRectF iconRect = m_icon->boundingRect();
+    QRectF labelRect = m_label->boundingRect();
+    QRectF blockRect = m_block->boundingRect();
     QRectF descriptionRect = m_descriptionLabel->boundingRect();
-    block->setPos(
+    m_block->setPos(
         qreal(iconRect.width() / 2 - blockRect.width() / 2),
         qreal(iconRect.height() / 2 - blockRect.height() / 2)
     );
-    label->setPos(
+    m_label->setPos(
         qreal(iconRect.width() / 2 - labelRect.width() / 2),
         qreal(iconRect.height() / 2 - labelRect.height() / 2)
     );
@@ -440,16 +440,16 @@ void ProgramView::centerItems()
 
 void ProgramView::show()
 {
-    if (icon == 0)
-        icon = new QGraphicsPixmapItem(KIcon(application.icon).pixmap(128), this);
-    if (label == 0)
+    if (m_icon == 0)
+        m_icon = new QGraphicsPixmapItem(KIcon(application.icon).pixmap(128), this);
+    if (m_label == 0)
     {
-        label = new QGraphicsTextItem(application.name, this);
-        if (label->boundingRect().width() > WINDOW_WIDTH - 40)
-            label->adjustSize();
-        label->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
+        m_label = new QGraphicsTextItem(application.name, this);
+        if (m_label->boundingRect().width() > WINDOW_WIDTH - 40)
+            m_label->adjustSize();
+        m_label->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
         QColor color = Plasma::Theme().color(Plasma::Theme::TextColor);
-        label->setDefaultTextColor(color);
+        m_label->setDefaultTextColor(color);
     }
     if (m_descriptionLabel == 0)
     {
@@ -460,19 +460,19 @@ void ProgramView::show()
         QColor color = Plasma::Theme().color(Plasma::Theme::TextColor);
         m_descriptionLabel->setDefaultTextColor(color);
     }
-    if (block == 0)
+    if (m_block == 0)
     {
-        QRectF nameRect = label->boundingRect();
+        QRectF nameRect = m_label->boundingRect();
         QRectF descriptionRect = m_descriptionLabel->boundingRect();
         QRectF rect(nameRect.x(), nameRect.y() +10, qMax(nameRect.width(), descriptionRect.width()), nameRect.height() + descriptionRect.height() + 5);
-        block = new QGraphicsRectItem(rect, this);
+        m_block = new QGraphicsRectItem(rect, this);
         QBrush brush = QBrush(Qt::SolidPattern);
         QColor color = Plasma::Theme().color(Plasma::Theme::BackgroundColor);
         brush.setColor(color);
-        block->setBrush(brush);
-        block->setOpacity(0.7);
+        m_block->setBrush(brush);
+        m_block->setOpacity(0.7);
     }
-    label->setZValue(10);
+    m_label->setZValue(10);
     m_descriptionLabel->setZValue(10);
     centerItems();
     QGraphicsItemGroup::show();

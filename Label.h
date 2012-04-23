@@ -9,7 +9,7 @@
 class Label : public QLabel
 {
     Q_OBJECT
-    enum side {left, right, both};
+
 public:
     Label(QWidget* parent = 0);
     ~Label();
@@ -20,18 +20,22 @@ public:
     QString preEdit();
     void setPreEdit(QString preEdit);
     void paintEvent(QPaintEvent*);
-private:
-    QString completionText;
-    QString preEditText;
-    QPen Frontpen;
-    QPen Backpen;
-    QPen preEditPen;
-    int position;
-    QPainter* painter;
-    int paintText(QChar ch, QPen pen);
-    QPen makeGradient(QPen pen);
+
 signals:
     void textChanged(QString text);
+    
+private:
+    int paintText(QChar ch, QPen pen);
+    QPen makeGradient(QPen pen);
+    
+    QString m_completionText;
+    QString m_preEditText;
+    QPen m_frontPen;
+    QPen m_backPen;
+    QPen m_preEditPen;
+    int m_position;
+    QPainter* m_painter;
+
 };
 
 namespace
