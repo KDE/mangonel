@@ -65,29 +65,29 @@ public:
 public slots:
     void show();
     void hide();
-private:
-    KAction* actionShow;
-    bool processingKey;
-    QApplication* app;
-    Label* label;
-    IconView* iconView;
-    int historyIndex;
-    QStringList history;
-    QHash<QString, Provider*> providers;
-    AppList* apps;
-    int current;
-    bool event(QEvent* event);
-    void inputMethodEvent(QInputMethodEvent* event);
-    void keyPressEvent(QKeyEvent* event);
-    void focusInEvent(QFocusEvent* event);
-    void focusOutEvent(QFocusEvent* event);
-    bool eventFilter(QObject *object, QEvent *event);
 private slots:
     void launch();
     void getApp(QString query);
     void showHide();
     void showConfig();
     void setHotkey(const QKeySequence& hotkey);
+private:
+    bool event(QEvent* event);
+    void inputMethodEvent(QInputMethodEvent* event);
+    void keyPressEvent(QKeyEvent* event);
+    void focusInEvent(QFocusEvent* event);
+    void focusOutEvent(QFocusEvent* event);
+    bool eventFilter(QObject *object, QEvent *event);
+    
+    KAction* m_actionShow;
+    bool m_processingKey;
+    Label* m_label;
+    IconView* m_iconView;
+    int m_historyIndex;
+    QStringList m_history;
+    QHash<QString, Provider*> m_providers;
+    AppList* m_apps;
+    int m_current;
 };
 
 #endif // Mangonel_H
