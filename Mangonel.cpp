@@ -399,14 +399,14 @@ void IconView::moveItems(IconView::direction direction)
 }
 
 
-ProgramView::ProgramView(Application application)
+ProgramView::ProgramView(Application app)
 {
     hide();
     m_icon = 0;
     m_label = 0;
     m_block = 0;
     m_descriptionLabel = 0;
-    application = application;
+    application = app;
 }
 
 ProgramView::~ProgramView()
