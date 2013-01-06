@@ -43,6 +43,7 @@ public slots:
     int launch(QVariant selected);
     
 private:
+    Application createApp(const KService::Ptr &service);
     void storePopularities();
     QHash<QString, popularity> m_popularities;
 };

@@ -42,7 +42,6 @@
 #include "providers/Shell.h"
 #include "providers/Calculator.h"
 #include "providers/Units.h"
-#include "providers/ControlModules.h"
 
 #include <unistd.h>
 
@@ -87,7 +86,6 @@ Mangonel::Mangonel(KApplication* app)
     m_providers["shell"] = new Shell();
     m_providers["Calculator"] = new Calculator();
     m_providers["Units"] = new Units();
-    m_providers["ControlModules"] = new ControlModules();
 
     connect(m_label, SIGNAL(textChanged(QString)), this, SLOT(getApp(QString)));
     

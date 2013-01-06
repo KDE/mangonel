@@ -51,24 +51,34 @@ Applications::~Applications()
     storePopularities();
 }
 
-QList< Application > Applications::getResults(QString term)
+Application Applications::createApp(const KService::Ptr &service)
 {
-    QList<Application> list;
-    QString query = "exist Exec and ( (exist Keywords and '%1' ~subin Keywords) or (exist GenericName and '%1' ~~ GenericName) or (exist Name and '%1' ~~ Name) or ('%1' ~~ Exec) )";
-    query = query.arg(term);
-    KService::List services = KServiceTypeTrader::self()->query("Application", query);
-    foreach(const KService::Ptr &service, services) {
-        if (service->noDisplay())
-            continue;
-        
         Application app;
         app.name = service->name();
         app.completion = app.name;
         app.icon = service->icon();
         app.object = this;
         app.program = service->exec();
-        app.type = i18n("Run application");
+        if (service->isApplication())
+            app.type = i18n("Run application");
+        else
+            app.type = i18n("Open control module");
         
+        return app;
+}
+
+QList< Application > Applications::getResults(QString term)
+{
+    QList<Application> list;
+    QString query = "exist Exec and ( (exist Keywords and '%1' ~subin Keywords) or (exist GenericName and '%1' ~~ GenericName) or (exist Name and '%1' ~~ Name) or ('%1' ~~ Exec) )";
+    query = query.arg(term);
+    KService::List services = KServiceTypeTrader::self()->query("Application", query);
+    services.append(KServiceTypeTrader::self()->query("KCModule", query));
+    foreach(const KService::Ptr &service, services) {
+        if (service->noDisplay())
+            continue;
+        
+        Application app = createApp(service);
         
         if (m_popularities.contains(service->exec())) {
             app.priority = time(NULL) - m_popularities[service->exec()].lastUse;

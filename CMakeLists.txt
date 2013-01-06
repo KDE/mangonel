@@ -13,7 +13,6 @@ providers/Paths.cpp
 providers/Shell.cpp
 providers/Calculator.cpp
 providers/Units.cpp
-providers/ControlModules.cpp
 providers/units/units.c
 )
 qt4_automoc(${Mangonel_SRCS})
