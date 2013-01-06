@@ -37,7 +37,7 @@ int main(int argc, char** argv)
                        QByteArray("Mangonel"),
                        QByteArray("Mangonel"),
                        ki18n("Mangonel"),
-                       QByteArray("0.1"),
+                       QByteArray("1.0"),
                        ki18n("A simple application launcher for KDE4."));
     aboutData->setHomepage(QByteArray("www.tarmack.eu/mangonel/"));
     aboutData->setBugAddress(QByteArray("bugs.mangonel@tarmack.eu"));
