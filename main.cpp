@@ -41,8 +41,8 @@ int main(int argc, char** argv)
                        ki18n("A simple application launcher for KDE4."));
     aboutData->setHomepage(QByteArray("www.tarmack.eu/mangonel/"));
     aboutData->setBugAddress(QByteArray("bugs.mangonel@tarmack.eu"));
-    aboutData->addAuthor(ki18n("Martin Sandsmark", ki18n("Developer"), "martin.sandsmark@kde.org", "http://iskrembilen.com/"));
-    aboutData->addAuthor(ki18n("Bart Kroon", ki18n("Developer, original author"), "", "http://tarmack.eu/"));
+    aboutData->addAuthor(ki18n("Martin Sandsmark"), ki18n("Developer"), "martin.sandsmark@kde.org", "http://iskrembilen.com/");
+    aboutData->addAuthor(ki18n("Bart Kroon"), ki18n("Developer, original author"), "", "http://tarmack.eu/");
     KCmdLineArgs::init(argc, argv, aboutData);
     KUniqueApplication app;
     app.setOrganizationName("Tarmack SW");
