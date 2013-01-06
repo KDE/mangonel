@@ -1,150 +1,98 @@
 #include "Applications.h"
 
-#include <QDBusInterface>
-#include <QSettings>
-#include <KDE/KIcon>
-#include <sys/time.h>
 
 
-const QStringList priorityOrder = (QStringList() << "name" << "genericName" << "categories");
-
+#include <KServiceTypeTrader>
+#include <QDebug>
+#include <krun.h>
+#include <kconfiggroup.h>
 
 Applications::Applications()
 {
-    this->appTable = new AppTable();
-    QSettings* config = new QSettings();
-    config->beginGroup("popularity");
-    foreach(QString key, config->allKeys())
-    {
-        QList<QVariant> list = config->value(key).toList();
-        key.replace(":", "/");
-        this->popList[key].lastUse = list[0].toInt();
-        this->popList[key].count = list[1].toInt();
+    const KConfigGroup config = KGlobal::config()->group("mangonel_applications");
+    
+    foreach(const QString &key, config.keyList()) {
+        QList<QVariant> values = config.readEntry<QList<QVariant> >(key, QList<QVariant>());
+        popularity pop;
+        pop.count = values[0].toInt();
+        pop.lastUse = values[1].toInt();
+        m_popularities.insert(key, pop);
     }
-    delete config;
 }
 
 Applications::~Applications()
-{}
-
-QList<Application> Applications::getResults(QString query)
 {
-    QList<Application> list = QList<Application>();
-    int count = 0;
-    int seconds = time(NULL);
-    foreach(QString name, this->appTable->keys())
-    {
-        Plasma::DataEngine::Data item = this->appTable->value(name);
-        bool addToList = false;
-        int priority = 0;
-        if (this->popList.contains(item["entryPath"].toString()))
-        {
-            priority = seconds - this->popList[item["entryPath"].toString()].lastUse;
-            priority -= 3600 * this->popList[item["entryPath"].toString()].count;
-        }
-        else
-            priority = seconds;
-        foreach(QString key, priorityOrder)
-        {
-            if (item.contains(key))
-            {
-                QString value = item[key].toString();
-                if (value.contains(query, Qt::CaseInsensitive))
-                {
-                    addToList = true;
-                    if (key.contains("name", Qt::CaseInsensitive) and
-                            value.startsWith(query, Qt::CaseInsensitive))
-                        priority -= 3600 * 60;
-                    priority -= 60 * priorityOrder.indexOf(key);
-                }
-            }
-        }
-        if (addToList)
-        {
-            Application app = Application();
-            app.name = item["name"].toString();
-            app.icon = item["iconName"].toString();
-            app.priority = priority;
-            app.object = this;
-            app.program = item;
-            app.completion = app.name;
-            app.type = i18n("Run application");
+    storePopularities();
+}
 
-            list.append(app);
-            count ++;
+QList< Application > Applications::getResults(QString term)
+{
+    QList<Application> list;
+    QString query = "exist Exec and ( (exist Keywords and '%1' ~subin Keywords) or (exist GenericName and '%1' ~~ GenericName) or (exist Name and '%1' ~~ Name) or ('%1' ~~ Exec) )";
+    query = query.arg(term);
+    KService::List services = KServiceTypeTrader::self()->query("Application", query);
+    foreach(const KService::Ptr &service, services) {
+        if (service->noDisplay())
+            continue;
+        
+        Application app;
+        app.name = service->name();
+        app.completion = app.name;
+        app.icon = service->icon();
+        app.object = this;
+        app.program = service->exec();
+        app.type = i18n("Run application");
+        
+        
+        if (m_popularities.contains(service->exec())) {
+            app.priority = time(NULL) - m_popularities[service->exec()].lastUse;
+            app.priority -= 3600 * m_popularities[service->exec()].count;
+        } else {
+            app.priority = time(NULL);
         }
+        
+        list.append(app);
     }
     return list;
 }
 
 int Applications::launch(QVariant selected)
 {
-    QString entryPath = selected.toHash()["entryPath"].toString();
-    // Connect to the KLauncher DBus inteface.
-    QDBusInterface* dbus = new QDBusInterface(
-        "org.kde.klauncher",
-        "/KLauncher",
-        "org.kde.KLauncher"
-    );
-    dbus->call(
-        "start_service_by_desktop_path",
-        entryPath,
-        QStringList(),
-        QStringList(),
-        "",
-        true);
-    delete dbus;
-    popularity pop = popularity();
-    if (this->popList.contains(entryPath))
-        pop = this->popList[entryPath];
-    pop.lastUse = time(NULL);
-    pop.count ++;
-    this->popList[entryPath] = pop;
-    this->storePopularity(entryPath, pop);
-    return 0;
-}
-
-void Applications::setPopularity(QString entry, popularity pop)
-{
-    this->popList[entry] = pop;
-}
-
-QHash<QString, popularity> Applications::getPopList()
-{
-    return this->popList;
-}
-
-void Applications::storePopularity(QString entryPath, popularity pop)
-{
-    QSettings* config = new QSettings();
-    config->beginGroup("popularity");
-    QList<QVariant> list = QList<QVariant>();
-    list.append(pop.lastUse);
-    list.append(pop.count);
-    entryPath.replace("/", ":");
-    config->setValue(entryPath, QVariant(list));
-
-    delete config;
-}
-
-
-AppTable::AppTable()
-{
-    Plasma::DataEngine* dataEngine = Plasma::Applet::dataEngine("apps");
-    dataEngine->connectAllSources(this);
-}
-
-AppTable::~AppTable()
-{}
-
-void AppTable::dataUpdated(QString appName, Plasma::DataEngine::Data data)
-{
-    if (data["isApp"].toBool() == true and data["categories"].toString() != "Screensaver")
-        this->insert(appName, data);
+    QString exec = selected.toString();
+    popularity pop;
+    if (m_popularities.contains(exec)) {
+        pop = m_popularities[exec];
+        pop.lastUse = time(NULL);
+        pop.count++;
+    } else {
+        pop.lastUse = time(NULL);
+        pop.count = 0;
+    }
+    m_popularities[exec] = pop;
+    
+    
+    storePopularities();
+    
+    if (KRun::run(exec, KUrl::List(), 0))
+        return 0;
     else
-        Plasma::Applet::dataEngine("apps")->disconnectSource(appName, this);
+        return 1;
+}
+
+void Applications::storePopularities()
+{
+    KConfigGroup config = KGlobal::config()->group("mangonel_controlmodules");
+    
+    foreach(const QString &key, m_popularities.keys()) {
+        QList<QVariant> values;
+        values.append(m_popularities[key].count);
+        values.append(m_popularities[key].lastUse);
+        config.writeEntry(key, values);
+    }
+    config.sync();
 }
 
 
 #include "Applications.moc"
+
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 
