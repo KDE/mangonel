@@ -71,7 +71,7 @@ Mangonel::Mangonel(KApplication* app)
     m_label->setMaximumWidth(WINDOW_WIDTH - 20);
 
     // Setup our global shortcut.
-    m_actionShow = new KAction(QString("Show Mangonel"), this);
+    m_actionShow = new KAction(i18n("Show Mangonel"), this);
     m_actionShow->setObjectName(QString("show"));
     KShortcut shortcut = m_actionShow->shortcut();
     shortcut.setPrimary(QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Space));
@@ -89,7 +89,7 @@ Mangonel::Mangonel(KApplication* app)
 
     connect(m_label, SIGNAL(textChanged(QString)), this, SLOT(getApp(QString)));
     
-    QAction* actionConfig = new QAction(KIcon("configure"), "Configuration", this);
+    QAction* actionConfig = new QAction(KIcon("configure"), i18n("Configuration"), this);
     addAction(actionConfig);
     connect(actionConfig, SIGNAL(triggered(bool)), this, SLOT(showConfig()));
 }

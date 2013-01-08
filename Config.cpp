@@ -30,13 +30,14 @@
 #include <KDE/KApplication>
 #include <QSettings>
 #include <QLabel>
+#include <klocalizedstring.h>
 
 
 ConfigDialog::ConfigDialog(QWidget* parent) : QDialog(parent, Qt::Dialog)
 {
     this->setAttribute(Qt::WA_DeleteOnClose);
     this->setAttribute(Qt::WA_QuitOnClose, false);
-    this->setWindowTitle(KApplication::instance()->applicationName() + QString(" - Configuration"));
+    setWindowTitle(i18n("Mangonel configuration"));
     layout = new QVBoxLayout(this);
     layout->setAlignment(Qt::AlignHCenter);
 
@@ -45,7 +46,7 @@ ConfigDialog::ConfigDialog(QWidget* parent) : QDialog(parent, Qt::Dialog)
     hotkey->setAlignment(Qt::AlignHCenter);
     hotkey->setSpacing(10);
     // Add text label.
-    QLabel* hotkeyLabel = new QLabel("Shortcut to show Mangonel:", this);
+    QLabel* hotkeyLabel = new QLabel(i18n("Shortcut to show Mangonel:"), this);
     hotkey->addWidget(hotkeyLabel);
     // Add key selector.
     hotkeySelect = new KKeySequenceWidget(this);
