@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 {
     KAboutData* aboutData = new KAboutData(
                        QByteArray("Mangonel"),
-                       QByteArray("Mangonel"),
+                       QByteArray("mangonel"),
                        ki18n("Mangonel"),
                        QByteArray("1.0"),
                        ki18n("A simple application launcher for KDE4."));
