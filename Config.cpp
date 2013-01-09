@@ -37,7 +37,7 @@ ConfigDialog::ConfigDialog(QWidget* parent) : QDialog(parent, Qt::Dialog)
 {
     this->setAttribute(Qt::WA_DeleteOnClose);
     this->setAttribute(Qt::WA_QuitOnClose, false);
-    setWindowTitle(i18n("Mangonel configuration"));
+    setWindowTitle(i18n("Mangonel Configuration"));
     layout = new QVBoxLayout(this);
     layout->setAlignment(Qt::AlignHCenter);
 
