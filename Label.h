@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2012 Bart Kroon
+ * Copyright 2010-2012 Bart Kroon <bart@tarmack.eu>
  * Copyright 2012, 2013 Martin Sandsmark <martin.sandsmark@kde.org>
  * 
  * Redistribution and use in source and binary forms, with or without
