@@ -477,7 +477,7 @@ void ProgramView::show()
     }
     if (m_descriptionLabel == 0)
     {
-        m_descriptionLabel = new QGraphicsTextItem("(" + application.type + ")", this);
+        m_descriptionLabel = new QGraphicsTextItem(i18nc("the type of the application to be launched, shown beneath the application name", "(%1)", application.type), this);
         if (m_descriptionLabel->boundingRect().width() > WINDOW_WIDTH - 40)
             m_descriptionLabel->adjustSize();
         m_descriptionLabel->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
