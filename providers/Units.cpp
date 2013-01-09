@@ -25,12 +25,12 @@
 
 #include "Units.h"
 
-#include "providers/units/units.h"
-
 #include <QRegExp>
 #include <QClipboard>
 #include <QApplication>
 #include <klocalizedstring.h>
+#include <KUnitConversion/Converter>
+#include <QDebug>
 
 Units::Units()
 {}
@@ -41,32 +41,22 @@ Units::~Units()
 QList< Application > Units::getResults(QString query)
 {
     QList<Application> list = QList<Application>();
-    QRegExp patern = QRegExp("(.+)\\s+(?:\\=|to|is)\\s+(.+)$", Qt::CaseInsensitive);
-    if (query.contains(patern) && patern.captureCount() == 2)
+    QRegExp pattern = QRegExp("(\\d+)\\s*(\\w+)\\s+(?:\\=|to|is|in)\\s+(\\w+)$", Qt::CaseInsensitive);
+    if (query.contains(pattern) && pattern.captureCount() == 3)
     {
-            Application result = Application();
+        KUnitConversion::Converter converter;
+        KUnitConversion::Value value(pattern.cap(1).toDouble(), pattern.cap(2));
+        value = converter.convert(value, pattern.cap(3));
+        
+        if (value.isValid()) {
+            Application result;
             result.icon = "accessories-calculator";
             result.object = this;
-        char* value = new char[patern.cap(1).size() + 1];
-        strcpy(value, patern.cap(1).toAscii().data());
-        char* target = new char[patern.cap(2).size() + 1];
-        strcpy(target, patern.cap(2).toAscii().data());
-        units_clear_exception();
-        QString awnser = QString::number(units_convert(value, target), 'g', 12);
-        delete value;
-        delete target;
-        if (units_check_exception() == 0)
-        {
-            result.name = awnser;
-            result.program = awnser;
-        }
-        else
-        {
-            result.name = QString(units_check_exception());
+            result.name = value.toString();
             result.program = result.name;
+            result.type = i18n("Unit conversion");
+            list.append(result);
         }
-        result.type = i18n("Unit conversion");
-        list.append(result);
     }
     return list;
 }

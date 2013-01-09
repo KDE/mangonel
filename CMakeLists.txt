@@ -13,11 +13,10 @@ providers/Paths.cpp
 providers/Shell.cpp
 providers/Calculator.cpp
 providers/Units.cpp
-providers/units/units.c
 )
 qt4_automoc(${Mangonel_SRCS})
 add_executable(mangonel ${Mangonel_SRCS})
-target_link_libraries(mangonel ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_PLASMA_LIBS} ${KDE4_KIO_LIBS})
+target_link_libraries(mangonel ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_PLASMA_LIBS} ${KDE4_KIO_LIBS} ${KDE4_KUNITCONVERSION_LIBS})
 
 install(TARGETS mangonel
         DESTINATION "bin"
