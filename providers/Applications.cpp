@@ -85,6 +85,9 @@ QList< Application > Applications::getResults(QString term)
             app.priority -= 3600 * m_popularities[service->exec()].count;
         } else {
             app.priority = time(NULL);
+
+            if (service->isApplication())
+                app.priority *= 0.9;
         }
         
         list.append(app);
