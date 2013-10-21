@@ -78,7 +78,8 @@ Mangonel::Mangonel(KApplication* app)
     m_actionShow->setGlobalShortcut(shortcut);
     connect(m_actionShow, SIGNAL(triggered()), this, SLOT(showHide()));
 
-    // TODO: Get the stored history.
+    const KConfigGroup config = KGlobal::config()->group("mangonel_main");
+    m_history = config.readEntry("history", QStringList());
 
     // Instantiate the providers.
     m_providers["applications"] = new Applications();
@@ -88,7 +89,7 @@ Mangonel::Mangonel(KApplication* app)
     m_providers["Units"] = new Units();
 
     connect(m_label, SIGNAL(textChanged(QString)), this, SLOT(getApp(QString)));
-    
+
     QAction* actionConfig = new QAction(KIcon("configure"), i18n("Configuration"), this);
     addAction(actionConfig);
     connect(actionConfig, SIGNAL(triggered(bool)), this, SLOT(showConfig()));
@@ -96,7 +97,11 @@ Mangonel::Mangonel(KApplication* app)
 
 Mangonel::~Mangonel()
     // Store history of session.
-{}
+{
+    KConfigGroup config = KGlobal::config()->group("mangonel_main");
+    qDebug() << "storing history:" << m_history;
+    config.config()->sync();
+}
 
 bool Mangonel::event(QEvent* event)
 {
