@@ -99,7 +99,6 @@ Mangonel::~Mangonel()
     // Store history of session.
 {
     KConfigGroup config = KGlobal::config()->group("mangonel_main");
-    qDebug() << "storing history:" << m_history;
     config.config()->sync();
 }
 
