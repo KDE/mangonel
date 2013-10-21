@@ -38,20 +38,23 @@ ConfigDialog::ConfigDialog(QWidget* parent) : QDialog(parent, Qt::Dialog)
     this->setAttribute(Qt::WA_DeleteOnClose);
     this->setAttribute(Qt::WA_QuitOnClose, false);
     setWindowTitle(i18n("Mangonel Configuration"));
-    layout = new QVBoxLayout(this);
+
+    delete layout();
+    QVBoxLayout *layout = new QVBoxLayout;
+    setLayout(layout);
     layout->setAlignment(Qt::AlignHCenter);
 
     // Make hotkey layout.
-    QHBoxLayout* hotkey = new QHBoxLayout(this);
+    QHBoxLayout* hotkey = new QHBoxLayout;
     hotkey->setAlignment(Qt::AlignHCenter);
     hotkey->setSpacing(10);
     // Add text label.
     QLabel* hotkeyLabel = new QLabel(i18n("Shortcut to show Mangonel:"), this);
     hotkey->addWidget(hotkeyLabel);
     // Add key selector.
-    hotkeySelect = new KKeySequenceWidget(this);
-    this->connect(hotkeySelect, SIGNAL(keySequenceChanged(const QKeySequence&)), this, SIGNAL(hotkeyChanged(const QKeySequence&)));
-    hotkey->addWidget(hotkeySelect);
+    m_hotkeySelect = new KKeySequenceWidget(this);
+    this->connect(m_hotkeySelect, SIGNAL(keySequenceChanged(const QKeySequence&)), SIGNAL(hotkeyChanged(const QKeySequence&)));
+    hotkey->addWidget(m_hotkeySelect);
     // Add hotkey layout.
     layout->addLayout(hotkey);
 
@@ -59,18 +62,15 @@ ConfigDialog::ConfigDialog(QWidget* parent) : QDialog(parent, Qt::Dialog)
     QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, this);
     this->connect(buttons, SIGNAL(rejected()), this, SLOT(close()));
     layout->addWidget(buttons);
-
-    this->setLayout(layout);
 }
 
 ConfigDialog::~ConfigDialog()
 {
-    delete layout;
 }
 
 void ConfigDialog::setHotkey(QKeySequence hotkey)
 {
-    hotkeySelect->setKeySequence(hotkey);
+    m_hotkeySelect->setKeySequence(hotkey);
 }
 
 

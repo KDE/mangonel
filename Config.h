@@ -40,8 +40,7 @@ public:
 public slots:
     void setHotkey(QKeySequence hotkey);
 private:
-    QVBoxLayout* layout;
-    KKeySequenceWidget* hotkeySelect;
+    KKeySequenceWidget *m_hotkeySelect;
 signals:
     void hotkeyChanged(const QKeySequence& hotkey);
 };
