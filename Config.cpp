@@ -28,35 +28,30 @@
 #include <QDialogButtonBox>
 #include <KDE/KKeySequenceWidget>
 #include <KDE/KApplication>
+#include <KDE/KConfigGroup>
 #include <QSettings>
 #include <QLabel>
 #include <klocalizedstring.h>
-
+#include <QCheckBox>
+#include <QGridLayout>
 
 ConfigDialog::ConfigDialog(QWidget* parent) : QDialog(parent, Qt::Dialog)
 {
     this->setAttribute(Qt::WA_DeleteOnClose);
-    this->setAttribute(Qt::WA_QuitOnClose, false);
     setWindowTitle(i18n("Mangonel Configuration"));
 
     delete layout();
-    QVBoxLayout *layout = new QVBoxLayout;
+    QGridLayout *layout = new QGridLayout;
     setLayout(layout);
     layout->setAlignment(Qt::AlignHCenter);
 
-    // Make hotkey layout.
-    QHBoxLayout* hotkey = new QHBoxLayout;
-    hotkey->setAlignment(Qt::AlignHCenter);
-    hotkey->setSpacing(10);
     // Add text label.
     QLabel* hotkeyLabel = new QLabel(i18n("Shortcut to show Mangonel:"), this);
-    hotkey->addWidget(hotkeyLabel);
+    layout->addWidget(hotkeyLabel, 0, 0);
     // Add key selector.
     m_hotkeySelect = new KKeySequenceWidget(this);
     this->connect(m_hotkeySelect, SIGNAL(keySequenceChanged(const QKeySequence&)), SIGNAL(hotkeyChanged(const QKeySequence&)));
-    hotkey->addWidget(m_hotkeySelect);
-    // Add hotkey layout.
-    layout->addLayout(hotkey);
+    layout->addWidget(m_hotkeySelect, 0, 1);
 
     // Add close button.
     QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, this);
@@ -72,7 +67,6 @@ void ConfigDialog::setHotkey(QKeySequence hotkey)
 {
     m_hotkeySelect->setKeySequence(hotkey);
 }
-
 
 #include "Config.moc"
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 

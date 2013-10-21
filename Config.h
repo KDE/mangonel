@@ -27,7 +27,6 @@
 #define Config_H
 
 #include <QDialog>
-#include <QVBoxLayout>
 
 class KKeySequenceWidget;
 
@@ -39,10 +38,10 @@ public:
     ~ConfigDialog();
 public slots:
     void setHotkey(QKeySequence hotkey);
-private:
-    KKeySequenceWidget *m_hotkeySelect;
 signals:
     void hotkeyChanged(const QKeySequence& hotkey);
+private:
+    KKeySequenceWidget *m_hotkeySelect;
 };
 
 #endif //Config_H
