@@ -24,6 +24,8 @@ target_link_libraries(mangonel
   ${KDE4_PLASMA_LIBS}
   ${KDE4_KIO_LIBS}
   ${KDE4_KUNITCONVERSION_LIBS}
+  ${KDE4_KNOTIFYCONFIG_LIBRARY}
 )
 
 install(TARGETS mangonel ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(FILES mangonel.notifyrc DESTINATION ${DATA_INSTALL_DIR}/mangonel)

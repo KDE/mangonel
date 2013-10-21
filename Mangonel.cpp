@@ -32,6 +32,8 @@
 #include <QMenu>
 #include <KDE/Plasma/Theme>
 #include <KDE/KWindowSystem>
+#include <KDE/KNotification>
+#include <KDE/KNotifyConfigWidget>
 #include <QTextDocument>
 #include <QClipboard>
 
@@ -81,6 +83,11 @@ Mangonel::Mangonel(KApplication* app)
     const KConfigGroup config = KGlobal::config()->group("mangonel_main");
     m_history = config.readEntry("history", QStringList());
 
+    QString shortcutString(m_actionShow->globalShortcut().toString());
+    QString message(i18nc("@info", "Press <shortcut>%1</shortcut> to show Mangonel.", shortcutString));
+
+    KNotification::event(QLatin1String("startup"), message);
+
     // Instantiate the providers.
     m_providers["applications"] = new Applications();
     m_providers["paths"] = new Paths();
@@ -93,12 +100,17 @@ Mangonel::Mangonel(KApplication* app)
     QAction* actionConfig = new QAction(KIcon("configure"), i18n("Configuration"), this);
     addAction(actionConfig);
     connect(actionConfig, SIGNAL(triggered(bool)), this, SLOT(showConfig()));
+
+    QAction* notifyConfig = new QAction(KIcon("configure-notifications"), i18n("Configure notifications"), this);
+    addAction(notifyConfig);
+    connect(notifyConfig, SIGNAL(triggered(bool)), this, SLOT(configureNotifications()));
 }
 
 Mangonel::~Mangonel()
     // Store history of session.
 {
     KConfigGroup config = KGlobal::config()->group("mangonel_main");
+    config.writeEntry("history", m_history);
     config.config()->sync();
 }
 
@@ -318,6 +330,10 @@ void Mangonel::setHotkey(const QKeySequence& hotkey)
     qDebug() << hotkey.toString();
 }
 
+void Mangonel::configureNotifications()
+{
+    KNotifyConfigWidget::configure();
+}
 
 IconView::IconView(QWidget* parent) : m_current(-1)
 {

@@ -96,6 +96,7 @@ private slots:
     void getApp(QString query);
     void showHide();
     void showConfig();
+    void configureNotifications();
     void setHotkey(const QKeySequence& hotkey);
 private:
     bool event(QEvent* event);

@@ -1,0 +1,8 @@
+[Global]
+IconName=mangonel
+Comment=Mangonel
+
+[Event/startup]
+Name=startup
+Comment=Mangonel has started
+Action=Popup
