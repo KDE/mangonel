@@ -34,7 +34,7 @@
 int main(int argc, char** argv)
 {
     KAboutData* aboutData = new KAboutData(
-                       QByteArray("Mangonel"),
+                       QByteArray("mangonel"),
                        QByteArray("mangonel"),
                        ki18n("Mangonel"),
                        QByteArray("1.0"),
@@ -44,6 +44,7 @@ int main(int argc, char** argv)
     aboutData->addAuthor(ki18n("Bart Kroon"), ki18n("Developer, original author"), "", "http://tarmack.eu/");
     KCmdLineArgs::init(argc, argv, aboutData);
     KUniqueApplication app;
+    app.setQuitOnLastWindowClosed(false);
     app.setOrganizationName("Tarmack SW");
     Mangonel foo(&app);
     return app.exec();
