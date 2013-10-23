@@ -37,7 +37,7 @@ int main(int argc, char** argv)
                        QByteArray("mangonel"),
                        QByteArray("mangonel"),
                        ki18n("Mangonel"),
-                       QByteArray("1.0"),
+                       QByteArray("1.1"),
                        ki18n("A simple application launcher for KDE4."));
     aboutData->setHomepage(QByteArray("www.tarmack.eu/mangonel/"));
     aboutData->addAuthor(ki18n("Martin Sandsmark"), ki18n("Developer"), "martin.sandsmark@kde.org", "http://iskrembilen.com/");
