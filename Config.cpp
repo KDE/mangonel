@@ -29,6 +29,7 @@
 #include <KDE/KKeySequenceWidget>
 #include <KDE/KApplication>
 #include <KDE/KConfigGroup>
+#include <KDE/KAutostart>
 #include <QSettings>
 #include <QLabel>
 #include <klocalizedstring.h>
@@ -45,13 +46,21 @@ ConfigDialog::ConfigDialog(QWidget* parent) : QDialog(parent, Qt::Dialog)
     setLayout(layout);
     layout->setAlignment(Qt::AlignHCenter);
 
-    // Add text label.
+    // Shortcut
+    // TODO: use normal global shortcut stuff
     QLabel* hotkeyLabel = new QLabel(i18n("Shortcut to show Mangonel:"), this);
     layout->addWidget(hotkeyLabel, 0, 0);
-    // Add key selector.
     m_hotkeySelect = new KKeySequenceWidget(this);
     this->connect(m_hotkeySelect, SIGNAL(keySequenceChanged(const QKeySequence&)), SIGNAL(hotkeyChanged(const QKeySequence&)));
     layout->addWidget(m_hotkeySelect, 0, 1);
+
+    QLabel* autostartLabel = new QLabel(i18n("Automatically launch Mangonel on login:"), this);
+    layout->addWidget(autostartLabel, 1, 0);
+    QCheckBox *autostartCheck = new QCheckBox(this);
+    KAutostart as;
+    autostartCheck->setChecked(as.autostarts());
+    this->connect(autostartCheck, SIGNAL(toggled(bool)), SLOT(setAutostart(bool)));
+    layout->addWidget(autostartCheck, 1, 1);
 
     // Add close button.
     QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, this);
@@ -66,6 +75,12 @@ ConfigDialog::~ConfigDialog()
 void ConfigDialog::setHotkey(QKeySequence hotkey)
 {
     m_hotkeySelect->setKeySequence(hotkey);
+}
+
+void ConfigDialog::setAutostart(bool autostart)
+{
+    KAutostart as;
+    as.setAutostarts(autostart);
 }
 
 #include "Config.moc"

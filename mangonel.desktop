@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Exec=mangonel
+Icon=mangonel
+Name=Mangonel
+Comment=Simple application launcher
+Categories=Qt;KDE;Core;Utility;

@@ -40,6 +40,8 @@ public slots:
     void setHotkey(QKeySequence hotkey);
 signals:
     void hotkeyChanged(const QKeySequence& hotkey);
+private slots:
+    void setAutostart(bool autostart);
 private:
     KKeySequenceWidget *m_hotkeySelect;
 };

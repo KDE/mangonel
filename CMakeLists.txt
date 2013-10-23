@@ -29,3 +29,5 @@ target_link_libraries(mangonel
 
 install(TARGETS mangonel ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES mangonel.notifyrc DESTINATION ${DATA_INSTALL_DIR}/mangonel)
+install(PROGRAMS mangonel.desktop DESTINATION ${AUTOSTART_INSTALL_DIR})
+
