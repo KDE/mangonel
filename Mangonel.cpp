@@ -104,6 +104,10 @@ Mangonel::Mangonel(KApplication* app)
     QAction* notifyConfig = new QAction(KIcon("configure-notifications"), i18n("Configure notifications"), this);
     addAction(notifyConfig);
     connect(notifyConfig, SIGNAL(triggered(bool)), this, SLOT(configureNotifications()));
+
+    QAction* quit = new QAction(KIcon("application-exit"), i18n("Quit"), this);
+    addAction(quit);
+    connect(quit, SIGNAL(triggered(bool)), app, SLOT(quit()));
 }
 
 Mangonel::~Mangonel()
