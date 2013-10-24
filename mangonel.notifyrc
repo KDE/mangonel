@@ -1,8 +1,29 @@
 [Global]
 IconName=mangonel
 Comment=Mangonel
+Comment[de]=Mangonel
+Comment[nl]=Mangonel
+Comment[pt]=Mangonel
+Comment[pt_BR]=Mangonel
+Comment[sv]=Mangonel
+Comment[uk]=Mangonel
+Comment[x-test]=xxMangonelxx
 
 [Event/startup]
 Name=startup
+Name[de]=Programmstart
+Name[nl]=opstarten
+Name[pt]=arranque
+Name[pt_BR]=iniciar
+Name[sv]=Start
+Name[uk]=запуск
+Name[x-test]=xxstartupxx
 Comment=Mangonel has started
+Comment[de]=Mangonel wurde gestartet
+Comment[nl]=Mangonel is opgestart
+Comment[pt]=O Mangonel foi iniciado
+Comment[pt_BR]=O Mangonel foi iniciado
+Comment[sv]=Mangonel har startats
+Comment[uk]=Mangonel запущено
+Comment[x-test]=xxMangonel has startedxx
 Action=Popup
