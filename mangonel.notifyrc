@@ -14,6 +14,7 @@ Comment[sv]=Mangonel
 Comment[uk]=Mangonel
 Comment[x-test]=xxMangonelxx
 Comment[zh_CN]=Mangonel
+Comment[zh_TW]=Mangonel
 
 [Event/startup]
 Name=startup
@@ -30,6 +31,7 @@ Name[sv]=Start
 Name[uk]=запуск
 Name[x-test]=xxstartupxx
 Name[zh_CN]=启动
+Name[zh_TW]=啟動
 Comment=Mangonel has started
 Comment[ca]=S'ha engegat Mangonel
 Comment[de]=Mangonel wurde gestartet
@@ -44,4 +46,5 @@ Comment[sv]=Mangonel har startats
 Comment[uk]=Mangonel запущено
 Comment[x-test]=xxMangonel has startedxx
 Comment[zh_CN]=Mangonel 已经启动
+Comment[zh_TW]=Mangonel 已啟動
 Action=Popup
