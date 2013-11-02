@@ -74,6 +74,7 @@ QList< Application > Applications::getResults(QString term)
     query = query.arg(term);
     KService::List services = KServiceTypeTrader::self()->query("Application", query);
     services.append(KServiceTypeTrader::self()->query("KCModule", query));
+    int priority = 0;
     foreach(const KService::Ptr &service, services) {
         if (service->noDisplay())
             continue;
@@ -84,7 +85,7 @@ QList< Application > Applications::getResults(QString term)
             app.priority = time(NULL) - m_popularities[service->exec()].lastUse;
             app.priority -= 3600 * m_popularities[service->exec()].count;
         } else {
-            app.priority = time(NULL);
+            app.priority = ++priority;
 
             if (service->isApplication())
                 app.priority *= 0.9;

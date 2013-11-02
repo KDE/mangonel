@@ -59,27 +59,26 @@ QList<Application> Paths::getResults(QString query)
     }
     query = part + "*";
     QFileInfoList paths = dir.entryInfoList(QStringList(query), QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-    int priority = 0;
     foreach(QFileInfo path, paths)
     {
         Application result = Application();
         result.name = subUser(path.absoluteFilePath());
         result.completion = result.name.left(result.name.lastIndexOf("/")) + "/" + path.fileName();
+        KFileItem info = KFileItem(KFileItem::Unknown, KFileItem::Unknown, path.absoluteFilePath());
         if (path.isDir())
         {
             result.completion += "/";
             result.icon = "system-file-manager";
+            result.priority = time(NULL) - info.time(KIO::UDSEntry::UDS_MODIFICATION_TIME);
         }
         else
         {
-            KFileItem info = KFileItem(KFileItem::Unknown, KFileItem::Unknown, path.absoluteFilePath());
             result.icon = info.iconName();
+            result.priority = time(NULL) - info.time(KIO::UDSEntry::UDS_MODIFICATION_TIME);
         }
-        result.priority = priority;
         result.object = this;
         result.program = path.absoluteFilePath();
         result.type = i18n("Open path");
-        priority ++;
         list.append(result);
     }
     return list;

@@ -79,7 +79,7 @@ class AppList : public QList<Application>
 public:
     AppList();
     ~AppList();
-    void insertSorted(Application value);
+    void insertSorted(const Application &value);
 };
 
 class Mangonel : public Plasma::Dialog

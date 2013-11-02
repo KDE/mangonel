@@ -232,8 +232,10 @@ void Mangonel::getApp(QString query)
         foreach(Provider* provider, m_providers)
         {
             QList<Application> list = provider->getResults(query);
-            foreach(Application app, list)
+            foreach(const Application &app, list) {
+                qDebug() << app.name << app.priority;
                 m_apps->insertSorted(app);
+            }
         }
         if (!m_apps->isEmpty())
         {
@@ -533,7 +535,7 @@ AppList::AppList()
 AppList::~AppList()
 {}
 
-void AppList::insertSorted(Application item)
+void AppList::insertSorted(const Application &item)
 {
     int index = length() / 2;
     if (length() > 0)
