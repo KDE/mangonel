@@ -2,6 +2,7 @@
 IconName=mangonel
 Comment=Mangonel
 Comment[ca]=Mangonel
+Comment[da]=Mangonel
 Comment[de]=Mangonel
 Comment[es]=Mangonel
 Comment[gl]=Mangonel
@@ -21,6 +22,7 @@ Comment[zh_TW]=Mangonel
 [Event/startup]
 Name=startup
 Name[ca]=Iniciat
+Name[da]=Opstart
 Name[de]=Programmstart
 Name[es]=inicio
 Name[gl]=inicio
@@ -38,6 +40,7 @@ Name[zh_CN]=启动
 Name[zh_TW]=啟動
 Comment=Mangonel has started
 Comment[ca]=S'ha engegat Mangonel
+Comment[da]=Mangonel er startet
 Comment[de]=Mangonel wurde gestartet
 Comment[es]=Mangonel se ha iniciado
 Comment[gl]=Mangonel iniciouse
