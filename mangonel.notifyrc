@@ -1,6 +1,7 @@
 [Global]
 IconName=mangonel
 Comment=Mangonel
+Comment[bs]=Mangonel
 Comment[ca]=Mangonel
 Comment[cs]=Mangonel
 Comment[da]=Mangonel
@@ -25,6 +26,7 @@ Comment[zh_TW]=Mangonel
 
 [Event/startup]
 Name=startup
+Name[bs]=Pokretanje
 Name[ca]=Iniciat
 Name[cs]=Spuštění
 Name[da]=Opstart
@@ -47,6 +49,7 @@ Name[x-test]=xxstartupxx
 Name[zh_CN]=启动
 Name[zh_TW]=啟動
 Comment=Mangonel has started
+Comment[bs]=Mangonel je pokrenut
 Comment[ca]=S'ha engegat Mangonel
 Comment[cs]=Mangonel byl spuštěn
 Comment[da]=Mangonel er startet
