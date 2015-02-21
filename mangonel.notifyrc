@@ -35,7 +35,7 @@ Comment[zh_TW]=Mangonel
 
 [Event/startup]
 Name=startup
-Name[bs]=Pokretanje
+Name[bs]=pokretanje
 Name[ca]=Iniciat
 Name[ca@valencia]=Iniciat
 Name[cs]=Spuštění
