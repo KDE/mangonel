@@ -29,13 +29,17 @@
 #include <QVBoxLayout>
 #include <QDesktopWidget>
 #include <QDBusInterface>
+#include <QIcon>
 #include <QMenu>
-#include <KDE/Plasma/Theme>
+#include <QTextDocument>
+#include <QClipboard>
+
+#include <KLocalizedString>
+#include <KF5/Plasma/Theme>
 #include <KDE/KWindowSystem>
 #include <KDE/KNotification>
 #include <KDE/KNotifyConfigWidget>
-#include <QTextDocument>
-#include <QClipboard>
+#include <KGlobalAccel>
 
 #include "Config.h"
 //Include the providers.
@@ -44,6 +48,8 @@
 #include "providers/Shell.h"
 #include "providers/Calculator.h"
 #include "providers/Units.h"
+
+#include <QDebug>
 
 #include <unistd.h>
 
@@ -73,17 +79,17 @@ Mangonel::Mangonel(KApplication* app)
     m_label->setMaximumWidth(WINDOW_WIDTH - 20);
 
     // Setup our global shortcut.
-    m_actionShow = new KAction(i18n("Show Mangonel"), this);
+    m_actionShow = new QAction(i18n("Show Mangonel"), this);
     m_actionShow->setObjectName(QString("show"));
-    KShortcut shortcut = m_actionShow->shortcut();
-    shortcut.setPrimary(QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Space));
-    m_actionShow->setGlobalShortcut(shortcut);
+    QKeySequence shortcut = QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Space);
+    m_actionShow->setShortcut(shortcut);
+    KGlobalAccel::self()->setGlobalShortcut(m_actionShow, QList<QKeySequence>() << shortcut);
     connect(m_actionShow, SIGNAL(triggered()), this, SLOT(showHide()));
 
-    const KConfigGroup config = KGlobal::config()->group("mangonel_main");
+    const KConfigGroup config(KSharedConfig::openConfig(), "mangonel_main");
     m_history = config.readEntry("history", QStringList());
 
-    QString shortcutString(m_actionShow->globalShortcut().toString());
+    QString shortcutString(m_actionShow->shortcut().toString());
     QString message(i18nc("@info", "Press <shortcut>%1</shortcut> to show Mangonel.", shortcutString));
 
     KNotification::event(QLatin1String("startup"), message);
@@ -97,15 +103,15 @@ Mangonel::Mangonel(KApplication* app)
 
     connect(m_label, SIGNAL(textChanged(QString)), this, SLOT(getApp(QString)));
 
-    QAction* actionConfig = new QAction(KIcon("configure"), i18n("Configuration"), this);
+    QAction* actionConfig = new QAction(QIcon::fromTheme("configure"), i18n("Configuration"), this);
     addAction(actionConfig);
     connect(actionConfig, SIGNAL(triggered(bool)), this, SLOT(showConfig()));
 
-    QAction* notifyConfig = new QAction(KIcon("configure-notifications"), i18n("Configure notifications"), this);
+    QAction* notifyConfig = new QAction(QIcon::fromTheme("configure-notifications"), i18n("Configure notifications"), this);
     addAction(notifyConfig);
     connect(notifyConfig, SIGNAL(triggered(bool)), this, SLOT(configureNotifications()));
 
-    QAction* quit = new QAction(KIcon("application-exit"), i18n("Quit"), this);
+    QAction* quit = new QAction(QIcon::fromTheme("application-exit"), i18n("Quit"), this);
     addAction(quit);
     connect(quit, SIGNAL(triggered(bool)), app, SLOT(quit()));
 }
@@ -113,7 +119,7 @@ Mangonel::Mangonel(KApplication* app)
 Mangonel::~Mangonel()
     // Store history of session.
 {
-    KConfigGroup config = KGlobal::config()->group("mangonel_main");
+    KConfigGroup config(KSharedConfig::openConfig(), "mangonel_main");
     config.writeEntry("history", m_history);
     config.config()->sync();
 }
@@ -142,7 +148,7 @@ bool Mangonel::event(QEvent* event)
             event->accept();
     }
     if (!event->isAccepted())
-        Plasma::Dialog::event(event);
+        QWidget::event(event);
     return true;
 }
 
@@ -316,9 +322,9 @@ bool Mangonel::eventFilter(QObject *object, QEvent *event)
 
 void Mangonel::showConfig()
 {
-    KShortcut shortcut = m_actionShow->globalShortcut();
+    QKeySequence shortcut = m_actionShow->shortcut();
     ConfigDialog* dialog = new ConfigDialog(this);
-    dialog->setHotkey(shortcut.primary());
+    dialog->setHotkey(shortcut);
     connect(dialog, SIGNAL(hotkeyChanged(QKeySequence)), this, SLOT(setHotkey(QKeySequence)));
     installEventFilter(this);
     releaseMouse();
@@ -330,9 +336,7 @@ void Mangonel::showConfig()
 
 void Mangonel::setHotkey(const QKeySequence& hotkey)
 {
-    KShortcut shortcut = KShortcut();
-    shortcut.setPrimary(hotkey);
-    m_actionShow->setGlobalShortcut(shortcut, KAction::ShortcutTypes(KAction::ActiveShortcut|KAction::DefaultShortcut), KAction::NoAutoloading);
+    m_actionShow->setShortcut(hotkey);
     qDebug() << hotkey.toString();
 }
 
@@ -491,7 +495,7 @@ void ProgramView::centerItems()
 void ProgramView::show()
 {
     if (m_icon == 0)
-        m_icon = new QGraphicsPixmapItem(KIcon(application.icon).pixmap(128), this);
+        m_icon = new QGraphicsPixmapItem(QIcon::fromTheme(application.icon).pixmap(128), this);
     if (m_label == 0)
     {
         m_label = new QGraphicsTextItem(application.name, this);

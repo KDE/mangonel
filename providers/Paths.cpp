@@ -27,7 +27,8 @@
 
 #include <QDir>
 #include <KDE/KFileItem>
-#include <klocale.h>
+#include <KLocalizedString>
+#include <KRun>
 
 
 Paths::Paths()
@@ -69,12 +70,12 @@ QList<Application> Paths::getResults(QString query)
         {
             result.completion += "/";
             result.icon = "system-file-manager";
-            result.priority = time(NULL) - info.time(KIO::UDSEntry::UDS_MODIFICATION_TIME);
+            result.priority = time(NULL) - info.time(KFileItem::ModificationTime).toTime_t();
         }
         else
         {
             result.icon = info.iconName();
-            result.priority = time(NULL) - info.time(KIO::UDSEntry::UDS_MODIFICATION_TIME);
+            result.priority = time(NULL) - info.time(KFileItem::ModificationTime).toTime_t();
         }
         result.object = this;
         result.program = path.absoluteFilePath();
@@ -87,7 +88,7 @@ QList<Application> Paths::getResults(QString query)
 int Paths::launch(QVariant selected)
 {
     KFileItem info = KFileItem(KFileItem::Unknown, KFileItem::Unknown, selected.toString());
-    info.run();
+    KRun run(info.targetUrl(), 0);
     return 0;
 }
 

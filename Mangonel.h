@@ -30,12 +30,13 @@
 #include "Label.h"
 #include "Provider.h"
 
+#include <QAction>
+#include <QGraphicsItemGroup>
 #include <QGraphicsView>
 #include <QLabel>
-#include <KDE/Plasma/Dialog>
-#include <KDE/KAction>
-#include <KDE/KApplication>
+#include <QWidget>
 
+#include <KDE/KApplication>
 
 class ProgramView : public QGraphicsItemGroup
 {
@@ -82,7 +83,7 @@ public:
     void insertSorted(const Application &value);
 };
 
-class Mangonel : public Plasma::Dialog
+class Mangonel : public QWidget
 {
     Q_OBJECT
 public:
@@ -106,7 +107,7 @@ private:
     void focusOutEvent(QFocusEvent* event);
     bool eventFilter(QObject *object, QEvent *event);
     
-    KAction* m_actionShow;
+    QAction* m_actionShow;
     bool m_processingKey;
     Label* m_label;
     IconView* m_iconView;

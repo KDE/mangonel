@@ -26,7 +26,7 @@
 
 #include "Label.h"
 
-#include <KDE/Plasma/Theme>
+#include <KF5/Plasma/Theme>
 
 
 Label::Label(QWidget* parent)

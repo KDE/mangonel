@@ -32,10 +32,13 @@
 #include <QDebug>
 #include <krun.h>
 #include <kconfiggroup.h>
+#include <KSharedConfig>
+#include <KLocalizedString>
+#include <KUrl>
 
 Applications::Applications()
 {
-    const KConfigGroup config = KGlobal::config()->group("mangonel_applications");
+    const KConfigGroup config(KSharedConfig::openConfig(), "mangonel_applications");
     
     foreach(const QString &key, config.keyList()) {
         QList<QVariant> values = config.readEntry<QList<QVariant> >(key, QList<QVariant>());
@@ -121,7 +124,7 @@ int Applications::launch(QVariant selected)
 
 void Applications::storePopularities()
 {
-    KConfigGroup config = KGlobal::config()->group("mangonel_controlmodules");
+    KConfigGroup config(KSharedConfig::openConfig(), "mangonel_controlmodules");
     
     foreach(const QString &key, m_popularities.keys()) {
         QList<QVariant> values;

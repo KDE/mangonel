@@ -28,12 +28,12 @@
 
 #include <KDE/KUniqueApplication>
 #include <KDE/KCmdLineArgs>
-#include <KDE/KAboutData>
+#include <K4AboutData>
 
 
 int main(int argc, char** argv)
 {
-    KAboutData* aboutData = new KAboutData(
+    K4AboutData* aboutData = new K4AboutData(
                        QByteArray("mangonel"),
                        QByteArray("mangonel"),
                        ki18n("Mangonel"),
