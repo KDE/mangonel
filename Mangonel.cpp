@@ -55,8 +55,9 @@
 
 #include <unistd.h>
 
-#define WINDOW_WIDTH 220
-#define WINDOW_HEIGHT 200
+#define WINDOW_WIDTH 440
+#define WINDOW_HEIGHT 400
+#define ICON_SIZE (WINDOW_WIDTH / 1.5)
 
 Mangonel::Mangonel()
 {
@@ -392,7 +393,7 @@ void IconView::setFirst()
     if (!m_items.empty())
         m_current = 0;
     m_items[m_current]->show();
-    m_items[m_current]->setPos(rect().width() + (rect().width() - 128) / 2, 0);
+    m_items[m_current]->setPos(rect().width() + (rect().width() - ICON_SIZE) / 2, 0);
     centerOn(QPoint(rect().width()*1.5, 0));
 }
 
@@ -420,7 +421,7 @@ void IconView::moveItems(IconView::direction direction)
     }
     ProgramView* itemNew = m_items[m_current+index];
     ProgramView* itemOld = m_items[m_current];
-    itemNew->setPos(offset + (rect().width() - 128) / 2, 0);
+    itemNew->setPos(offset + (rect().width() - ICON_SIZE) / 2, 0);
     itemNew->show();
     int startposNew = itemNew->pos().x();
     int startPosOld = itemOld->pos().x();
@@ -448,7 +449,7 @@ void IconView::moveItems(IconView::direction direction)
         usleep(5000);
     }
     itemOld->hide();
-    itemNew->setPos(rect().width() + (rect().width() - 128) / 2, 0);
+    itemNew->setPos(rect().width() + (rect().width() - ICON_SIZE) / 2, 0);
     m_current += index;
     centerOn(QPoint(rect().width()*1.5, 0));
 }
@@ -495,24 +496,25 @@ void ProgramView::centerItems()
 
 void ProgramView::show()
 {
-    if (m_icon == 0)
-        m_icon = new QGraphicsPixmapItem(QIcon::fromTheme(application.icon).pixmap(128), this);
-    if (m_label == 0)
-    {
+    if (!m_label) {
         m_label = new QGraphicsTextItem(application.name, this);
         if (m_label->boundingRect().width() > WINDOW_WIDTH - 40)
             m_label->adjustSize();
         m_label->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
     }
-    if (m_descriptionLabel == 0)
-    {
+
+    if (!m_icon) {
+        m_icon = new QGraphicsPixmapItem(QIcon::fromTheme(application.icon).pixmap(ICON_SIZE), this);
+    }
+
+    if (!m_descriptionLabel) {
         m_descriptionLabel = new QGraphicsTextItem(i18nc("the type of the application to be launched, shown beneath the application name", "(%1)", application.type), this);
         if (m_descriptionLabel->boundingRect().width() > WINDOW_WIDTH - 40)
             m_descriptionLabel->adjustSize();
         m_descriptionLabel->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
     }
-    if (m_block == 0)
-    {
+
+    if (!m_block) {
         QRectF nameRect = m_label->boundingRect();
         QRectF descriptionRect = m_descriptionLabel->boundingRect();
         QRectF rect(nameRect.x(), nameRect.y() +10, qMax(nameRect.width(), descriptionRect.width()), nameRect.height() + descriptionRect.height() + 5);
@@ -520,6 +522,7 @@ void ProgramView::show()
         m_block->setBrush(QPalette().base());
         m_block->setOpacity(0.7);
     }
+
     m_label->setZValue(10);
     m_descriptionLabel->setZValue(10);
     centerItems();
@@ -567,6 +570,4 @@ void AppList::insertSorted(const Application &item)
     insert(index, item);
 }
 
-
-#include "Mangonel.moc"
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 

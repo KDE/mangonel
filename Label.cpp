@@ -30,10 +30,9 @@
 Label::Label(QWidget* parent)
 {
     Q_UNUSED(parent);
-    QFont* font = new QFont();
-    font->setPointSize(font->pointSize()+6);
-    this->setFont(*font);
-    delete font;
+    QFont font;
+    font.setPointSize(font.pointSize()+12);
+    setFont(font);
 }
 
 Label::~Label()
