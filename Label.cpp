@@ -26,8 +26,6 @@
 
 #include "Label.h"
 
-#include <KF5/Plasma/Theme>
-
 
 Label::Label(QWidget* parent)
 {
@@ -82,16 +80,14 @@ void Label::paintEvent(QPaintEvent*)
 {
     if (this->text().isEmpty())
         return;
+
     m_painter = new QPainter(this);
     m_painter->setFont(this->font());
-    m_backPen.setBrush(QBrush());
-    m_frontPen.setBrush(QBrush());
-    m_preEditPen.setBrush(QBrush());
-    m_preEditPen.setColor(Plasma::Theme().color(Plasma::Theme::HighlightColor));
-    QColor color = Plasma::Theme().color(Plasma::Theme::TextColor);
-    m_frontPen.setColor(color);
-    color.setAlpha(100);
-    m_backPen.setColor(color);
+
+    QPen preEditPen(palette().color(QPalette::Active, QPalette::Highlight));
+    QPen frontPen(palette().color(QPalette::Active, QPalette::Text));
+    QPen backPen(palette().color(QPalette::Disabled, QPalette::Text));
+
     int lFront = this->text().length();
     int lBack = this->m_completionText.length();
     m_position = this->contentsRect().width()/2;
@@ -111,32 +107,32 @@ void Label::paintEvent(QPaintEvent*)
     {
         offset = 0;
     }
-    m_backPen = makeGradient(m_backPen);
-    m_frontPen = makeGradient(m_frontPen);
-    for (int index = 0; index < max(lFront, lBack); index++)
+    backPen = makeGradient(backPen);
+    frontPen = makeGradient(frontPen);
+    for (int index = 0; index < qMax(lFront, lBack); index++)
     {
         QChar ch;
         if (drawComletion)
         {
             ch = this->m_completionText.at(index);
             if (index-offset < 0 or index-offset >= lFront)
-                advance = paintText(ch, m_backPen);
+                advance = paintText(ch, backPen);
             else
-                advance = paintText(ch, m_frontPen);
+                advance = paintText(ch, frontPen);
         }
         else
         {
             if (index-offset >= lFront)
                 break;
             ch = this->text().at(index);
-            advance = paintText(ch, m_frontPen);
+            advance = paintText(ch, frontPen);
         }
         if (!m_preEditText.isEmpty())
         {
             if (index-lFront > 0 and index-lFront < this->m_preEditText.length())
             {
                 ch = this->m_preEditText.at(index-lFront);
-                paintText(ch, m_preEditPen);
+                paintText(ch, preEditPen);
             }
         }
         m_position += advance;

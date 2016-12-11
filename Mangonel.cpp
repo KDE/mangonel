@@ -501,8 +501,6 @@ void ProgramView::show()
         if (m_label->boundingRect().width() > WINDOW_WIDTH - 40)
             m_label->adjustSize();
         m_label->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
-        QColor color = Plasma::Theme().color(Plasma::Theme::TextColor);
-        m_label->setDefaultTextColor(color);
     }
     if (m_descriptionLabel == 0)
     {
@@ -510,8 +508,6 @@ void ProgramView::show()
         if (m_descriptionLabel->boundingRect().width() > WINDOW_WIDTH - 40)
             m_descriptionLabel->adjustSize();
         m_descriptionLabel->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
-        QColor color = Plasma::Theme().color(Plasma::Theme::TextColor);
-        m_descriptionLabel->setDefaultTextColor(color);
     }
     if (m_block == 0)
     {
@@ -519,10 +515,7 @@ void ProgramView::show()
         QRectF descriptionRect = m_descriptionLabel->boundingRect();
         QRectF rect(nameRect.x(), nameRect.y() +10, qMax(nameRect.width(), descriptionRect.width()), nameRect.height() + descriptionRect.height() + 5);
         m_block = new QGraphicsRectItem(rect, this);
-        QBrush brush = QBrush(Qt::SolidPattern);
-        QColor color = Plasma::Theme().color(Plasma::Theme::BackgroundColor);
-        brush.setColor(color);
-        m_block->setBrush(brush);
+        m_block->setBrush(QPalette().base());
         m_block->setOpacity(0.7);
     }
     m_label->setZValue(10);

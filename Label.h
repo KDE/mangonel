@@ -56,9 +56,6 @@ private:
     
     QString m_completionText;
     QString m_preEditText;
-    QPen m_frontPen;
-    QPen m_backPen;
-    QPen m_preEditPen;
     int m_position;
     QPainter* m_painter;
 
