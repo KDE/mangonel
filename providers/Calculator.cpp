@@ -110,7 +110,7 @@ float Calculator::calculate(QString query)
             index = query.indexOf(item, 1);
         if (index > 0)
         {
-            if (not operators.contains(query.at(index-1).toAscii()))
+            if (not operators.contains(query.at(index-1).toLatin1()))
             {
                 oper = item;
                 values = query.split(item);

@@ -26,7 +26,7 @@
 #include "Paths.h"
 
 #include <QDir>
-#include <KDE/KFileItem>
+#include <KFileItem>
 #include <KLocalizedString>
 #include <KRun>
 

@@ -63,7 +63,6 @@ private:
 
 namespace
 {
-int max(int i1, int i2);
 QString longest(QString str1, QString str2);
 };
 

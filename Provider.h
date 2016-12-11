@@ -35,7 +35,7 @@ struct popularity
     int count;
 };
 
-class Application;
+struct Application;
 
 // Abstract base class of providers.
 class Provider : public QObject

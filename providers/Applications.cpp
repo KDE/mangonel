@@ -34,7 +34,6 @@
 #include <kconfiggroup.h>
 #include <KSharedConfig>
 #include <KLocalizedString>
-#include <KUrl>
 
 Applications::Applications()
 {
@@ -116,7 +115,7 @@ int Applications::launch(QVariant selected)
     
     storePopularities();
     
-    if (KRun::run(exec, KUrl::List(), 0))
+    if (KRun::run(exec, QList<QUrl>(), 0))
         return 0;
     else
         return 1;

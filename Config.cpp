@@ -26,10 +26,9 @@
 #include "Config.h"
 
 #include <QDialogButtonBox>
-#include <KDE/KKeySequenceWidget>
-#include <KDE/KApplication>
-#include <KDE/KConfigGroup>
-#include <KDE/KAutostart>
+#include <KKeySequenceWidget>
+#include <KConfigGroup>
+#include <KAutostart>
 #include <QSettings>
 #include <QLabel>
 #include <klocalizedstring.h>

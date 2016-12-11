@@ -26,6 +26,7 @@
 
 #include "Mangonel.h"
 
+#include <QApplication>
 #include <QVBoxLayout>
 #include <QDesktopWidget>
 #include <QDBusInterface>
@@ -34,12 +35,13 @@
 #include <QTextDocument>
 #include <QClipboard>
 
+#include <KConfigGroup>
 #include <KLocalizedString>
-#include <KF5/Plasma/Theme>
-#include <KDE/KWindowSystem>
-#include <KDE/KNotification>
-#include <KDE/KNotifyConfigWidget>
+#include <KWindowSystem>
+#include <KNotification>
+#include <KNotifyConfigWidget>
 #include <KGlobalAccel>
+#include <KSharedConfig>
 
 #include "Config.h"
 //Include the providers.
@@ -56,7 +58,7 @@
 #define WINDOW_WIDTH 220
 #define WINDOW_HEIGHT 200
 
-Mangonel::Mangonel(QApplication* app)
+Mangonel::Mangonel()
 {
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -112,7 +114,7 @@ Mangonel::Mangonel(QApplication* app)
 
     QAction* quit = new QAction(QIcon::fromTheme("application-exit"), i18n("Quit"), this);
     addAction(quit);
-    connect(quit, SIGNAL(triggered(bool)), app, SLOT(quit()));
+    connect(quit, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
 }
 
 Mangonel::~Mangonel()

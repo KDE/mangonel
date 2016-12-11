@@ -26,6 +26,7 @@
 
 #include "Mangonel.h"
 
+#include <QApplication>
 #include <KDBusService>
 #include <KAboutData>
 #include <klocalizedstring.h>
@@ -48,7 +49,7 @@ int main(int argc, char** argv)
 
     app.setQuitOnLastWindowClosed(false);
     app.setOrganizationName("Tarmack SW");
-    Mangonel foo(&app);
+    Mangonel foo;
     QObject::connect(&service, &KDBusService::activateRequested, &foo, &Mangonel::show);
     return app.exec();
 }

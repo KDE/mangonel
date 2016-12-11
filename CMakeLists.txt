@@ -20,8 +20,11 @@ find_package (KF5 REQUIRED COMPONENTS
     GlobalAccel
     KIO
     NotifyConfig
-    Plasma
-    KDELibs4Support
+    Notifications
+    DBusAddons
+    WindowSystem
+    XmlGui
+    UnitConversion
 )
 
 set(Mangonel_SRCS
@@ -41,11 +44,15 @@ target_link_libraries(mangonel
   Qt5::Core
   Qt5::Widgets
   KF5::GlobalAccel
-  KF5::KDELibs4Support
-  KF5::Plasma
   KF5::KIOCore
-#  ${KDE4_KUNITCONVERSION_LIBS}
+  KF5::KIOWidgets
+  KF5::I18n
+  KF5::DBusAddons
   KF5::NotifyConfig
+  KF5::Notifications
+  KF5::WindowSystem
+  KF5::XmlGui
+  KF5::UnitConversion
 )
 
 install(TARGETS mangonel ${INSTALL_TARGETS_DEFAULT_ARGS})

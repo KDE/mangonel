@@ -36,8 +36,6 @@
 #include <QLabel>
 #include <QWidget>
 
-#include <KDE/KApplication>
-
 class ProgramView : public QGraphicsItemGroup
 {
 public:
@@ -87,7 +85,7 @@ class Mangonel : public QWidget
 {
     Q_OBJECT
 public:
-    Mangonel(QApplication* app);
+    Mangonel();
     ~Mangonel();
 public slots:
     void show();
