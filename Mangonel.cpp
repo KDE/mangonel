@@ -56,13 +56,12 @@
 #define WINDOW_WIDTH 220
 #define WINDOW_HEIGHT 200
 
-Mangonel::Mangonel(KApplication* app)
+Mangonel::Mangonel(QApplication* app)
 {
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setContextMenuPolicy(Qt::ActionsContextMenu);
     setAttribute(Qt::WA_InputMethodEnabled);
     setAttribute(Qt::WA_MouseTracking, false);
-    app = app;
     m_processingKey = false;
     m_apps = 0;
     QVBoxLayout* view = new QVBoxLayout(this);

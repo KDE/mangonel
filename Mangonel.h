@@ -87,7 +87,7 @@ class Mangonel : public QWidget
 {
     Q_OBJECT
 public:
-    Mangonel(KApplication* app);
+    Mangonel(QApplication* app);
     ~Mangonel();
 public slots:
     void show();

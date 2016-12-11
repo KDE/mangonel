@@ -26,27 +26,30 @@
 
 #include "Mangonel.h"
 
-#include <KDE/KUniqueApplication>
-#include <KDE/KCmdLineArgs>
-#include <K4AboutData>
-
+#include <KDBusService>
+#include <KAboutData>
+#include <klocalizedstring.h>
 
 int main(int argc, char** argv)
 {
-    K4AboutData* aboutData = new K4AboutData(
-                       QByteArray("mangonel"),
-                       QByteArray("mangonel"),
-                       ki18n("Mangonel"),
-                       QByteArray("1.1"),
-                       ki18n("A simple application launcher for KDE4."));
-    aboutData->setHomepage(QByteArray("www.tarmack.eu/mangonel/"));
-    aboutData->addAuthor(ki18n("Martin Sandsmark"), ki18n("Developer"), "martin.sandsmark@kde.org", "http://iskrembilen.com/");
-    aboutData->addAuthor(ki18n("Bart Kroon"), ki18n("Developer, original author"), "", "http://tarmack.eu/");
-    KCmdLineArgs::init(argc, argv, aboutData);
-    KUniqueApplication app;
+    QApplication app(argc, argv);
+    KAboutData aboutData (
+                       QStringLiteral("mangonel"),
+                       i18n("Mangonel"),
+                       QStringLiteral("1.1"));
+    aboutData.setShortDescription(i18n("A simple application launcher for KDE4.")),
+    aboutData.setLicense(KAboutLicense::BSDL);
+    aboutData.setHomepage(QByteArray("www.tarmack.eu/mangonel/"));
+    aboutData.addAuthor(i18n("Martin Sandsmark"), i18n("Developer"), "martin.sandsmark@kde.org", "http://iskrembilen.com/");
+    aboutData.addAuthor(i18n("Bart Kroon"), i18n("Developer, original author"), "", "http://tarmack.eu/");
+    KAboutData::setApplicationData(aboutData);
+    KDBusService service(KDBusService::Unique);
+
+
     app.setQuitOnLastWindowClosed(false);
     app.setOrganizationName("Tarmack SW");
     Mangonel foo(&app);
+    QObject::connect(&service, &KDBusService::activateRequested, &foo, &Mangonel::show);
     return app.exec();
 }
 
