@@ -43,23 +43,23 @@ Shell::Shell()
 Shell::~Shell()
 {}
 
-QList<Application> Shell::getResults(QString query)
+QList<Application *> Shell::getResults(QString query)
 {
-    QList<Application> list = QList<Application>();
-    foreach(QString key, this->index.keys())
-    {
-        if (key.startsWith(query.left(query.indexOf(" ")), Qt::CaseInsensitive))
-        {
+    QList<Application*> list;
+    int priority = 3600;
+    foreach(QString key, this->index.keys()) {
+        if (key.startsWith(query.left(query.indexOf(" ")), Qt::CaseInsensitive)) {
             QString args = query.right(query.length() - query.indexOf(" "));
             if (args == query)
                 args = "";
-            Application app = Application();
-            app.name = key + args;
-            app.completion = key;
-            app.icon = "system-run";
-            app.object = this;
-            app.program = this->index[key] + args;
-            app.type = i18n("Shell command");
+            Application *app = new Application;
+            app->name = key + args;
+            app->completion = key;
+            app->icon = "system-run";
+            app->object = this;
+            app->program = this->index[key] + args;
+            app->type = i18n("Shell command");
+            app->priority = ++priority;
 
             list.append(app);
         }
