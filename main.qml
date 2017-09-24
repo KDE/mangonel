@@ -10,22 +10,24 @@ Window {
 
     color: "transparent"
 
-    width: 800
+    width: 1000
     height: 400
     visible: true
 
     onVisibleChanged:{
         inputText.text = ""
+
         if (visible) {
             requestActivate()
+
+            var desktopWidth = window.screen.width
+            window.width = Math.max(desktopWidth / 1.5, 800)
         }
 
         inputText.preHistoryText = ""
         inputText.historyIndex = -1
     }
     onActiveChanged: if (!active) visible = false
-
-
 
     Connections {
         target: Mangonel
@@ -92,7 +94,8 @@ Window {
         preferredHighlightBegin: width/2 - itemWidth/2
         preferredHighlightEnd: width/2 +  itemWidth/2
         highlightRangeMode: ListView.StrictlyEnforceRange
-        property real itemWidth: count > 1 ? width / 2 : width
+
+        property real itemWidth: height
 
         delegate: Item {
             width: resultList.itemWidth
@@ -156,11 +159,13 @@ Window {
     LinearGradient {
         id: mask
         anchors.fill: resultList
+        property real centerLeft: (width / 2 - resultList.itemWidth / 2) / width
+        property real centerRight: (width / 2 + resultList.itemWidth / 2) / width
 
         gradient: Gradient {
             GradientStop { position: 0.1; color: Qt.rgba(1, 1, 1, 1) }
-            GradientStop { position: 0.3; color: Qt.rgba(0, 0, 0, 0) }
-            GradientStop { position: 0.7; color: Qt.rgba(0, 0, 0, 0) }
+            GradientStop { position: mask.centerLeft; color: Qt.rgba(0, 0, 0, 0) }
+            GradientStop { position: mask.centerRight; color: Qt.rgba(0, 0, 0, 0) }
             GradientStop { position: 0.9; color: Qt.rgba(1, 1, 1, 1) }
         }
 
@@ -174,7 +179,7 @@ Window {
         anchors.fill: resultList
         source: resultList
         maskSource: mask
-        radius: 16
+        radius: 8
         samples: 24
     }
 
