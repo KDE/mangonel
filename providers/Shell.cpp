@@ -65,7 +65,8 @@ QStringList getPathEnv()
 }
 }
 
-Shell::Shell()
+Shell::Shell(QObject *parent) :
+    Provider(parent)
 {
     this->index.clear();
     foreach(QString dir, getPathEnv())

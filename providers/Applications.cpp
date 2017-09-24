@@ -35,7 +35,8 @@
 #include <KSharedConfig>
 #include <KLocalizedString>
 
-Applications::Applications()
+Applications::Applications(QObject *parent) :
+    Provider(parent)
 {
     const KConfigGroup config(KSharedConfig::openConfig(), "mangonel_applications");
     

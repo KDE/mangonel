@@ -43,7 +43,11 @@ class Provider : public QObject
     Q_OBJECT
 
 public:
+    explicit Provider (QObject *parent);
+    Provider() = delete;
+
     virtual ~Provider() {}
+
 public slots:
     virtual QList<Application*> getResults(QString query) = 0;
     virtual int launch(QVariant selected) = 0;

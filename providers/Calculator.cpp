@@ -37,7 +37,8 @@
 const QList<char> operators = (QList<char>() << '+' << '-' << '/' << '*' << '^' << '%');
 bool succes = false;
 
-Calculator::Calculator()
+Calculator::Calculator(QObject *parent) :
+    Provider(parent)
 {
     functions['+'] = [](float val1, float val2) { return val1 + val2; };
     functions['-'] = [](float val1, float val2) { return val1 - val2; };

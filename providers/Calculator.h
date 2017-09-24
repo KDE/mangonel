@@ -34,8 +34,10 @@ class Calculator : public Provider
 {
     Q_OBJECT
 public:
-    Calculator();
+    explicit Calculator(QObject *parent);
+
     ~Calculator();
+
 public slots:
     QList<Application *> getResults(QString query);
     int launch(QVariant selected);

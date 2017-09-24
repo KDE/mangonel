@@ -33,8 +33,9 @@ class Paths : public Provider
 {
     Q_OBJECT
 public:
-    Paths();
+    Paths(QObject *parent);
     ~Paths();
+
 public slots:
     QList<Application*> getResults(QString query) override;
     int launch(QVariant selected) override;

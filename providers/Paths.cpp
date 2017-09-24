@@ -40,8 +40,10 @@ static QString subUser(QString path)
     return path;
 }
 
-Paths::Paths()
-{}
+Paths::Paths(QObject *parent) :
+    Provider(parent)
+{
+}
 
 Paths::~Paths()
 {}

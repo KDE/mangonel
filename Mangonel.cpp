@@ -77,11 +77,11 @@ Mangonel::Mangonel()
     KNotification::event(QLatin1String("startup"), message);
 
     // Instantiate the providers.
-    m_providers["applications"] = new Applications();
-    m_providers["paths"] = new Paths();
-    m_providers["shell"] = new Shell();
-    m_providers["Calculator"] = new Calculator();
-    m_providers["Units"] = new Units();
+    m_providers["applications"] = new Applications(this);
+    m_providers["paths"] = new Paths(this);
+    m_providers["shell"] = new Shell(this);
+    m_providers["Calculator"] = new Calculator(this);
+    m_providers["Units"] = new Units(this);
 }
 
 Mangonel::~Mangonel()
@@ -98,17 +98,38 @@ Mangonel *Mangonel::instance()
     return &s_instance;
 }
 
+QList<QObject *> Mangonel::apps()
+{
+    QList<QObject*> ret;
+
+    for (QPointer<Application> app : m_apps) {
+        ret.append(app.data());
+    }
+
+    return ret;
+}
+
 void Mangonel::getApp(QString query)
 {
-    qDeleteAll(m_apps);
+    for (QPointer<Application> app : m_apps) {
+        if (!app) {
+            continue;
+        }
+
+        app->deleteLater();
+    }
     m_apps.clear();
 
     if (query.length() > 0) {
         m_current = -1;
-        foreach(Provider* provider, m_providers) {
+        for (Provider* provider : m_providers) {
             QList<Application*> list = provider->getResults(query);
-            m_apps.append(list);
+            for (Application *app : list) {
+                app->setParent(this);
+                m_apps.append(app);
+            }
         }
+
         std::sort(m_apps.begin(), m_apps.end(), [](Application *a, Application *b) {
             if (a->priority != b->priority) {
                 return a->priority < b->priority;

@@ -34,9 +34,11 @@
 class Shell : public Provider
 {
     Q_OBJECT
+
 public:
-    Shell();
+    Shell(QObject *parent);
     ~Shell();
+
 public slots:
     QList<Application*> getResults(QString query) override;
     int launch(QVariant selected) override;

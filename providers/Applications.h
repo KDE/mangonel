@@ -35,7 +35,8 @@ class Applications : public Provider
 {
     Q_OBJECT
 public:
-    Applications();
+    Applications(QObject *parent);
+
     ~Applications();
     
 public slots:

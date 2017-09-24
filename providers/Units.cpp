@@ -32,8 +32,10 @@
 #include <KUnitConversion/Converter>
 #include <QDebug>
 
-Units::Units()
-{}
+Units::Units(QObject *parent) :
+    Provider(parent)
+{
+}
 
 Units::~Units()
 {}

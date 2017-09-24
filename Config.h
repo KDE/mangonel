@@ -37,12 +37,16 @@ class ConfigDialog : public QDialog
 public:
     ConfigDialog(QWidget* parent = 0);
     ~ConfigDialog();
+
 public slots:
     void setHotkey(QKeySequence hotkey);
+
 signals:
     void hotkeyChanged(const QKeySequence& hotkey);
+
 private slots:
     void setAutostart(bool autostart);
+
 private:
     KKeySequenceWidget *m_hotkeySelect;
 };

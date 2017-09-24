@@ -27,3 +27,9 @@
 
 Application::Application()
 {}
+
+Provider::Provider(QObject *parent) :
+    QObject(parent)
+{
+
+}

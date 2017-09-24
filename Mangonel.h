@@ -30,9 +30,8 @@
 #include "Provider.h"
 
 #include <QAction>
-#include <QGraphicsItemGroup>
-#include <QGraphicsView>
-#include <QLabel>
+#include <QObject>
+#include <QPointer>
 
 class Mangonel : public QObject
 {
@@ -45,13 +44,7 @@ public:
 
     static Mangonel *instance();
 
-    QList<QObject*> apps() {
-        QList<QObject*> apps;
-        for (Application *app : m_apps) {
-            apps.append(app);
-        }
-        return apps;
-    }
+    QList<QObject*> apps();
 
     const QStringList &history() { return m_history; }
 
@@ -76,7 +69,7 @@ private:
     bool m_processingKey;
     QStringList m_history;
     QHash<QString, Provider*> m_providers;
-    QList<Application*> m_apps;
+    QList<QPointer<Application>> m_apps;
     int m_current;
 };
 

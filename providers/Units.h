@@ -33,7 +33,7 @@ class Units : public Provider
 {
     Q_OBJECT
 public:
-    Units();
+    Units(QObject *parent);
     ~Units();
 public slots:
     QList<Application*> getResults(QString query) override;
