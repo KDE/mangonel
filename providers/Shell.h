@@ -44,11 +44,5 @@ private:
     QHash<QString, QString> index;
 };
 
-namespace
-{
-QHash<QString, QString> walkDir(QString path);
-QStringList getPathEnv();
-};
-
 #endif //Shell_H
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 

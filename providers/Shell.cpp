@@ -32,10 +32,42 @@
 #include <QDebug>
 #include <QProcess>
 
+namespace
+{
+QMap<QString, QString> walkDir(QString path)
+{
+    QMap<QString, QString> binList;
+    QDir dir = QDir(path);
+    QFileInfoList list = dir.entryInfoList(QStringList(), QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+    foreach(QFileInfo file, list)
+    {
+        if (file.isDir())
+        {
+            if (file.isSymLink() and file.canonicalFilePath() != path)
+                binList.unite(walkDir(file.absoluteFilePath()));
+        }
+        else
+        {
+            if (file.isExecutable())
+                binList.insert(file.fileName(), file.absoluteFilePath());
+        }
+    }
+    return binList;
+}
+
+QStringList getPathEnv()
+{
+    QString pathEnv = getenv("PATH");
+    QStringList pathList = pathEnv.split(":", QString::SkipEmptyParts);
+    pathList.append(QDir::homePath() + "/bin");
+    pathList.removeDuplicates();
+    return pathList;
+}
+}
 
 Shell::Shell()
 {
-    this->index = QHash<QString, QString>();
+    this->index.clear();
     foreach(QString dir, getPathEnv())
     {
         this->index.unite(walkDir(dir));
@@ -80,39 +112,6 @@ int Shell::launch(QVariant selected)
     QProcess::startDetached(program, args);
     return 0;
 }
-
-
-namespace
-{
-QHash<QString, QString> walkDir(QString path)
-{
-    QHash<QString, QString> binList = QHash<QString, QString>();
-    QDir dir = QDir(path);
-    QFileInfoList list = dir.entryInfoList(QStringList(), QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-    foreach(QFileInfo file, list)
-    {
-        if (file.isDir())
-        {
-            if (file.isSymLink() and file.canonicalFilePath() != path)
-                binList.unite(walkDir(file.absoluteFilePath()));
-        }
-        else
-        {
-            if (file.isExecutable())
-                binList.insert(file.fileName(), file.absoluteFilePath());
-        }
-    }
-    return binList;
-}
-
-QStringList getPathEnv()
-{
-    QString pathEnv = getenv("PATH");
-    QStringList pathList = pathEnv.split(":", QString::SkipEmptyParts);
-    pathList.append(QDir::homePath() + "/bin");
-    return pathList;
-}
-};
 
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 
