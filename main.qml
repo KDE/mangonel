@@ -2,6 +2,7 @@ import QtQuick 2.2
 import QtQuick.Window 2.2
 import QtQuick.Controls 1.4
 import org.kde 1.0
+import QtGraphicalEffects 1.0
 
 Window {
     id: window
@@ -32,20 +33,42 @@ Window {
     }
 
     Rectangle {
-        anchors.fill: parent
-        color: "black"
-        opacity: 0.75
+        id: background
+        anchors {
+            fill: parent
+            margins: shadow.radius
+        }
+
+        color: Qt.rgba(0, 0, 0, 0.5)
         radius: 10
-//        gradient: Gradient {
-//            GradientStop { position: 0.0; color: Qt.rgba(0, 0, 0, 0) }
-//            GradientStop { position: 0.5; color: Qt.rgba(0, 0, 0, 0.1) }
-//            GradientStop { position: 1.0; color: Qt.rgba(0, 0, 0, 0.75) }
-//        }
+        visible: false
+
+        Rectangle {
+            id: bottomBackground
+
+            anchors {
+                bottom: background.bottom
+                left: background.left
+                right: background.right
+            }
+            color: "black"
+            height: inputText.height + 20
+        }
+    }
+
+    DropShadow {
+        id: shadow
+        anchors.fill: background
+        radius: 10
+        samples: 17
+        color: Qt.rgba(0, 0, 0, 0.75)
+        source: background
+        cached: true
     }
 
     MouseArea {
         id: mouseArea
-        anchors.fill: parent
+        anchors.fill: background
         acceptedButtons: Qt.RightButton
         onClicked: {
             popupMenu.popup()
@@ -54,12 +77,15 @@ Window {
 
     ListView {
         id: resultList
+        visible: false
+
         anchors {
-            top: parent.top
+            top: background.top
             bottom: inputText.top
-            left: parent.left
-            right: parent.right
+            left: background.left
+            right: background.right
         }
+        clip: true
         model: Mangonel.apps
         orientation: Qt.Horizontal
         highlightMoveDuration: 50
@@ -124,34 +150,37 @@ Window {
                 text: modelData.name
                 wrapMode: Text.WordWrap
             }
-//            Text {
-//                anchors {
-//                    top: parent.top
-//                    horizontalCenter: parent.horizontalCenter
-//                }
-
-//                color: "white"
-//                text: modelData.priority
-//            }
-
         }
     }
 
-    Rectangle {
-        id: bottomBackground
+    LinearGradient {
+        id: mask
+        anchors.fill: resultList
 
-        anchors {
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
+        gradient: Gradient {
+            GradientStop { position: 0.1; color: Qt.rgba(1, 1, 1, 1) }
+            GradientStop { position: 0.3; color: Qt.rgba(0, 0, 0, 0) }
+            GradientStop { position: 0.7; color: Qt.rgba(0, 0, 0, 0) }
+            GradientStop { position: 0.9; color: Qt.rgba(1, 1, 1, 1) }
         }
-        color: "black"
-        height: inputText.height + 20
+
+        start: Qt.point(0, 0)
+        end: Qt.point(resultList.width, 0)
+        opacity: 0.5
+        visible: false
+    }
+
+    MaskedBlur {
+        anchors.fill: resultList
+        source: resultList
+        maskSource: mask
+        radius: 16
+        samples: 24
     }
 
     Text {
         anchors {
-            left: parent.left
+            left: background.left
             leftMargin: 5
             verticalCenter: inputText.verticalCenter
         }
@@ -163,8 +192,8 @@ Window {
     TextInput {
         id: inputText
         anchors {
-            horizontalCenter: parent.horizontalCenter
-            bottom: parent.bottom
+            horizontalCenter: background.horizontalCenter
+            bottom: background.bottom
             bottomMargin: 10
         }
 
@@ -236,9 +265,15 @@ Window {
     }
 
     MouseArea {
-        anchors.fill: bottomBackground
+        anchors {
+            left: background.left
+            right: background.right
+            bottom: background.bottom
+        }
+
         acceptedButtons: "MiddleButton"
         onClicked: inputText.text += Mangonel.selectionClipboardContent()
+        height: bottomBackground.height
     }
 
     Menu {
