@@ -76,7 +76,6 @@ QList<Application *> Applications::getResults(QString term)
     query = query.arg(term);
     KService::List services = KServiceTypeTrader::self()->query("Application", query);
     services.append(KServiceTypeTrader::self()->query("KCModule", query));
-    int priority = 0;
     foreach(const KService::Ptr &service, services) {
         if (service->noDisplay())
             continue;
@@ -94,7 +93,7 @@ QList<Application *> Applications::getResults(QString term)
             if (app->name.contains(term, Qt::CaseInsensitive)) app->priority -= 10;
             app->priority += app->name.length();
         }
-        
+
         list.append(app);
     }
     return list;
