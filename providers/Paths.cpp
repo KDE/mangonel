@@ -96,21 +96,10 @@ QList<Application *> Paths::getResults(QString query)
 
 int Paths::launch(QVariant selected)
 {
-    KFileItem info = KFileItem(KFileItem::Unknown, KFileItem::Unknown, selected.toString());
-    KRun run(info.targetUrl(), 0);
+    QDesktopServices::openUrl(QUrl::fromLocalFile(selected.toString()));
     return 0;
 }
 
 
-namespace
-{
-QString subUser(QString path)
-{
-    QString homePath = QDir::homePath();
-    if (path.startsWith(homePath))
-        path = "~" + path.mid(homePath.length(), -1);
-    return path;
-}
-};
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 
