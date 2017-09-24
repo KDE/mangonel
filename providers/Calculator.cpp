@@ -36,15 +36,14 @@
 const QList<char> operators = (QList<char>() << '+' << '-' << '/' << '*' << '^' << '%');
 bool succes = false;
 
-
 Calculator::Calculator()
 {
-    functions['+'] = &add;
-    functions['-'] = &substract;
-    functions['/'] = &divide;
-    functions['*'] = &multiply;
-    functions['^'] = &power;
-    functions['%'] = &modulo;
+    functions['+'] = [](float val1, float val2) { return val1 + val2; };
+    functions['-'] = [](float val1, float val2) { return val1 - val2; };
+    functions['/'] = [](float val1, float val2) { return val1 / val2; };
+    functions['*'] = [](float val1, float val2) { return val1 * val2; };
+    functions['^'] = [](float val1, float val2) { return pow(val1, val2); };
+    functions['%'] = [](float val1, float val2) { return fmod(val1, val2); };
 
     testCalc();
 }

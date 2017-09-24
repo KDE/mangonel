@@ -46,16 +46,6 @@ private:
     void testCalc();
 };
 
-namespace
-{
-float add(float val1, float val2);
-float substract(float val1, float val2);
-float divide(float val1, float val2);
-float multiply(float val1, float val2);
-float power(float val1, float val2);
-float modulo(float val1, float val2);
-}
-
 #endif // Calculator_H
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 
