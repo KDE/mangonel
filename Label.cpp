@@ -166,25 +166,4 @@ QPen Label::makeGradient(QPen pen)
 }
 
 
-namespace
-{
-int max(int i1, int i2)
-{
-    if (i1 > i2)
-        return i1;
-    else
-        return i2;
-}
-
-QString longest(QString str1, QString str2)
-{
-    if (str1.length() > str2.length())
-        return str1;
-    else
-        return str2;
-}
-};
-
-
-#include "Label.moc"
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 

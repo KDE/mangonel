@@ -61,10 +61,5 @@ private:
 
 };
 
-namespace
-{
-QString longest(QString str1, QString str2);
-};
-
 #endif
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 
