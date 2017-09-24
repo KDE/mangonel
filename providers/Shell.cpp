@@ -43,7 +43,7 @@ QMap<QString, QString> walkDir(QString path)
     {
         if (file.isDir())
         {
-            if (file.isSymLink() and file.canonicalFilePath() != path)
+            if (file.isSymLink() && file.canonicalFilePath() != path)
                 binList.unite(walkDir(file.absoluteFilePath()));
         }
         else

@@ -136,6 +136,4 @@ void Applications::storePopularities()
 }
 
 
-#include "Applications.moc"
-
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 
