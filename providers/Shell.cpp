@@ -29,6 +29,8 @@
 #include <QDBusInterface>
 #include <QDir>
 #include <klocalizedstring.h>
+#include <QDebug>
+#include <QProcess>
 
 
 Shell::Shell()
@@ -69,18 +71,13 @@ QList<Application *> Shell::getResults(QString query)
 
 int Shell::launch(QVariant selected)
 {
-    QStringList args = selected.toString().split(" ", QString::SkipEmptyParts);
-    QString exec = args.takeFirst();
-    QDBusInterface* dbus = new QDBusInterface(
-        "org.kde.klauncher",
-        "/KLauncher",
-        "org.kde.KLauncher"
-    );
-    dbus->call(
-        "exec_blind",
-        exec,
-        args
-    );
+    QStringList args = selected.toString().split(" ");
+    if (args.isEmpty()) {
+        qWarning() << "Asked to launch invalid program:" << selected;
+        return 0;
+    }
+    QString program(args.takeFirst());
+    QProcess::startDetached(program, args);
     return 0;
 }
 
