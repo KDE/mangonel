@@ -113,6 +113,4 @@ QString subUser(QString path)
 }
 };
 
-
-#include "Paths.moc"
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 

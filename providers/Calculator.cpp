@@ -174,5 +174,4 @@ void Calculator::testCalc()
 }
 
 
-#include "Calculator.moc"
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

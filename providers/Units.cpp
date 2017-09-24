@@ -68,5 +68,4 @@ int Units::launch(QVariant selected)
     return 0;
 }
 
-#include "Units.moc"
-// kate: indent-mode cstyle; space-indent on; indent-width 4; 
+// kate: indent-mode cstyle; space-indent on; indent-width 4;

@@ -118,5 +118,4 @@ QStringList getPathEnv()
 };
 
 
-#include "Shell.moc"
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 
