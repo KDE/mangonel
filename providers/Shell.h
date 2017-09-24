@@ -41,7 +41,7 @@ public slots:
     QList<Application*> getResults(QString query) override;
     int launch(QVariant selected) override;
 private:
-    QHash<QString, QString> index;
+    QMap<QString, QString> index;
 };
 
 #endif //Shell_H
