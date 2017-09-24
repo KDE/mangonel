@@ -40,10 +40,5 @@ public slots:
     int launch(QVariant selected);
 };
 
-namespace
-{
-QString subUser(QString);
-};
-
 #endif //Paths_H
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 

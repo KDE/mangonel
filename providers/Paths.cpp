@@ -29,7 +29,16 @@
 #include <KFileItem>
 #include <KLocalizedString>
 #include <KRun>
+#include <QDesktopServices>
 
+
+static QString subUser(QString path)
+{
+    QString homePath = QDir::homePath();
+    if (path.startsWith(homePath))
+        path = "~" + path.mid(homePath.length(), -1);
+    return path;
+}
 
 Paths::Paths()
 {}
