@@ -31,6 +31,7 @@
 #include <QClipboard>
 #include <QStringList>
 #include <klocalizedstring.h>
+#include <QDebug>
 
 
 const QList<char> operators = (QList<char>() << '+' << '-' << '/' << '*' << '^' << '%');
@@ -134,8 +135,14 @@ float Calculator::calculate(QString query)
             }
         }
     }
-    if (values.isEmpty())
-        return query.toFloat(&succes);
+    if (values.isEmpty()) {
+        float dec = query.toFloat(&succes);
+        if (succes) {
+            return dec;
+        }
+        int integer = query.toInt(&succes, 0);
+        return integer;
+    }
     if (functions.contains(oper))
     {
         if (values[0] == "")
