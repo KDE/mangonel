@@ -143,39 +143,6 @@ int Calculator::launch(QVariant selected)
 }
 
 
-namespace
-{
-
-float add(float val1, float val2)
-{
-    return val1 + val2;
-}
-
-float substract(float val1, float val2)
-{
-    return val1 - val2;
-}
-
-float divide(float val1, float val2)
-{
-    return val1 / val2;
-}
-
-float multiply(float val1, float val2)
-{
-    return val1 * val2;
-}
-float power(float val1, float val2)
-{
-    return pow(val1, val2);
-}
-float modulo(float val1, float val2)
-{
-    return fmod(val1, val2);
-}
-};
-
-
 void Calculator::testCalc()
 {
     assert(calculate("") == 0); // Test for default output.
