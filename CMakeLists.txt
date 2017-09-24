@@ -11,7 +11,7 @@ include (KDECompilerSettings)
 include (ECMInstallIcons)
 include (FeatureSummary)
 
-find_package (Qt5 CONFIG REQUIRED Core Widgets)
+find_package (Qt5 CONFIG REQUIRED Core Widgets Quick)
 
 include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
@@ -32,6 +32,7 @@ set(Mangonel_SRCS
   Config.cpp
   main.cpp
   Provider.cpp
+  IconProvider.cpp
   providers/Applications.cpp
   providers/Paths.cpp
   providers/Shell.cpp
@@ -44,6 +45,7 @@ add_executable(mangonel ${Mangonel_SRCS})
 target_link_libraries(mangonel
   Qt5::Core
   Qt5::Widgets
+  Qt5::Quick
   KF5::GlobalAccel
   KF5::KIOCore
   KF5::KIOWidgets
