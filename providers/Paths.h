@@ -36,8 +36,8 @@ public:
     Paths();
     ~Paths();
 public slots:
-    QList<Application> getResults(QString query);
-    int launch(QVariant selected);
+    QList<Application*> getResults(QString query) override;
+    int launch(QVariant selected) override;
 };
 
 #endif //Paths_H

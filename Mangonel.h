@@ -39,14 +39,14 @@
 class ProgramView : public QGraphicsItemGroup
 {
 public:
-    ProgramView(Application application);
+    ProgramView(Application *application);
     virtual ~ProgramView();
     void show();
     void shearLeft();
     void shearRight();
     void center();
     void centerItems();
-    Application application;
+    Application *application;
 private:
     QGraphicsPixmapItem* m_icon;
     QGraphicsTextItem* m_label;
@@ -61,7 +61,7 @@ public:
     enum direction {left, right};
     IconView(QWidget* parent = 0);
     ~IconView();
-    void addProgram(Application application);
+    void addProgram(Application *application);
     Application* selectedApp();
     void moveItems(IconView::direction direction);
     void clear();
@@ -73,12 +73,12 @@ private:
     int m_current;
 };
 
-class AppList : public QList<Application>
+class AppList : public QList<Application*>
 {
 public:
     AppList();
     ~AppList();
-    void insertSorted(const Application &value);
+    void insertSorted(Application *value);
 };
 
 class Mangonel : public QWidget
@@ -112,7 +112,7 @@ private:
     int m_historyIndex;
     QStringList m_history;
     QHash<QString, Provider*> m_providers;
-    AppList* m_apps;
+    QList<Application*> m_apps;
     int m_current;
 };
 

@@ -51,20 +51,37 @@ Calculator::Calculator()
 Calculator::~Calculator()
 {}
 
-QList<Application> Calculator::getResults(QString query)
+QList<Application*> Calculator::getResults(QString query)
 {
     succes = false;
-    QList<Application> list = QList<Application>();
-    float awnser = calculate(query);
+    QList<Application*> list;
+    QString result;
+
+    QRegExp convertPattern("(.+)(?:to|in)\\s+((bin|oct|hex)\\w*)$");
+    if (query.contains(convertPattern)) {
+        QString target = convertPattern.cap(2);
+        long calculated = calculate(convertPattern.cap(1));
+
+        if (target.startsWith("bin")) {
+            result = "0b" + QString::number(calculated, 2);
+        } else if (target.startsWith("oct")) {
+            result = "0" + QString::number(calculated, 8);
+        } else if (target.startsWith("hex")) {
+            result = "0x" + QString::number(calculated, 16);
+        }
+    } else {
+        result = QString::number(calculate(query), 'g', 12);
+    }
+
     if (succes)
     {
-        Application result = Application();
-        result.icon = "accessories-calculator";
-        result.name = QString::number(awnser, 'g', 12);
-        result.program = result.name;
-        result.object = this;
-        result.type = i18n("Calculation");
-        list.append(result);
+        Application *app = new Application;
+        app->icon = "accessories-calculator";
+        app->name = result;
+        app->program = app->name;
+        app->object = this;
+        app->type = i18n("Calculation");
+        list.append(app);
     }
     return list;
 }

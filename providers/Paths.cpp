@@ -46,9 +46,9 @@ Paths::Paths()
 Paths::~Paths()
 {}
 
-QList<Application> Paths::getResults(QString query)
+QList<Application *> Paths::getResults(QString query)
 {
-    QList<Application> list = QList<Application>();
+    QList<Application*> list;
     QString original = query;
     QDir dir;
     if (query.startsWith("/"))
@@ -71,24 +71,24 @@ QList<Application> Paths::getResults(QString query)
     QFileInfoList paths = dir.entryInfoList(QStringList(query), QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
     foreach(QFileInfo path, paths)
     {
-        Application result = Application();
-        result.name = subUser(path.absoluteFilePath());
-        result.completion = result.name.left(result.name.lastIndexOf("/")) + "/" + path.fileName();
-        KFileItem info = KFileItem(KFileItem::Unknown, KFileItem::Unknown, path.absoluteFilePath());
+        Application *result = new Application();
+        result->name = subUser(path.absoluteFilePath());
+        result->completion = result->name.left(result->name.lastIndexOf("/")) + "/" + path.fileName();
+        KFileItem info = KFileItem(path.absoluteFilePath());
         if (path.isDir())
         {
-            result.completion += "/";
-            result.icon = "system-file-manager";
-            result.priority = time(NULL) - info.time(KFileItem::ModificationTime).toTime_t();
+            result->completion += "/";
+            result->icon = "system-file-manager";
+            result->priority = time(NULL) - info.time(KFileItem::ModificationTime).toTime_t();
         }
         else
         {
-            result.icon = info.iconName();
-            result.priority = time(NULL) - info.time(KFileItem::ModificationTime).toTime_t();
+            result->icon = info.iconName();
+            result->priority = time(NULL) - info.time(KFileItem::ModificationTime).toTime_t();
         }
-        result.object = this;
-        result.program = path.absoluteFilePath();
-        result.type = i18n("Open path");
+        result->object = this;
+        result->program = path.absoluteFilePath();
+        result->type = i18n("Open path");
         list.append(result);
     }
     return list;

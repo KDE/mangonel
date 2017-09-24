@@ -53,25 +53,25 @@ Applications::~Applications()
     storePopularities();
 }
 
-Application Applications::createApp(const KService::Ptr &service)
+Application *Applications::createApp(const KService::Ptr &service)
 {
-        Application app;
-        app.name = service->name();
-        app.completion = app.name;
-        app.icon = service->icon();
-        app.object = this;
-        app.program = service->exec();
+        Application *app = new Application;
+        app->name = service->name();
+        app->completion = app->name;
+        app->icon = service->icon();
+        app->object = this;
+        app->program = service->exec();
         if (service->isApplication())
-            app.type = i18n("Run application");
+            app->type = i18n("Run application");
         else
-            app.type = i18n("Open control module");
+            app->type = i18n("Open control module");
         
         return app;
 }
 
-QList< Application > Applications::getResults(QString term)
+QList<Application *> Applications::getResults(QString term)
 {
-    QList<Application> list;
+    QList<Application*> list;
     QString query = "exist Exec and ( (exist Keywords and '%1' ~subin Keywords) or (exist GenericName and '%1' ~~ GenericName) or (exist Name and '%1' ~~ Name) or ('%1' ~~ Exec) )";
     query = query.arg(term);
     KService::List services = KServiceTypeTrader::self()->query("Application", query);
@@ -81,16 +81,18 @@ QList< Application > Applications::getResults(QString term)
         if (service->noDisplay())
             continue;
         
-        Application app = createApp(service);
+        Application *app = createApp(service);
         
         if (m_popularities.contains(service->exec())) {
-            app.priority = time(NULL) - m_popularities[service->exec()].lastUse;
-            app.priority -= 3600 * m_popularities[service->exec()].count;
+            app->priority = time(NULL) - m_popularities[service->exec()].lastUse;
+            app->priority -= 3600 * m_popularities[service->exec()].count;
         } else {
-            app.priority = ++priority;
-
-            if (service->isApplication())
-                app.priority *= 0.9;
+            if (service->isApplication()) app->priority -= 10;
+            if (app->name.startsWith(term)) app->priority -= 10;
+            if (app->name.startsWith(term, Qt::CaseInsensitive)) app->priority -= 10;
+            if (app->name.contains(term)) app->priority -= 10;
+            if (app->name.contains(term, Qt::CaseInsensitive)) app->priority -= 10;
+            app->priority += app->name.length();
         }
         
         list.append(app);

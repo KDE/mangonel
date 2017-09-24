@@ -1,17 +1,16 @@
 /*
- * Copyright 2010-2012 Bart Kroon <bart@tarmack.eu>
- * Copyright 2012, 2013 Martin Sandsmark <martin.sandsmark@kde.org>
- * 
+ * Copyright 2016 Martin Sandsmark <martin.sandsmark@kde.org>
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -24,29 +23,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef APPLICATIONS_H
-#define APPLICATIONS_H
-
 #include "Provider.h"
 
-#include <kservicegroup.h>
-
-class Applications : public Provider
-{
-    Q_OBJECT
-public:
-    Applications();
-    ~Applications();
-    
-public slots:
-    QList<Application*> getResults(QString query) override;
-    int launch(QVariant selected) override;
-    
-private:
-    Application *createApp(const KService::Ptr &service);
-    void storePopularities();
-    QHash<QString, popularity> m_popularities;
-};
-
-#endif
-// kate: indent-mode cstyle; space-indent on; indent-width 4; 
+Application::Application()
+{}

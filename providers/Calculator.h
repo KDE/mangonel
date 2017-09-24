@@ -37,7 +37,7 @@ public:
     Calculator();
     ~Calculator();
 public slots:
-    QList<Application> getResults(QString query);
+    QList<Application *> getResults(QString query);
     int launch(QVariant selected);
 private:
     QHash<char, calcFunct> functions;

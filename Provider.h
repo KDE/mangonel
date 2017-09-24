@@ -40,26 +40,39 @@ struct Application;
 // Abstract base class of providers.
 class Provider : public QObject
 {
+    Q_OBJECT
+
 public:
-    virtual ~Provider() {};
+    virtual ~Provider() {}
 public slots:
-    virtual QList<Application> getResults(QString query) = 0;
+    virtual QList<Application*> getResults(QString query) = 0;
     virtual int launch(QVariant selected) = 0;
 };
 
 // Struct stored in AppList.
-struct Application
+struct Application : public QObject
 {
-    Application() : priority(2147483647)
-    {};
+    Q_OBJECT
+
+    Q_PROPERTY(QString name MEMBER name CONSTANT)
+    Q_PROPERTY(QString completion MEMBER completion CONSTANT)
+    Q_PROPERTY(QString icon MEMBER icon CONSTANT)
+    Q_PROPERTY(QString type MEMBER type CONSTANT)
+    Q_PROPERTY(int priority MEMBER priority CONSTANT)
+
+public:
+    Application();
 
     QString name;
     QString completion;
     QString icon;
-    int priority;
+    long priority = 0;//INT_MAX;
     QVariant program;
     Provider* object; //Pointer to the search provider that provided this result.
     QString type;
+
+public slots:
+    void launch() { object->launch(program); }
 };
 
 #endif // Provider_H

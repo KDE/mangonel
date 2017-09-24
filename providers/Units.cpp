@@ -38,9 +38,9 @@ Units::Units()
 Units::~Units()
 {}
 
-QList< Application > Units::getResults(QString query)
+QList<Application *> Units::getResults(QString query)
 {
-    QList<Application> list = QList<Application>();
+    QList<Application*> list;
     QRegExp pattern = QRegExp("(\\d+)\\s*(\\w+)\\s+(?:\\=|to|is|in)\\s+(\\w+)$", Qt::CaseInsensitive);
     if (query.contains(pattern) && pattern.captureCount() == 3)
     {
@@ -49,12 +49,12 @@ QList< Application > Units::getResults(QString query)
         value = converter.convert(value, pattern.cap(3));
         
         if (value.isValid()) {
-            Application result;
-            result.icon = "accessories-calculator";
-            result.object = this;
-            result.name = value.toString();
-            result.program = result.name;
-            result.type = i18n("Unit conversion");
+            Application *result = new Application;
+            result->icon = "accessories-calculator";
+            result->object = this;
+            result->name = value.toString();
+            result->program = result->name;
+            result->type = i18n("Unit conversion");
             list.append(result);
         }
     }

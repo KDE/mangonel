@@ -31,6 +31,7 @@ set(Mangonel_SRCS
   Mangonel.cpp Label.cpp
   Config.cpp
   main.cpp
+  Provider.cpp
   providers/Applications.cpp
   providers/Paths.cpp
   providers/Shell.cpp
