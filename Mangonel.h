@@ -27,89 +27,53 @@
 #ifndef Mangonel_H
 #define Mangonel_H
 
-#include "Label.h"
 #include "Provider.h"
 
 #include <QAction>
 #include <QGraphicsItemGroup>
 #include <QGraphicsView>
 #include <QLabel>
-#include <QWidget>
 
-class ProgramView : public QGraphicsItemGroup
-{
-public:
-    ProgramView(Application *application);
-    virtual ~ProgramView();
-    void show();
-    void shearLeft();
-    void shearRight();
-    void center();
-    void centerItems();
-    Application *application;
-private:
-    QGraphicsPixmapItem* m_icon;
-    QGraphicsTextItem* m_label;
-    QGraphicsTextItem* m_descriptionLabel;
-    QGraphicsRectItem* m_block;
-};
-
-class IconView : public QGraphicsView
+class Mangonel : public QObject
 {
     Q_OBJECT
-public:
-    enum direction {left, right};
-    IconView(QWidget* parent = 0);
-    ~IconView();
-    void addProgram(Application *application);
-    Application* selectedApp();
-    void moveItems(IconView::direction direction);
-    void clear();
-    void setFirst();
-    Label* label;
-private:
-    QList<ProgramView*> m_items;
-    QGraphicsScene* m_scene;
-    int m_current;
-};
+    Q_PROPERTY(QList<QObject*> apps READ apps NOTIFY appsChanged)
+    Q_PROPERTY(QStringList history READ history NOTIFY historyChanged)
 
-class AppList : public QList<Application*>
-{
 public:
-    AppList();
-    ~AppList();
-    void insertSorted(Application *value);
-};
-
-class Mangonel : public QWidget
-{
-    Q_OBJECT
-public:
-    Mangonel();
     ~Mangonel();
+
+    static Mangonel *instance();
+
+    QList<QObject*> apps() {
+        QList<QObject*> apps;
+        for (Application *app : m_apps) {
+            apps.append(app);
+        }
+        return apps;
+    }
+
+    const QStringList &history() { return m_history; }
+
 public slots:
-    void show();
-    void hide();
-private slots:
-    void launch();
     void getApp(QString query);
-    void showHide();
     void showConfig();
     void configureNotifications();
+    QString selectionClipboardContent();
+    void addToHistory(const QString &text);
+
+signals:
+    void appsChanged();
+    void triggered();
+    void historyChanged();
+
+private slots:
     void setHotkey(const QKeySequence& hotkey);
 private:
-    bool event(QEvent* event);
-    void inputMethodEvent(QInputMethodEvent* event);
-    void keyPressEvent(QKeyEvent* event);
-    void focusInEvent(QFocusEvent* event);
-    void focusOutEvent(QFocusEvent* event);
-    bool eventFilter(QObject *object, QEvent *event);
+    Mangonel();
     
     QAction* m_actionShow;
     bool m_processingKey;
-    Label* m_label;
-    IconView* m_iconView;
-    int m_historyIndex;
     QStringList m_history;
     QHash<QString, Provider*> m_providers;
     QList<Application*> m_apps;

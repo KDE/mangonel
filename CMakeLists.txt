@@ -28,7 +28,7 @@ find_package (KF5 REQUIRED COMPONENTS
 )
 
 set(Mangonel_SRCS
-  Mangonel.cpp Label.cpp
+  Mangonel.cpp
   Config.cpp
   main.cpp
   Provider.cpp
@@ -39,6 +39,7 @@ set(Mangonel_SRCS
   providers/Calculator.cpp
   providers/Units.cpp
 )
+qt5_add_resources(Mangonel_SRCS resources.qrc)
 
 add_executable(mangonel ${Mangonel_SRCS})
 

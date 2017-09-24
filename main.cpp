@@ -25,15 +25,19 @@
  */
 
 #include "Mangonel.h"
+#include "IconProvider.h"
 
 #include <QApplication>
 #include <KDBusService>
 #include <KAboutData>
 #include <klocalizedstring.h>
+#include <QQmlApplicationEngine>
+#include <QQuickWindow>
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
+
     KAboutData aboutData (
                        QStringLiteral("mangonel"),
                        i18n("Mangonel"),
@@ -44,13 +48,22 @@ int main(int argc, char** argv)
     aboutData.addAuthor(i18n("Martin Sandsmark"), i18n("Developer"), "martin.sandsmark@kde.org", "http://iskrembilen.com/");
     aboutData.addAuthor(i18n("Bart Kroon"), i18n("Developer, original author"), "", "http://tarmack.eu/");
     KAboutData::setApplicationData(aboutData);
-    KDBusService service(KDBusService::Unique);
 
+    KDBusService service(KDBusService::Unique);
+    QObject::connect(&service, &KDBusService::activateRequested, Mangonel::instance(), &Mangonel::triggered);
 
     app.setQuitOnLastWindowClosed(false);
-    app.setOrganizationName("Tarmack SW");
-    Mangonel foo;
-    QObject::connect(&service, &KDBusService::activateRequested, &foo, &Mangonel::show);
+    app.setOrganizationName("KDE");
+
+    qmlRegisterSingletonType<Mangonel>("org.kde", 1, 0, "Mangonel", [](QQmlEngine *, QJSEngine*) -> QObject* {
+        QQmlEngine::setObjectOwnership(Mangonel::instance(), QQmlEngine::CppOwnership);
+        return Mangonel::instance();
+    });
+    QQuickWindow::setDefaultAlphaBuffer(true);
+
+    QQmlApplicationEngine qmlEngine;
+    qmlEngine.addImageProvider("icon", new IconProvider);
+    qmlEngine.load(QUrl("qrc:/main.qml"));
     return app.exec();
 }
 

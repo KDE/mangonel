@@ -82,5 +82,4 @@ void ConfigDialog::setAutostart(bool autostart)
     as.setAutostarts(autostart);
 }
 
-#include "Config.moc"
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 

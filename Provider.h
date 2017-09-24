@@ -72,7 +72,9 @@ public:
     QString type;
 
 public slots:
-    void launch() { object->launch(program); }
+    void launch() {
+        object->launch(program);
+    }
 };
 
 #endif // Provider_H
