@@ -64,17 +64,21 @@ Mangonel::Mangonel()
     // Setup our global shortcut.
     m_actionShow = new QAction(i18n("Show Mangonel"), this);
     m_actionShow->setObjectName(QString("show"));
-    QKeySequence shortcut = QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Space);
-    KGlobalAccel::self()->setShortcut(m_actionShow, QList<QKeySequence>() << shortcut);
+    QList<QKeySequence> shortcuts({QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Space)});
+    KGlobalAccel::self()->setShortcut(m_actionShow, shortcuts);
+    shortcuts = KGlobalAccel::self()->shortcut(m_actionShow);
     connect(m_actionShow, SIGNAL(triggered()), this, SIGNAL(triggered()));
+
+    QString shortcutString;
+    if (!shortcuts.isEmpty()) {
+        shortcutString = shortcuts.first().toString();
+    }
+
+    QString message = i18nc("@info", "Press <shortcut>%1</shortcut> to show Mangonel.", shortcutString);
+    KNotification::event(QLatin1String("startup"), message);
 
     const KConfigGroup config(KSharedConfig::openConfig(), "mangonel_main");
     m_history = config.readEntry("history", QStringList());
-
-    QString shortcutString(m_actionShow->shortcut().toString());
-    QString message(i18nc("@info", "Press <shortcut>%1</shortcut> to show Mangonel.", shortcutString));
-
-    KNotification::event(QLatin1String("startup"), message);
 
     // Instantiate the providers.
     m_providers["applications"] = new Applications(this);
