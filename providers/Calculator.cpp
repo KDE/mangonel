@@ -32,6 +32,7 @@
 #include <QStringList>
 #include <klocalizedstring.h>
 #include <QDebug>
+#include <QLocale>
 
 
 const QList<char> operators = (QList<char>() << '+' << '-' << '/' << '*' << '^' << '%');
@@ -72,7 +73,7 @@ QList<Application*> Calculator::getResults(QString query)
             result = "0x" + QString::number(calculated, 16);
         }
     } else {
-        result = QString::number(calculate(query), 'g', 12);
+        result = QLocale::system().toString(calculate(query), 'f', 6);
     }
 
     if (succes)
@@ -154,10 +155,11 @@ float Calculator::calculate(QString query)
         float value1 = calculate(values.takeFirst());
         float value2 = calculate(values.join(QString(oper)));
         return functions[oper](value1, value2);
-    }
-    else
+    } else {
         succes = true;
-        return 0;
+    }
+
+    return 0;
 }
 
 int Calculator::launch(QVariant selected)
