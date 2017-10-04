@@ -73,7 +73,12 @@ QList<Application*> Calculator::getResults(QString query)
             result = "0x" + QString::number(calculated, 16);
         }
     } else {
-        result = QLocale::system().toString(calculate(query), 'f', 6);
+        int precision = 2;
+        float calculationResult = calculate(query);
+        if (calculationResult < 100) {
+            precision = 6;
+        }
+        result = QLocale::system().toString(calculationResult, 'f', precision);
     }
 
     if (succes)
@@ -96,10 +101,10 @@ float Calculator::calculate(QString query)
         return 0;
     int pos = 0;
     QChar ch = query.at(pos);
+
     int count = 0;
-    QString inner = "";
-    while (pos < query.length())
-    {
+    QString inner;
+    while (pos < query.length()) {
         ch = query.at(pos);
         if (ch == ')')
         {
@@ -114,29 +119,34 @@ float Calculator::calculate(QString query)
         }
         if (count > 0)
                 inner += ch;
-        if (ch == '(')
-        {
+        if (ch == '(') {
             count += 1;
         }
         pos += 1;
     }
-    char oper = ' ';
+    QChar oper = ' ';
     QStringList values;
-    foreach(char item, operators)
-    {
-        int index = query.indexOf(item);
-        if (index == 0)
-            index = query.indexOf(item, 1);
-        if (index > 0)
-        {
-            if (!operators.contains(query.at(index-1).toLatin1()))
-            {
-                oper = item;
-                values = query.split(item);
-                break;
-            }
+
+    static const QSet<QChar> operators({'+', '-', '/', '*', '^', '%'});
+
+    for(const QChar op : operators) {
+        int index = query.indexOf(op);
+
+        if (index == 0) {
+            index = query.indexOf(op, 1);
+        }
+
+        if (index < 0) {
+            continue;
+        }
+
+        if (!operators.contains(query.at(index-1))) {
+            oper = op;
+            values = query.split(op);
+            break;
         }
     }
+
     if (values.isEmpty()) {
         float dec = query.toFloat(&succes);
         if (succes) {
@@ -145,19 +155,17 @@ float Calculator::calculate(QString query)
         int integer = query.toInt(&succes, 0);
         return integer;
     }
-    if (functions.contains(oper))
-    {
-        if (values[0] == "")
-        {
-            values.removeFirst();
-            values[0] = oper + values[0];
-        }
-        float value1 = calculate(values.takeFirst());
-        float value2 = calculate(values.join(QString(oper)));
-        return functions[oper](value1, value2);
-    } else {
-        succes = true;
+    if (!functions.contains(oper)) {
+        return 0 ;
     }
+
+    if (values[0] == "") {
+        values.removeFirst();
+        values[0] = oper + values[0];
+    }
+    float value1 = calculate(values.takeFirst());
+    float value2 = calculate(values.join(QString(oper)));
+    return functions[oper](value1, value2);
 
     return 0;
 }

@@ -42,7 +42,7 @@ public slots:
     QList<Application *> getResults(QString query);
     int launch(QVariant selected);
 private:
-    QHash<char, calcFunct> functions;
+    QHash<QChar, calcFunct> functions;
     float calculate(QString query);
 
     void testCalc();
