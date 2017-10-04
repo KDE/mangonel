@@ -30,10 +30,10 @@
 
 #include <KServiceTypeTrader>
 #include <QDebug>
-#include <krun.h>
 #include <kconfiggroup.h>
 #include <KSharedConfig>
 #include <KLocalizedString>
+#include <QProcess>
 
 Applications::Applications(QObject *parent) :
     Provider(parent)
@@ -117,10 +117,11 @@ int Applications::launch(QVariant selected)
     
     storePopularities();
     
-    if (KRun::run(exec, QList<QUrl>(), 0))
+    if (QProcess::startDetached(exec)) {
         return 0;
-    else
+    } else {
         return 1;
+    }
 }
 
 void Applications::storePopularities()
