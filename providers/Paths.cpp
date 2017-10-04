@@ -25,11 +25,12 @@
 
 #include "Paths.h"
 
-#include <QDir>
-#include <KFileItem>
 #include <KLocalizedString>
-#include <KRun>
+
+#include <QDateTime>
 #include <QDesktopServices>
+#include <QDir>
+#include <QUrl>
 
 
 static QString subUser(QString path)
@@ -51,15 +52,15 @@ Paths::~Paths()
 QList<Application *> Paths::getResults(QString query)
 {
     QList<Application*> list;
-    QString original = query;
+
     QDir dir;
-    if (query.startsWith("/"))
-    {
+    if (query.startsWith("/")) {
         dir = QDir::root();
         query.remove(0, 1);
-    }
-    else
+    } else {
         dir = QDir::home();
+    }
+
     QStringList walk = query.split("/", QString::SkipEmptyParts);
     if (walk.isEmpty())
         walk.append("");
@@ -76,17 +77,13 @@ QList<Application *> Paths::getResults(QString query)
         Application *result = new Application();
         result->name = subUser(path.absoluteFilePath());
         result->completion = result->name.left(result->name.lastIndexOf("/")) + "/" + path.fileName();
-        KFileItem info = KFileItem(path.absoluteFilePath());
-        if (path.isDir())
-        {
+        QFileInfo info(path.absoluteFilePath());
+        result->priority = info.lastModified().toSecsSinceEpoch();
+        if (path.isDir()) {
             result->completion += "/";
             result->icon = "system-file-manager";
-            result->priority = time(NULL) - info.time(KFileItem::ModificationTime).toTime_t();
-        }
-        else
-        {
-            result->icon = info.iconName();
-            result->priority = time(NULL) - info.time(KFileItem::ModificationTime).toTime_t();
+        } else {
+            result->icon = m_mimeDb.mimeTypeForFile(path.absoluteFilePath()).iconName();
         }
         result->object = this;
         result->program = path.absoluteFilePath();

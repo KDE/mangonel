@@ -28,6 +28,7 @@
 
 #include "Provider.h"
 
+#include <QMimeDatabase>
 
 class Paths : public Provider
 {
@@ -39,6 +40,9 @@ public:
 public slots:
     QList<Application*> getResults(QString query) override;
     int launch(QVariant selected) override;
+
+private:
+    QMimeDatabase m_mimeDb;
 };
 
 #endif //Paths_H
