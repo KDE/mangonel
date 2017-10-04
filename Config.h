@@ -28,7 +28,7 @@
 
 #include <QDialog>
 
-class KKeySequenceWidget;
+class QKeySequenceEdit;
 
 class ConfigDialog : public QDialog
 {
@@ -48,7 +48,7 @@ private slots:
     void setAutostart(bool autostart);
 
 private:
-    KKeySequenceWidget *m_hotkeySelect;
+    QKeySequenceEdit *m_hotkeySelect;
 };
 
 #endif //Config_H

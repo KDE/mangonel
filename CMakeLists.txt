@@ -23,7 +23,6 @@ find_package (KF5 REQUIRED COMPONENTS
     Notifications
     DBusAddons
     WindowSystem
-    XmlGui
     UnitConversion
 )
 
@@ -55,7 +54,6 @@ target_link_libraries(mangonel
   KF5::NotifyConfig
   KF5::Notifications
   KF5::WindowSystem
-  KF5::XmlGui
   KF5::UnitConversion
 )
 
