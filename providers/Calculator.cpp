@@ -34,13 +34,10 @@
 #include <QDebug>
 #include <QLocale>
 #include <QtTest/qtest.h>
-#include <QStack>
 
 #include <iostream>
 
-typedef float (*OperatorFunction)(float val1, float val2);
-
-static const QHash<QChar, OperatorFunction> s_operatorFunctions({
+static const QHash<QChar, calcFunct> s_functions({
         {'+', [](float val1, float val2) { return val1 + val2; }},
         {'-', [](float val1, float val2) { return val1 - val2; }},
         {'/', [](float val1, float val2) { return val1 / val2; }},
@@ -50,14 +47,7 @@ static const QHash<QChar, OperatorFunction> s_operatorFunctions({
 });
 
 const QList<char> operators = (QList<char>() << '+' << '-' << '/' << '*' << '^' << '%');
-
-typedef float (*CalculationFunction)(float value);
-static const QHash<QString, CalculationFunction> s_functions({
-        {"sqrt", [](float value) { return sqrt(value); }},
-        {"abs", [](float value) { return fabs(value); }},
-});
-
-static bool succes = false;
+bool succes = false;
 
 Calculator::Calculator(QObject *parent) :
     Provider(parent)
@@ -117,67 +107,34 @@ QList<Application*> Calculator::getResults(QString query)
 
 float Calculator::calculate(QString query)
 {
-    query = query.remove(' ');
-
-    if (query.length() <= 0) {
+    query.remove(' ');
+    if (query.length() <= 0)
         return 0;
-    }
-
-
-    QString inner;
-
-    QStack<QString> functionsStack;
-
-    const int missingParens = query.count('(') - query.count(')');
-    if (missingParens > 0) {
-        query.resize(query.size() + missingParens, ')');
-    }
-
     int pos = 0;
+    QChar ch = query.at(pos);
+
+    int count = 0;
+    QString inner;
     while (pos < query.length()) {
-        const QChar ch = query.at(pos);
-        if (ch == ')') {
-            QString function;
-
-            if (!functionsStack.isEmpty()) {
-                function = functionsStack.pop();
-            }
-
-            if (functionsStack.isEmpty()) {
-                float subResult = calculate(inner);
-                if (s_functions.contains(function)) {
-                    subResult = s_functions[function](subResult);
-                }
-
-                const QString result = QString::number(subResult, 'f', 12);
-                pos -= inner.length() + 2 + function.length();
+        ch = query.at(pos);
+        if (ch == ')')
+        {
+            count -= 1;
+            if (count <= 0)
+            {
+                QString result = QString::number(calculate(inner), 'f', 12);
+                pos -= inner.length() + 2;
                 pos += result.length();
-                query.replace(function + "(" + inner +")", result);
+                query.replace("("+inner+")", result);
             }
         }
-
-        if (!functionsStack.isEmpty()) {
-            inner += ch;
-        }
-
+        if (count > 0)
+                inner += ch;
         if (ch == '(') {
-            QString function = query.left(pos);
-            for (const QString &funcName : s_functions.keys()) {
-                if (function.endsWith(funcName)) {
-                    function = funcName;
-                }
-            }
-
-            if (!s_functions.contains(function)) {
-                function.clear();
-            }
-
-            functionsStack.push(function);
+            count += 1;
         }
-
-        pos++;
+        pos += 1;
     }
-
     QChar oper = ' ';
     QStringList values;
 
@@ -192,7 +149,7 @@ float Calculator::calculate(QString query)
             continue;
         }
 
-        if (!s_operatorFunctions.contains(query.at(index-1))) {
+        if (!s_functions.contains(query.at(index-1))) {
             oper = op;
             values = query.split(op);
             break;
@@ -201,14 +158,13 @@ float Calculator::calculate(QString query)
 
     if (values.isEmpty()) {
         float dec = query.toFloat(&succes);
-
         if (succes) {
             return dec;
         }
         int integer = query.toInt(&succes, 0);
         return integer;
     }
-    if (!s_operatorFunctions.contains(oper)) {
+    if (!s_functions.contains(oper)) {
         return 0 ;
     }
 
@@ -218,7 +174,9 @@ float Calculator::calculate(QString query)
     }
     float value1 = calculate(values.takeFirst());
     float value2 = calculate(values.join(QString(oper)));
-    return s_operatorFunctions[oper](value1, value2);
+    return s_functions[oper](value1, value2);
+
+    return 0;
 }
 
 int Calculator::launch(QVariant selected)
@@ -287,7 +245,6 @@ void Calculator::testCalc()
     equalsAssert(("443+43*3"), 572,"Test operator precedence.");
     equalsAssert(("23*((23-3)*34+43)"), 16629, "groups");
     equalsAssert(("23*(84+(-23-3)*34+-43)"), -19389, "groups");
-    equalsAssert(("sqrt(2+2)+2+sqrt(sqrt(4)+sqrt(4))"), 6, "functions");
 }
 
 

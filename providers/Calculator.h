@@ -28,6 +28,7 @@
 
 #include "Provider.h"
 
+typedef float (*calcFunct)(float val1, float val2);
 
 class Calculator : public Provider
 {
