@@ -127,8 +127,6 @@ float Calculator::calculate(QString query)
     QChar oper = ' ';
     QStringList values;
 
-    static const QSet<QChar> operators({'+', '-', '/', '*', '^', '%'});
-
     for(const QChar op : operators) {
         int index = query.indexOf(op);
 
