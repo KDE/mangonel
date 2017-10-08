@@ -51,7 +51,6 @@ QList<Application *> Units::getResults(QString query)
 
     const KUnitConversion::Unit inputUnit = resolveUnitName(pattern.cap(2));
     if (!inputUnit.isValid()) {
-        qDebug() << "Invalid input unit" << pattern.cap(2);
         return list;
     }
 
@@ -60,7 +59,6 @@ QList<Application *> Units::getResults(QString query)
     const KUnitConversion::Value inputValue(inputNumber, inputUnit);
     const KUnitConversion::Unit outputUnit = resolveUnitName(pattern.cap(3), inputUnit.category());
     if (!outputUnit.isValid()) {
-        qDebug() << "Invalid output unit" << pattern.cap(3);
         return list;
     }
 
