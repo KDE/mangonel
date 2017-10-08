@@ -189,7 +189,7 @@ Window {
             leftMargin: 5
             verticalCenter: inputText.verticalCenter
         }
-        text: resultList.currentItem !== null ? resultList.currentItem.type + ":" : ""
+        text: (resultList.count > 0 && resultList.currentItem !== null) ? resultList.currentItem.type + ":" : ""
         color: "white"
 
     }
