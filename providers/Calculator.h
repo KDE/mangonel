@@ -37,13 +37,12 @@ public:
     explicit Calculator(QObject *parent);
 
     ~Calculator();
+    static float calculate(QString query);
 
 public slots:
     QList<Application *> getResults(QString query);
     int launch(QVariant selected);
 private:
-    QHash<QChar, calcFunct> functions;
-    float calculate(QString query);
 
     void testCalc();
 };

@@ -33,7 +33,11 @@
 #include <klocalizedstring.h>
 #include <QDebug>
 #include <QLocale>
+#include <QtTest/qtest.h>
 
+#include <iostream>
+
+static QHash<QChar, calcFunct> s_functions;
 
 const QList<char> operators = (QList<char>() << '+' << '-' << '/' << '*' << '^' << '%');
 bool succes = false;
@@ -41,14 +45,15 @@ bool succes = false;
 Calculator::Calculator(QObject *parent) :
     Provider(parent)
 {
-    functions['+'] = [](float val1, float val2) { return val1 + val2; };
-    functions['-'] = [](float val1, float val2) { return val1 - val2; };
-    functions['/'] = [](float val1, float val2) { return val1 / val2; };
-    functions['*'] = [](float val1, float val2) { return val1 * val2; };
-    functions['^'] = [](float val1, float val2) { return pow(val1, val2); };
-    functions['%'] = [](float val1, float val2) { return fmod(val1, val2); };
-
-    testCalc();
+    if (functions.isEmpty()) {
+        functions['+'] = [](float val1, float val2) { return val1 + val2; };
+        functions['-'] = [](float val1, float val2) { return val1 - val2; };
+        functions['/'] = [](float val1, float val2) { return val1 / val2; };
+        functions['*'] = [](float val1, float val2) { return val1 * val2; };
+        functions['^'] = [](float val1, float val2) { return pow(val1, val2); };
+        functions['%'] = [](float val1, float val2) { return fmod(val1, val2); };
+        testCalc();
+    }
 }
 
 Calculator::~Calculator()
@@ -111,7 +116,7 @@ float Calculator::calculate(QString query)
             count -= 1;
             if (count <= 0)
             {
-                QString result = QString::number(this->calculate(inner), 'f', 12);
+                QString result = QString::number(calculate(inner), 'f', 12);
                 pos -= inner.length() + 2;
                 pos += result.length();
                 query.replace("("+inner+")", result);
@@ -138,7 +143,7 @@ float Calculator::calculate(QString query)
             continue;
         }
 
-        if (!operators.contains(query.at(index-1))) {
+        if (!functions.contains(query.at(index-1))) {
             oper = op;
             values = query.split(op);
             break;
@@ -176,34 +181,64 @@ int Calculator::launch(QVariant selected)
 }
 
 
+static void equalsAssert(const char *expr, float expected, const char *what)
+{
+    const float calculated = Calculator::calculate(expr);
+    if (calculated != expected) {
+        std::cerr << what << std::endl;
+        std::cerr << expr << "=" << calculated << " should be " << expected << std::endl;
+        assert(calculated == expected);
+    }
+}
+
+static void precisionAssert(const char *expr, float subtract, float maximum, const char *what)
+{
+    const float calculated = fabs(Calculator::calculate(expr) - subtract);
+    if (calculated  > maximum) {
+        std::cerr << what << std::endl;
+        std::cerr << expr << "=" << calculated << "s hould be less than " << maximum << std::endl;
+        assert(calculated <= maximum);
+    }
+}
+
+static void notEqualsAssert(const char *expr, float expected, const char *what)
+{
+    const float calculated = Calculator::calculate(expr);
+    if (calculated == expected) {
+        std::cerr << what << std::endl;
+        std::cerr << expr << "=" << calculated << " should not be " << expected << std::endl;
+        assert(calculated != expected);
+    }
+}
+
 void Calculator::testCalc()
 {
-    assert(calculate("") == 0); // Test for default output.
-    assert(calculate(" ") == 0); // Test for default output.
-    assert(calculate("23+23") == 46); // Test addition of integers.
-    assert(calculate("23+-23") == 0); // Test addition of integers.
-    assert(calculate("34.442+23.558") == 58); // Test addition of floats.
-    assert(fabs(calculate("-34.442+23.442") - -11) <= 0.00001); // Test addition of floats.
-    assert(calculate("36-7") == 36-7); // Test substraction of integers.
-    assert(calculate("23.534-12.034") == 11.5); // Test substraction of floats.
-    assert(fabs(calculate("23.534--12.034") - 35.568) <= 0.000001); // Test substraction of floats.
-    assert(calculate("23/2") == 11.5); // Test division of integers.
-    assert(calculate("23/-2") == -11.5); // Test division of integers.
-    assert(calculate("12.5/2") == 6.25); // Test division of a float.
-    assert(calculate("25*25") == 25*25); // Test multiplication of integers.
-    assert(calculate("-25*25") == -25*25); // Test multiplication of integers.
-    assert(fabs(calculate("-25.3*25.4") - -642.62) <= 0.00001);
-    assert(calculate("2.5*3.5") == 8.75); // Test multiplication of floats.
-    assert(calculate("2.5*-3.5") == -8.75); // Test multiplication of floats.
-    assert(calculate("2^5") == 32); // Test raising to power of integers.
-    assert(fabs(calculate("3.5^2.1") - 13.88490) <= 0.00001); // Test raising to power of floats.
-    assert(calculate("12/0") == 1/0.0); // Test infinity.
-    assert(calculate("0/0.0") != calculate("0/0.0")); // Test NaN.
-    assert(calculate("443*(43+3)") == 20378); // Test for nesting without testing operator precedence.
-    assert(calculate("(443+43)*3") == 1458); // Test for nesting with conflicting operator precedence.
-    assert(calculate("443+43*3") == 572); // Test operator precedence.
-    assert(calculate("23*((23-3)*34+43)") == 16629);
-    assert(calculate("23*(84+(-23-3)*34+-43)") == -19389);
+    equalsAssert((""), 0,"Test for default output.");
+    equalsAssert((" "), 0,"Test for default output.");
+    equalsAssert(("23+23"), 46,"Test addition of integers.");
+    equalsAssert(("23+-23"), 0,"Test addition of integers.");
+    equalsAssert(("34.442+23.558"), 58,"Test addition of floats.");
+    precisionAssert("-34.442+23.442", -11, 0.00001, "Test addition of floats.");
+    equalsAssert(("36-7"), 36-7,"Test substraction of integers.");
+    equalsAssert(("23.534-12.034"), 11.5,"Test substraction of floats.");
+    precisionAssert("23.534--12.034", 35.568, 0.000001,"Test substraction of floats.");
+    equalsAssert(("23/2"), 11.5,"Test division of integers.");
+    equalsAssert(("23/-2"), -11.5,"Test division of integers.");
+    equalsAssert(("12.5/2"), 6.25,"Test division of a float.");
+    equalsAssert(("25*25"), 25*25,"Test multiplication of integers.");
+    equalsAssert(("-25*25"), -25*25,"Test multiplication of integers.");
+    precisionAssert("-25.3*25.4", -642.62, 0.00001, "precision");
+    equalsAssert(("2.5*3.5"), 8.75,"Test multiplication of floats.");
+    equalsAssert(("2.5*-3.5"), -8.75,"Test multiplication of floats.");
+    equalsAssert(("2^5"), 32,"Test raising to power of integers.");
+    precisionAssert("3.5^2.1", 13.88490, 0.00001,"Test raising to power of floats.");
+    equalsAssert(("12/0"), 1/0.0,"Test infinity.");
+    notEqualsAssert(("0/0.0"), calculate("0/0.0"),"Test NaN.");
+    equalsAssert(("443*(43+3)"), 20378,"Test for nesting without testing operator precedence.");
+    equalsAssert(("(443+43)*3"), 1458,"Test for nesting with conflicting operator precedence.");
+    equalsAssert(("443+43*3"), 572,"Test operator precedence.");
+    equalsAssert(("23*((23-3)*34+43)"), 16629, "groups");
+    equalsAssert(("23*(84+(-23-3)*34+-43)"), -19389, "groups");
 }
 
 
