@@ -43,54 +43,37 @@ Units::~Units()
 QList<Application *> Units::getResults(QString query)
 {
     QList<Application*> list;
-    QRegExp pattern = QRegExp("(\\d+)\\s*(\\w+)\\s+(?:\\=|to|is|in)\\s+(\\w+)$", Qt::CaseInsensitive);
-    if (query.contains(pattern) && pattern.captureCount() == 3) {
-        QString inputUnit = pattern.cap(2);
-        const double inputNumber = pattern.cap(1).toDouble();
 
-        KUnitConversion::Value inputValue(inputNumber, inputUnit);
-
-        // If it doesn't resolve, try different capitalization
-        if (!inputValue.isValid()) {
-            inputUnit = inputUnit.toLower();
-            inputValue = KUnitConversion::Value(inputNumber, inputUnit);
-        }
-        if (!inputValue.isValid()) {
-            inputUnit[0] = inputUnit[0].toUpper();
-            inputValue = KUnitConversion::Value(inputNumber, inputUnit);
-        }
-        if (!inputValue.isValid()) {
-            inputUnit = inputUnit.toUpper();
-            inputValue = KUnitConversion::Value(inputNumber, inputUnit);
-        }
-
-        QString outputUnit = pattern.cap(3);
-        KUnitConversion::Converter converter;
-        KUnitConversion::Value outputValue = converter.convert(inputValue, outputUnit);
-
-        if (!outputValue.isValid()) {
-            outputUnit = outputUnit.toLower();
-            outputValue = converter.convert(inputValue, outputUnit);
-        }
-        if (!outputValue.isValid()) {
-            outputUnit[0] = outputUnit[0].toUpper();
-            outputValue = converter.convert(inputValue, outputUnit);
-        }
-        if (!outputValue.isValid()) {
-            outputUnit = outputUnit.toUpper();
-            outputValue = converter.convert(inputValue, outputUnit);
-        }
-
-        if (outputValue.isValid()) {
-            Application *result = new Application;
-            result->icon = "accessories-calculator";
-            result->object = this;
-            result->name = i18nc("conversion from one unit to another", "%1 is %2").arg(inputValue.toString()).arg(outputValue.toString());
-            result->program = result->name;
-            result->type = i18n("Unit conversion");
-            list.append(result);
-        }
+    QRegExp pattern("(\\d+)\\s*(\\w+)\\s+(?:\\=|to|is|in)\\s+(\\w+)$", Qt::CaseInsensitive);
+    if (!query.contains(pattern) || pattern.captureCount() != 3) {
+        return list;
     }
+
+    const KUnitConversion::Unit inputUnit = resolveUnitName(pattern.cap(2));
+    if (!inputUnit.isValid()) {
+        qDebug() << "Invalid input unit" << pattern.cap(2);
+        return list;
+    }
+
+    const double inputNumber = pattern.cap(1).toDouble();
+
+    const KUnitConversion::Value inputValue(inputNumber, inputUnit);
+    const KUnitConversion::Unit outputUnit = resolveUnitName(pattern.cap(3), inputUnit.category());
+    if (!outputUnit.isValid()) {
+        qDebug() << "Invalid output unit" << pattern.cap(3);
+        return list;
+    }
+
+    const KUnitConversion::Value outputValue = m_converter.convert(inputValue, outputUnit);
+
+    Application *result = new Application;
+    result->icon = "accessories-calculator";
+    result->object = this;
+    result->name = i18nc("conversion from one unit to another", "%1 is %2").arg(inputValue.toString()).arg(outputValue.toString());
+    result->program = result->name;
+    result->type = i18n("Unit conversion");
+    list.append(result);
+
     return list;
 }
 
@@ -99,6 +82,85 @@ int Units::launch(QVariant selected)
     QClipboard* clipboard = QApplication::clipboard();
     clipboard->setText(selected.toString(), QClipboard::Selection);
     return 0;
+}
+
+KUnitConversion::Unit Units::resolveUnitName(const QString &name, const KUnitConversion::UnitCategory &category)
+{
+    KUnitConversion::Unit unit;
+
+    if (!category.isNull()) {
+        unit = category.unit(name);
+    } else {
+        unit = m_converter.unit(name);
+    }
+
+    if (unit.isValid()) {
+        return unit;
+    }
+
+    // Didn't match directly, try to match without case sensitivity
+
+    if (!category.isNull()) {
+        // try only common first
+        unit = matchUnitCaseInsensitive(name, category, OnlyCommonUnits);
+        if (unit.isValid()) {
+            return unit;
+        }
+
+        // If not common, try something else
+        unit = matchUnitCaseInsensitive(name, category, AllUnits);
+        if (unit.isValid()) {
+            return unit;
+        }
+    } else {
+        for (const KUnitConversion::UnitCategory &candidateCategory : m_converter.categories()) {
+            unit = matchUnitCaseInsensitive(name, candidateCategory, OnlyCommonUnits);
+            if (unit.isValid()) {
+                return unit;
+            }
+        }
+
+        // Was not a common unit, try all units
+        for (const KUnitConversion::UnitCategory &candidateCategory : m_converter.categories()) {
+            unit = matchUnitCaseInsensitive(name, candidateCategory, AllUnits);
+            if (unit.isValid()) {
+                return unit;
+            }
+        }
+    }
+
+    return unit;
+}
+
+KUnitConversion::Unit Units::matchUnitCaseInsensitive(const QString &name, const KUnitConversion::UnitCategory &category, const UnitMatchingLevel level)
+{
+    if (category.isNull()) {
+        return KUnitConversion::Unit();
+    }
+
+    QSet<KUnitConversion::UnitId> commonIds;
+    if (level == OnlyCommonUnits) {
+        for (const KUnitConversion::Unit &unit : category.mostCommonUnits()) {
+            commonIds.insert(unit.id());
+        }
+    }
+
+    for (const QString &candidateName : category.allUnits()) {
+        if (name.compare(candidateName, Qt::CaseInsensitive)) {
+            continue;
+        }
+
+        KUnitConversion::Unit candidate = category.unit(candidateName);
+        if (level == OnlyCommonUnits && !commonIds.contains(candidate.id())) {
+            continue;
+        }
+
+        if (candidate.isValid()) {
+            return candidate;
+        }
+    }
+
+    return KUnitConversion::Unit();
 }
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

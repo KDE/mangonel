@@ -27,6 +27,7 @@
 #define Units_H
 
 #include "Provider.h"
+#include <KUnitConversion/Converter>
 
 
 class Units : public Provider
@@ -38,6 +39,16 @@ public:
 public slots:
     QList<Application*> getResults(QString query) override;
     int launch(QVariant selected) override;
+
+private:
+    enum UnitMatchingLevel {
+        OnlyCommonUnits,
+        AllUnits
+    };
+    KUnitConversion::Unit resolveUnitName(const QString &name, const KUnitConversion::UnitCategory &category = KUnitConversion::UnitCategory());
+    KUnitConversion::Unit matchUnitCaseInsensitive(const QString &name, const KUnitConversion::UnitCategory &category, const UnitMatchingLevel level);
+
+    KUnitConversion::Converter m_converter;
 };
     
     
