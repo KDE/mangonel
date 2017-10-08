@@ -44,17 +44,48 @@ QList<Application *> Units::getResults(QString query)
 {
     QList<Application*> list;
     QRegExp pattern = QRegExp("(\\d+)\\s*(\\w+)\\s+(?:\\=|to|is|in)\\s+(\\w+)$", Qt::CaseInsensitive);
-    if (query.contains(pattern) && pattern.captureCount() == 3)
-    {
+    if (query.contains(pattern) && pattern.captureCount() == 3) {
+        QString inputUnit = pattern.cap(2);
+        const double inputNumber = pattern.cap(1).toDouble();
+
+        KUnitConversion::Value inputValue(inputNumber, inputUnit);
+
+        // If it doesn't resolve, try different capitalization
+        if (!inputValue.isValid()) {
+            inputUnit = inputUnit.toLower();
+            inputValue = KUnitConversion::Value(inputNumber, inputUnit);
+        }
+        if (!inputValue.isValid()) {
+            inputUnit[0] = inputUnit[0].toUpper();
+            inputValue = KUnitConversion::Value(inputNumber, inputUnit);
+        }
+        if (!inputValue.isValid()) {
+            inputUnit = inputUnit.toUpper();
+            inputValue = KUnitConversion::Value(inputNumber, inputUnit);
+        }
+
+        QString outputUnit = pattern.cap(3);
         KUnitConversion::Converter converter;
-        KUnitConversion::Value value(pattern.cap(1).toDouble(), pattern.cap(2));
-        value = converter.convert(value, pattern.cap(3));
-        
-        if (value.isValid()) {
+        KUnitConversion::Value outputValue = converter.convert(inputValue, outputUnit);
+
+        if (!outputValue.isValid()) {
+            outputUnit = outputUnit.toLower();
+            outputValue = converter.convert(inputValue, outputUnit);
+        }
+        if (!outputValue.isValid()) {
+            outputUnit[0] = outputUnit[0].toUpper();
+            outputValue = converter.convert(inputValue, outputUnit);
+        }
+        if (!outputValue.isValid()) {
+            outputUnit = outputUnit.toUpper();
+            outputValue = converter.convert(inputValue, outputUnit);
+        }
+
+        if (outputValue.isValid()) {
             Application *result = new Application;
             result->icon = "accessories-calculator";
             result->object = this;
-            result->name = value.toString();
+            result->name = i18nc("conversion from one unit to another", "%1 is %2").arg(inputValue.toString()).arg(outputValue.toString());
             result->program = result->name;
             result->type = i18n("Unit conversion");
             list.append(result);
