@@ -79,10 +79,17 @@ QList<Application*> Calculator::getResults(QString query)
     } else {
         int precision = 2;
         float calculationResult = calculate(query);
+
         if (calculationResult < 100) {
             precision = 6;
         }
+
         result = QLocale::system().toString(calculationResult, 'f', precision);
+
+        // Remove trailing zeroes
+        while (result.length() > 1 && (result.endsWith("0") || !result[result.length()-1].isDigit())) {
+            result.chop(1);
+        }
     }
 
     if (succes)
