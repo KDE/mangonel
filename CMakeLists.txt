@@ -13,7 +13,21 @@ include (FeatureSummary)
 
 find_package (Qt5 CONFIG REQUIRED Core Widgets Quick)
 
-include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
+find_package(FLEX REQUIRED)
+set_package_properties(FLEX PROPERTIES DESCRIPTION "Flex is a tool for generating scanners, which recognizes lexical patterns"
+                       URL "http://flex.sourceforge.net"
+                       TYPE REQUIRED
+                      )
+
+find_package(BISON REQUIRED)
+set_package_properties(BISON PROPERTIES DESCRIPTION "Bison is a general-purpose parser generator"
+                       URL "http://www.gnu.org/software/bison"
+                       TYPE REQUIRED
+                      )
+
+
+
+include_directories( ${CMAKE_CURRENT_BINARY_DIR} calc/ )
 
 find_package (KF5 REQUIRED COMPONENTS
     I18n
@@ -26,6 +40,9 @@ find_package (KF5 REQUIRED COMPONENTS
     UnitConversion
 )
 
+flex_target(CalcLexer calc/lexer.ll ${CMAKE_CURRENT_BINARY_DIR}/lexer_lex.cpp)
+bison_target(CalcParser calc/parser.yy ${CMAKE_CURRENT_BINARY_DIR}/parser_yacc.cpp)
+
 set(Mangonel_SRCS
   Mangonel.cpp
   Config.cpp
@@ -37,6 +54,16 @@ set(Mangonel_SRCS
   providers/Shell.cpp
   providers/Calculator.cpp
   providers/Units.cpp
+  calc/evaluator.cpp
+  calc/node.cpp
+  calc/numerictypes.cpp
+  calc/hmath.cpp
+  calc/number.c
+  calc/result.cpp
+  calc/function.cpp
+  calc/valuemanager.cpp
+  ${BISON_CalcParser_OUTPUTS}
+  ${FLEX_CalcLexer_OUTPUTS}
 )
 qt5_add_resources(Mangonel_SRCS resources.qrc)
 
