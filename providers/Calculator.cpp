@@ -37,7 +37,14 @@
 
 #include <iostream>
 
-static QHash<QChar, calcFunct> s_functions;
+static const QHash<QChar, calcFunct> s_functions({
+        {'+', [](float val1, float val2) { return val1 + val2; }},
+        {'-', [](float val1, float val2) { return val1 - val2; }},
+        {'/', [](float val1, float val2) { return val1 / val2; }},
+        {'*', [](float val1, float val2) { return val1 * val2; }},
+        {'^', [](float val1, float val2) { return pow(val1, val2); }},
+        {'%', [](float val1, float val2) { return fmod(val1, val2); }}
+});
 
 const QList<char> operators = (QList<char>() << '+' << '-' << '/' << '*' << '^' << '%');
 bool succes = false;
@@ -45,15 +52,7 @@ bool succes = false;
 Calculator::Calculator(QObject *parent) :
     Provider(parent)
 {
-    if (functions.isEmpty()) {
-        functions['+'] = [](float val1, float val2) { return val1 + val2; };
-        functions['-'] = [](float val1, float val2) { return val1 - val2; };
-        functions['/'] = [](float val1, float val2) { return val1 / val2; };
-        functions['*'] = [](float val1, float val2) { return val1 * val2; };
-        functions['^'] = [](float val1, float val2) { return pow(val1, val2); };
-        functions['%'] = [](float val1, float val2) { return fmod(val1, val2); };
-        testCalc();
-    }
+    testCalc();
 }
 
 Calculator::~Calculator()
@@ -143,7 +142,7 @@ float Calculator::calculate(QString query)
             continue;
         }
 
-        if (!functions.contains(query.at(index-1))) {
+        if (!s_functions.contains(query.at(index-1))) {
             oper = op;
             values = query.split(op);
             break;
@@ -158,7 +157,7 @@ float Calculator::calculate(QString query)
         int integer = query.toInt(&succes, 0);
         return integer;
     }
-    if (!functions.contains(oper)) {
+    if (!s_functions.contains(oper)) {
         return 0 ;
     }
 
@@ -168,7 +167,7 @@ float Calculator::calculate(QString query)
     }
     float value1 = calculate(values.takeFirst());
     float value2 = calculate(values.join(QString(oper)));
-    return functions[oper](value1, value2);
+    return s_functions[oper](value1, value2);
 
     return 0;
 }
