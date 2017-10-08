@@ -38,12 +38,12 @@
 #include <iostream>
 
 static const QHash<QChar, calcFunct> s_functions({
-        {'+', [](float val1, float val2) { return val1 + val2; }},
-        {'-', [](float val1, float val2) { return val1 - val2; }},
-        {'/', [](float val1, float val2) { return val1 / val2; }},
-        {'*', [](float val1, float val2) { return val1 * val2; }},
-        {'^', [](float val1, float val2) { return pow(val1, val2); }},
-        {'%', [](float val1, float val2) { return fmod(val1, val2); }}
+        {'+', [](double val1, double val2) { return val1 + val2; }},
+        {'-', [](double val1, double val2) { return val1 - val2; }},
+        {'/', [](double val1, double val2) { return val1 / val2; }},
+        {'*', [](double val1, double val2) { return val1 * val2; }},
+        {'^', [](double val1, double val2) { return pow(val1, val2); }},
+        {'%', [](double val1, double val2) { return fmod(val1, val2); }}
 });
 
 const QList<char> operators = (QList<char>() << '+' << '-' << '/' << '*' << '^' << '%');
@@ -78,18 +78,19 @@ QList<Application*> Calculator::getResults(QString query)
         }
     } else {
         int precision = 2;
-        float calculationResult = calculate(query);
+        double calculationResult = calculate(query);
 
         if (calculationResult < 100) {
             precision = 6;
         }
 
-        result = QLocale::system().toString(calculationResult, 'f', precision);
-
-        // Remove trailing zeroes
-        while (result.length() > 1 && (result.endsWith("0") || !result[result.length()-1].isDigit())) {
-            result.chop(1);
+        double scaledResult = calculationResult * std::pow(10, precision);
+        while (precision > 0 && std::floor(scaledResult) == std::ceil(scaledResult)) {
+            precision--;
+            scaledResult = calculationResult * std::pow(10, precision);
         }
+
+        result = QLocale::system().toString(calculationResult, 'f', precision + 1);
     }
 
     if (succes)
@@ -105,7 +106,7 @@ QList<Application*> Calculator::getResults(QString query)
     return list;
 }
 
-float Calculator::calculate(QString query)
+double Calculator::calculate(QString query)
 {
     query.remove(' ');
     if (query.length() <= 0)
@@ -157,7 +158,13 @@ float Calculator::calculate(QString query)
     }
 
     if (values.isEmpty()) {
-        float dec = query.toFloat(&succes);
+        // Need to handle binary manually
+        if (query.startsWith("0b")) {
+            qDebug() << "Was binary" << query << query.mid(2) << query.mid(2).toInt(nullptr, 2);
+            return query.mid(2).toInt(nullptr, 2);
+        }
+
+        double dec = query.toDouble(&succes);
         if (succes) {
             return dec;
         }
@@ -172,8 +179,8 @@ float Calculator::calculate(QString query)
         values.removeFirst();
         values[0] = oper + values[0];
     }
-    float value1 = calculate(values.takeFirst());
-    float value2 = calculate(values.join(QString(oper)));
+    double value1 = calculate(values.takeFirst());
+    double value2 = calculate(values.join(QString(oper)));
     return s_functions[oper](value1, value2);
 
     return 0;
@@ -187,33 +194,30 @@ int Calculator::launch(QVariant selected)
 }
 
 
-static void equalsAssert(const char *expr, float expected, const char *what)
+static void equalsAssert(const char *expr, double expected, const char *what)
 {
-    const float calculated = Calculator::calculate(expr);
-    if (calculated != expected) {
+    const double calculated = Calculator::calculate(expr);
+    if (!qFuzzyCompare(calculated, expected)) {
         std::cerr << what << std::endl;
         std::cerr << expr << "=" << calculated << " should be " << expected << std::endl;
-        assert(calculated == expected);
     }
 }
 
-static void precisionAssert(const char *expr, float subtract, float maximum, const char *what)
+static void precisionAssert(const char *expr, double subtract, double maximum, const char *what)
 {
-    const float calculated = fabs(Calculator::calculate(expr) - subtract);
+    const double calculated = fabs(Calculator::calculate(expr) - subtract);
     if (calculated  > maximum) {
         std::cerr << what << std::endl;
         std::cerr << expr << "=" << calculated << "s hould be less than " << maximum << std::endl;
-        assert(calculated <= maximum);
     }
 }
 
-static void notEqualsAssert(const char *expr, float expected, const char *what)
+static void notEqualsAssert(const char *expr, double expected, const char *what)
 {
-    const float calculated = Calculator::calculate(expr);
+    const double calculated = Calculator::calculate(expr);
     if (calculated == expected) {
         std::cerr << what << std::endl;
         std::cerr << expr << "=" << calculated << " should not be " << expected << std::endl;
-        assert(calculated != expected);
     }
 }
 
@@ -223,21 +227,21 @@ void Calculator::testCalc()
     equalsAssert((" "), 0,"Test for default output.");
     equalsAssert(("23+23"), 46,"Test addition of integers.");
     equalsAssert(("23+-23"), 0,"Test addition of integers.");
-    equalsAssert(("34.442+23.558"), 58,"Test addition of floats.");
-    precisionAssert("-34.442+23.442", -11, 0.00001, "Test addition of floats.");
+    equalsAssert(("34.442+23.558"), 58,"Test addition of double.");
+    precisionAssert("-34.442+23.442", -11, 0.00001, "Test addition of double.");
     equalsAssert(("36-7"), 36-7,"Test substraction of integers.");
-    equalsAssert(("23.534-12.034"), 11.5,"Test substraction of floats.");
-    precisionAssert("23.534--12.034", 35.568, 0.000001,"Test substraction of floats.");
+    equalsAssert(("23.534-12.034"), 11.5,"Test substraction of double.");
+    precisionAssert("23.534--12.034", 35.568, 0.000001,"Test substraction of double.");
     equalsAssert(("23/2"), 11.5,"Test division of integers.");
     equalsAssert(("23/-2"), -11.5,"Test division of integers.");
-    equalsAssert(("12.5/2"), 6.25,"Test division of a float.");
+    equalsAssert(("12.5/2"), 6.25,"Test division of a double.");
     equalsAssert(("25*25"), 25*25,"Test multiplication of integers.");
     equalsAssert(("-25*25"), -25*25,"Test multiplication of integers.");
     precisionAssert("-25.3*25.4", -642.62, 0.00001, "precision");
-    equalsAssert(("2.5*3.5"), 8.75,"Test multiplication of floats.");
-    equalsAssert(("2.5*-3.5"), -8.75,"Test multiplication of floats.");
+    equalsAssert(("2.5*3.5"), 8.75,"Test multiplication of double.");
+    equalsAssert(("2.5*-3.5"), -8.75,"Test multiplication of double.");
     equalsAssert(("2^5"), 32,"Test raising to power of integers.");
-    precisionAssert("3.5^2.1", 13.88490, 0.00001,"Test raising to power of floats.");
+    precisionAssert("3.5^2.1", 13.88490, 0.00001,"Test raising to power of double.");
     equalsAssert(("12/0"), 1/0.0,"Test infinity.");
     notEqualsAssert(("0/0.0"), calculate("0/0.0"),"Test NaN.");
     equalsAssert(("443*(43+3)"), 20378,"Test for nesting without testing operator precedence.");

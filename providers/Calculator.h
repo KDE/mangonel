@@ -28,7 +28,7 @@
 
 #include "Provider.h"
 
-typedef float (*calcFunct)(float val1, float val2);
+typedef double (*calcFunct)(double val1, double val2);
 
 class Calculator : public Provider
 {
@@ -37,7 +37,7 @@ public:
     explicit Calculator(QObject *parent);
 
     ~Calculator();
-    static float calculate(QString query);
+    static double calculate(QString query);
 
 public slots:
     QList<Application *> getResults(QString query);
