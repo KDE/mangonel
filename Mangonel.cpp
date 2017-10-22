@@ -34,13 +34,12 @@
 #include <QMenu>
 #include <QTextDocument>
 #include <QClipboard>
+#include <QSettings>
 
-#include <KConfigGroup>
 #include <KLocalizedString>
 #include <KNotification>
 #include <KNotifyConfigWidget>
 #include <KGlobalAccel>
-#include <KSharedConfig>
 
 #include "Config.h"
 //Include the providers.
@@ -72,8 +71,8 @@ Mangonel::Mangonel()
     QString message = xi18nc("@info", "Press <shortcut>%1</shortcut> to show Mangonel.", shortcutString);
     KNotification::event(QLatin1String("startup"), message);
 
-    const KConfigGroup config(KSharedConfig::openConfig(), "mangonel_main");
-    m_history = config.readEntry("history", QStringList());
+    QSettings settings;
+    m_history = settings.value("history").toStringList();
 
     // Instantiate the providers.
     m_providers["applications"] = new Applications(this);
@@ -84,11 +83,7 @@ Mangonel::Mangonel()
 }
 
 Mangonel::~Mangonel()
-    // Store history of session.
 {
-    KConfigGroup config(KSharedConfig::openConfig(), "mangonel_main");
-    config.writeEntry("history", m_history);
-    config.config()->sync();
 }
 
 Mangonel *Mangonel::instance()
@@ -175,6 +170,11 @@ void Mangonel::addToHistory(const QString &text)
 {
     m_history.prepend(text);
     emit historyChanged();
+
+    // Store history of session.
+    QSettings settings;
+    settings.setValue("history", m_history);
+    settings.sync();
 }
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

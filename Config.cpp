@@ -27,7 +27,6 @@
 
 #include <QDialogButtonBox>
 #include <QKeySequenceEdit>
-#include <KConfigGroup>
 #include <KAutostart>
 #include <QSettings>
 #include <QLabel>

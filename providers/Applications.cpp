@@ -30,22 +30,22 @@
 
 #include <KServiceTypeTrader>
 #include <QDebug>
-#include <kconfiggroup.h>
-#include <KSharedConfig>
 #include <KLocalizedString>
 #include <QProcess>
+#include <QSettings>
 
 Applications::Applications(QObject *parent) :
     Provider(parent)
 {
-    const KConfigGroup config(KSharedConfig::openConfig(), "mangonel_applications");
-    
-    foreach(const QString &key, config.keyList()) {
-        QList<QVariant> values = config.readEntry<QList<QVariant> >(key, QList<QVariant>());
+    QSettings settings;
+    settings.beginGroup("applications");
+    for (const QString &key : settings.childGroups()) {
+        settings.beginGroup(key);
         popularity pop;
-        pop.count = values[0].toInt();
-        pop.lastUse = values[1].toInt();
+        pop.count = settings.value("launches").toInt();
+        pop.lastUse = settings.value("lastUse").toInt();
         m_popularities.insert(key, pop);
+        settings.endGroup();
     }
 }
 
@@ -126,15 +126,15 @@ int Applications::launch(QVariant selected)
 
 void Applications::storePopularities()
 {
-    KConfigGroup config(KSharedConfig::openConfig(), "mangonel_controlmodules");
-    
-    foreach(const QString &key, m_popularities.keys()) {
-        QList<QVariant> values;
-        values.append(m_popularities[key].count);
-        values.append(m_popularities[key].lastUse);
-        config.writeEntry(key, values);
+    QSettings settings;
+    settings.beginGroup("applications");
+    for (const QString &key : m_popularities.keys()) {
+        settings.beginGroup(key);
+        settings.setValue("launches", m_popularities[key].count);
+        settings.setValue("lastUse", m_popularities[key].lastUse);
+        settings.endGroup();
     }
-    config.sync();
+
 }
 
 

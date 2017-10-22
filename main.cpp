@@ -37,12 +37,14 @@
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
+    app.setOrganizationName("KDE");
+    app.setQuitOnLastWindowClosed(false);
 
     KAboutData aboutData (
                        QStringLiteral("mangonel"),
                        i18n("Mangonel"),
                        QStringLiteral("1.1"));
-    aboutData.setShortDescription(i18n("A simple application launcher for KDE4.")),
+    aboutData.setShortDescription(i18n("A simple application launcher by KDE.")),
     aboutData.setLicense(KAboutLicense::BSDL);
     aboutData.setHomepage(QByteArray("www.tarmack.eu/mangonel/"));
     aboutData.addAuthor(i18n("Martin Sandsmark"), i18n("Developer"), "martin.sandsmark@kde.org", "http://iskrembilen.com/");
@@ -51,9 +53,6 @@ int main(int argc, char** argv)
 
     KDBusService service(KDBusService::Unique);
     QObject::connect(&service, &KDBusService::activateRequested, Mangonel::instance(), &Mangonel::triggered);
-
-    app.setQuitOnLastWindowClosed(false);
-    app.setOrganizationName("KDE");
 
     qmlRegisterSingletonType<Mangonel>("org.kde", 1, 0, "Mangonel", [](QQmlEngine *, QJSEngine*) -> QObject* {
         QQmlEngine::setObjectOwnership(Mangonel::instance(), QQmlEngine::CppOwnership);
