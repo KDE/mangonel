@@ -34,6 +34,8 @@
 #include <QProcess>
 #include <QSettings>
 #include <QRegularExpression>
+#include <QFileInfo>
+#include <QDateTime>
 
 Applications::Applications(QObject *parent) :
     Provider(parent)
@@ -63,6 +65,7 @@ Application *Applications::createApp(const KService::Ptr &service)
     app->icon = service->icon();
     app->object = this;
     app->program = service->exec();
+    app->priority = QFileInfo(service->entryPath()).lastModified().toSecsSinceEpoch();
     if (service->isApplication()) {
         app->type = i18n("Run application");
     } else {
@@ -86,17 +89,25 @@ QList<Application *> Applications::getResults(QString term)
             continue;
         
         Application *app = createApp(service);
+        if (app->name.isEmpty()) {
+            delete app;
+            continue;
+        }
         
         if (m_popularities.contains(service->exec())) {
-            app->priority = time(NULL) - m_popularities[service->exec()].lastUse;
-            app->priority -= 3600 * m_popularities[service->exec()].count;
+            app->priority = QDateTime::currentSecsSinceEpoch() - m_popularities[service->exec()].lastUse;
+            app->priority -= (3600 * 360) * m_popularities[service->exec()].count;
         } else {
-            if (service->isApplication()) app->priority -= 10;
-            if (app->name.startsWith(term)) app->priority -= 10;
-            if (app->name.startsWith(term, Qt::CaseInsensitive)) app->priority -= 10;
-            if (app->name.contains(term)) app->priority -= 10;
-            if (app->name.contains(term, Qt::CaseInsensitive)) app->priority -= 10;
-            app->priority += app->name.length();
+            qreal modifier = 1;
+            if (service->isApplication()) modifier *= 1.1;
+            if (app->name.startsWith(term)) modifier *= 1.5;
+            if (app->name.startsWith(term, Qt::CaseInsensitive)) modifier *= 1.1;
+            if (app->name.contains(term)) modifier *= 1.05;
+            if (app->name.contains(term, Qt::CaseInsensitive)) modifier *= 1.01;
+            if (!app->name.contains(term, Qt::CaseInsensitive)) modifier /= 2;
+
+            modifier += 1. / app->name.length();
+            app->priority /= modifier;
         }
 
         list.append(app);
