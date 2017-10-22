@@ -75,6 +75,8 @@ Application *Applications::createApp(const KService::Ptr &service)
 QList<Application *> Applications::getResults(QString term)
 {
     QList<Application*> list;
+    term = term.toHtmlEscaped();
+    term.replace('\'', " ");
     QString query = "exist Exec and ( (exist Keywords and '%1' ~subin Keywords) or (exist GenericName and '%1' ~~ GenericName) or (exist Name and '%1' ~~ Name) or ('%1' ~~ Exec) )";
     query = query.arg(term);
     KService::List services = KServiceTypeTrader::self()->query("Application", query);
