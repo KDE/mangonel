@@ -54,10 +54,6 @@
 
 #include <unistd.h>
 
-#define WINDOW_WIDTH 440
-#define WINDOW_HEIGHT 400
-#define ICON_SIZE (WINDOW_WIDTH / 1.5)
-
 Mangonel::Mangonel()
 {
     // Setup our global shortcut.
@@ -73,7 +69,7 @@ Mangonel::Mangonel()
         shortcutString = shortcuts.first().toString();
     }
 
-    QString message = i18nc("@info", "Press <shortcut>%1</shortcut> to show Mangonel.", shortcutString);
+    QString message = xi18nc("@info", "Press <shortcut>%1</shortcut> to show Mangonel.", shortcutString);
     KNotification::event(QLatin1String("startup"), message);
 
     const KConfigGroup config(KSharedConfig::openConfig(), "mangonel_main");
