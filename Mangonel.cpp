@@ -37,7 +37,6 @@
 
 #include <KConfigGroup>
 #include <KLocalizedString>
-#include <KWindowSystem>
 #include <KNotification>
 #include <KNotifyConfigWidget>
 #include <KGlobalAccel>

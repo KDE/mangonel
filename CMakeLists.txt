@@ -18,12 +18,11 @@ include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 find_package (KF5 REQUIRED COMPONENTS
     I18n
     GlobalAccel
-    KIO
     NotifyConfig
     Notifications
     DBusAddons
-    WindowSystem
     UnitConversion
+    Service
 )
 
 set(Mangonel_SRCS
@@ -47,14 +46,12 @@ target_link_libraries(mangonel
   Qt5::Widgets
   Qt5::Quick
   KF5::GlobalAccel
-  KF5::KIOCore
-  KF5::KIOWidgets
   KF5::I18n
   KF5::DBusAddons
   KF5::NotifyConfig
   KF5::Notifications
-  KF5::WindowSystem
   KF5::UnitConversion
+  KF5::Service
 )
 
 install(TARGETS mangonel ${INSTALL_TARGETS_DEFAULT_ARGS})
