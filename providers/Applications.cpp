@@ -43,8 +43,8 @@ Applications::Applications(QObject *parent) :
     for (const QString &key : settings.childGroups()) {
         settings.beginGroup(key);
         popularity pop;
-        pop.count = settings.value("launches").toInt();
-        pop.lastUse = settings.value("lastUse").toInt();
+        pop.count = settings.value("launches").toLongLong();
+        pop.lastUse = settings.value("lastUse").toLongLong();
         m_popularities.insert(key, pop);
         settings.endGroup();
     }
@@ -109,10 +109,10 @@ int Applications::launch(QVariant selected)
     popularity pop;
     if (m_popularities.contains(exec)) {
         pop = m_popularities[exec];
-        pop.lastUse = time(NULL);
+        pop.lastUse = QDateTime::currentSecsSinceEpoch();
         pop.count++;
     } else {
-        pop.lastUse = time(NULL);
+        pop.lastUse = QDateTime::currentSecsSinceEpoch();
         pop.count = 0;
     }
     m_popularities[exec] = pop;

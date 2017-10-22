@@ -31,8 +31,8 @@
 
 struct popularity
 {
-    int lastUse;
-    int count;
+    qint64 lastUse;
+    qint64 count;
 };
 
 struct Application;
