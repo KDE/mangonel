@@ -33,6 +33,7 @@
 #include <KLocalizedString>
 #include <QProcess>
 #include <QSettings>
+#include <QRegularExpression>
 
 Applications::Applications(QObject *parent) :
     Provider(parent)
@@ -56,18 +57,19 @@ Applications::~Applications()
 
 Application *Applications::createApp(const KService::Ptr &service)
 {
-        Application *app = new Application;
-        app->name = service->name();
-        app->completion = app->name;
-        app->icon = service->icon();
-        app->object = this;
-        app->program = service->exec();
-        if (service->isApplication())
-            app->type = i18n("Run application");
-        else
-            app->type = i18n("Open control module");
-        
-        return app;
+    Application *app = new Application;
+    app->name = service->name();
+    app->completion = app->name;
+    app->icon = service->icon();
+    app->object = this;
+    app->program = service->exec();
+    if (service->isApplication()) {
+        app->type = i18n("Run application");
+    } else {
+        app->type = i18n("Open control module");
+    }
+
+    return app;
 }
 
 QList<Application *> Applications::getResults(QString term)
@@ -103,6 +105,7 @@ QList<Application *> Applications::getResults(QString term)
 int Applications::launch(QVariant selected)
 {
     QString exec = selected.toString();
+    exec.remove(QRegularExpression("\\%[fFuUdDnNickvm]"));
     popularity pop;
     if (m_popularities.contains(exec)) {
         pop = m_popularities[exec];
