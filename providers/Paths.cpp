@@ -32,7 +32,6 @@
 #include <QDir>
 #include <QUrl>
 
-
 static QString subUser(QString path)
 {
     QString homePath = QDir::homePath();
@@ -62,18 +61,23 @@ QList<Application *> Paths::getResults(QString query)
     }
 
     QStringList walk = query.split("/", QString::SkipEmptyParts);
-    if (walk.isEmpty())
+    if (walk.isEmpty() || query.endsWith('/')) {
         walk.append("");
+    }
+
     QString part = walk.takeFirst();
-    while (walk.length() > 0)
-    {
+    while (walk.length() > 0) {
         dir.cd(part);
         part = walk.takeFirst();
     }
-    query = part + "*";
-    QFileInfoList paths = dir.entryInfoList(QStringList(query), QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-    foreach(QFileInfo path, paths)
-    {
+
+    QFileInfoList paths = dir.entryInfoList(QStringList(part + '*'), QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files, QDir::Time);
+
+    if (paths.size() > 100) {
+        paths = paths.mid(0, 100);
+    }
+
+    for(const QFileInfo &path : paths) {
         Application *result = new Application();
         result->name = subUser(path.absoluteFilePath());
         result->completion = result->name.left(result->name.lastIndexOf("/")) + "/" + path.fileName();
@@ -85,11 +89,13 @@ QList<Application *> Paths::getResults(QString query)
         } else {
             result->icon = m_mimeDb.mimeTypeForFile(path.absoluteFilePath()).iconName();
         }
+
         result->object = this;
         result->program = path.absoluteFilePath();
         result->type = i18n("Open path");
         list.append(result);
     }
+
     return list;
 }
 
