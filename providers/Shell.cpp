@@ -31,6 +31,7 @@
 #include <klocalizedstring.h>
 #include <QDebug>
 #include <QProcess>
+#include <QDateTime>
 
 namespace
 {
@@ -52,6 +53,7 @@ QMap<QString, QString> walkDir(QString path)
                 binList.insert(file.fileName(), file.absoluteFilePath());
         }
     }
+
     return binList;
 }
 
@@ -81,7 +83,6 @@ Shell::~Shell()
 QList<Application *> Shell::getResults(QString query)
 {
     QList<Application*> list;
-    int priority = 3600;
     foreach(QString key, this->index.keys()) {
         if (key.startsWith(query.left(query.indexOf(" ")), Qt::CaseInsensitive)) {
             QString args = query.right(query.length() - query.indexOf(" "));
@@ -94,7 +95,8 @@ QList<Application *> Shell::getResults(QString query)
             app->object = this;
             app->program = this->index[key] + args;
             app->type = i18n("Shell command");
-            app->priority = ++priority;
+
+            app->priority = QFileInfo(this->index[key]).lastModified().toSecsSinceEpoch();
 
             list.append(app);
         }
