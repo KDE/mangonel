@@ -186,12 +186,11 @@ Window {
     Text {
         anchors {
             left: background.left
-            leftMargin: 5
+            leftMargin: 15
             verticalCenter: inputText.verticalCenter
         }
-        text: (resultList.count > 0 && resultList.currentItem !== null) ? resultList.currentItem.type + ":" : ""
+        text: (resultList.count > 0 && resultList.currentItem !== null) ? resultList.currentItem.type : ""
         color: "white"
-
     }
 
     TextInput {
