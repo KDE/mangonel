@@ -33,7 +33,6 @@
 #include <klocalizedstring.h>
 #include <QDebug>
 #include <QLocale>
-#include <QtTest/qtest.h>
 
 #include <iostream>
 
