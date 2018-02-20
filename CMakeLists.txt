@@ -6,14 +6,10 @@ find_package (ECM REQUIRED NO_MODULE)
 set (CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 
 include (KDEInstallDirs)
-include (KDECMakeSettings)
-include (KDECompilerSettings)
 include (ECMInstallIcons)
 include (FeatureSummary)
 
 find_package (Qt5 CONFIG REQUIRED Core Widgets Quick)
-
-include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
 
 find_package (KF5 REQUIRED COMPONENTS
     I18n
@@ -37,7 +33,11 @@ set(Mangonel_SRCS
   providers/Calculator.cpp
   providers/Units.cpp
 )
+
+set(CMAKE_AUTOMOC On)
 qt5_add_resources(Mangonel_SRCS resources.qrc)
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(mangonel ${Mangonel_SRCS})
 
@@ -58,3 +58,4 @@ install(TARGETS mangonel ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES mangonel.notifyrc DESTINATION ${KNOTIFYRC_INSTALL_DIR})
 install(PROGRAMS mangonel.desktop DESTINATION ${AUTOSTART_INSTALL_DIR})
 
+feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
