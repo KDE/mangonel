@@ -83,23 +83,31 @@ Shell::~Shell()
 QList<Application *> Shell::getResults(QString query)
 {
     QList<Application*> list;
-    foreach(QString key, this->index.keys()) {
-        if (key.startsWith(query.left(query.indexOf(" ")), Qt::CaseInsensitive)) {
-            QString args = query.right(query.length() - query.indexOf(" "));
-            if (args == query)
-                args = "";
-            Application *app = new Application;
-            app->name = key + args;
-            app->completion = key;
-            app->icon = "system-run";
-            app->object = this;
-            app->program = this->index[key] + args;
-            app->type = i18n("Shell command");
 
-            app->priority = QFileInfo(this->index[key]).lastModified().toSecsSinceEpoch();
+    QMapIterator<QString, QString> iterator(this->index);
+    while (iterator.hasNext()) {
+        iterator.next();
 
-            list.append(app);
+        if (!iterator.key().startsWith(query.left(query.indexOf(" ")), Qt::CaseInsensitive)) {
+            continue;
         }
+
+        QString args = query.right(query.length() - query.indexOf(" "));
+        if (args == query) {
+            args = "";
+        }
+
+        Application *app = new Application;
+        app->name = iterator.value() + args;
+        app->completion = iterator.key();
+        app->icon = "system-run";
+        app->object = this;
+        app->program = iterator.value() + args;
+        app->type = i18n("Shell command");
+
+        app->priority = QFileInfo(iterator.value()).lastModified().toSecsSinceEpoch();
+
+        list.append(app);
     }
     return list;
 }
