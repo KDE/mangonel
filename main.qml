@@ -113,6 +113,7 @@ Window {
             Behavior on opacity { NumberAnimation { duration: 200 } }
 
             Image {
+                id: icon
                 anchors {
                     top: parent.top
                     topMargin: 10
@@ -122,6 +123,15 @@ Window {
                 source: "image://icon/" + modelData.icon
                 sourceSize.width: parent.width
                 sourceSize.height: parent.height - nameText.height - 20
+                visible: false
+            }
+
+            Glow {
+                id: iconGlow
+                anchors.fill: icon
+                source: icon
+                radius: 16
+                samples: 32
             }
 
             Text {
