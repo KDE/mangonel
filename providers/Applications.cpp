@@ -65,7 +65,13 @@ Application *Applications::createApp(const KService::Ptr &service)
     app->icon = service->icon();
     app->object = this;
     app->program = service->exec();
-    app->priority = QFileInfo(service->entryPath()).lastModified().toSecsSinceEpoch();
+    QFileInfo entryPathInfo(service->entryPath());
+    app->priority = QDateTime::currentSecsSinceEpoch();
+    if (entryPathInfo.exists()) {
+        app->priority = app->priority - entryPathInfo.lastModified().toSecsSinceEpoch();
+    } else {
+        // KService can't give us the path to anything...
+    }
     if (service->isApplication()) {
         app->type = i18n("Run application");
     } else {
