@@ -134,8 +134,7 @@ int Applications::launch(QVariant selected)
         pop.lastUse = QDateTime::currentSecsSinceEpoch();
         pop.count = 0;
     }
-    m_popularities[exec] = pop;
-    
+    m_popularities[selected.toString()] = pop;
     
     storePopularities();
     
