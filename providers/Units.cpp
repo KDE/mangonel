@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <klocalizedstring.h>
 #include <KUnitConversion/Converter>
+#include <cmath>
 #include <QDebug>
 
 Units::Units(QObject *parent) :
@@ -64,10 +65,25 @@ QList<Application *> Units::getResults(QString query)
 
     const KUnitConversion::Value outputValue = m_converter.convert(inputValue, outputUnit);
 
+    int precision = 2;
+    qreal calculationResult = outputValue.number();
+
+    if (calculationResult < 100) {
+        precision = 6;
+    }
+
+    double scaledResult = calculationResult * std::pow(10, precision);
+    while (precision > 0 && std::floor(scaledResult) == std::ceil(scaledResult)) {
+        precision--;
+        scaledResult = calculationResult * std::pow(10, precision);
+    }
+    const QString inputString = QLocale::system().toString(inputValue.number(), 'f', precision + 1);
+    const QString outputString = QLocale::system().toString(outputValue.number(), 'f', precision + 1);
+
     Application *result = new Application;
     result->icon = "accessories-calculator";
     result->object = this;
-    result->name = i18nc("conversion from one unit to another", "%1 is %2").arg(inputValue.toString()).arg(outputValue.toString());
+    result->name = i18nc("conversion from one unit to another", "%1 %2 is %3 %4", inputString, inputValue.unit().symbol(), outputString, outputValue.unit().symbol());
     result->program = result->name;
     result->type = i18n("Unit conversion");
     list.append(result);
