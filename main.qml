@@ -90,11 +90,11 @@ Window {
 
         anchors {
             top: background.top
-            bottom: historyList.top
-//            bottomMargin: 200
+//            bottom: historyList.top
             left: background.left
             right: background.right
         }
+        height: 350
         clip: true
         model: Mangonel.apps
         orientation: Qt.Horizontal
