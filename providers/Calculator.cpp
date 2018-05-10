@@ -34,6 +34,9 @@
 #include <QDebug>
 #include <QLocale>
 
+#include "calculator/evaluator.h"
+#include "calculator/numberformatter.h"
+
 #include <iostream>
 
 static const QHash<QChar, calcFunct> s_functions({
@@ -59,49 +62,30 @@ Calculator::~Calculator()
 
 QList<Application*> Calculator::getResults(QString query)
 {
-    succes = false;
     QList<Application*> list;
-    QString result;
 
-    QRegExp convertPattern("(.+)(?:to|in)\\s+((bin|oct|hex)\\w*)$");
-    if (query.contains(convertPattern)) {
-        QString target = convertPattern.cap(2);
-        long calculated = calculate(convertPattern.cap(1));
-
-        if (target.startsWith("bin")) {
-            result = "0b" + QString::number(calculated, 2);
-        } else if (target.startsWith("oct")) {
-            result = "0" + QString::number(calculated, 8);
-        } else if (target.startsWith("hex")) {
-            result = "0x" + QString::number(calculated, 16);
-        }
-    } else {
-        int precision = 2;
-        double calculationResult = calculate(query);
-
-        if (calculationResult < 100) {
-            precision = 6;
-        }
-
-        double scaledResult = calculationResult * std::pow(10, precision);
-        while (precision > 0 && std::floor(scaledResult) == std::ceil(scaledResult)) {
-            precision--;
-            scaledResult = calculationResult * std::pow(10, precision);
-        }
-
-        result = QLocale::system().toString(calculationResult, 'f', precision + 1);
+    Evaluator *ev = Evaluator::instance();
+    query = ev->autoFix(query);
+    if (query.isEmpty()) {
+        return list;
     }
 
-    if (succes)
-    {
-        Application *app = new Application;
-        app->icon = "accessories-calculator";
-        app->name = result;
-        app->program = app->name;
-        app->object = this;
-        app->type = i18n("Calculation");
-        list.append(app);
+    ev->setExpression(query);
+
+    const Quantity quantity = ev->evalNoAssign();
+    if (!ev->error().isEmpty()) {
+        qDebug() << ev->error();
+        return list;
     }
+
+    Application *app = new Application;
+    app->icon = "accessories-calculator";
+    app->name = NumberFormatter::format(quantity);
+    app->program = app->name;
+    app->object = this;
+    app->type = i18n("Calculation");
+    list.append(app);
+
     return list;
 }
 

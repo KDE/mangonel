@@ -32,6 +32,39 @@ set(Mangonel_SRCS
   providers/Shell.cpp
   providers/Calculator.cpp
   providers/Units.cpp
+
+  providers/calculator/constants.cpp
+  providers/calculator/constants.h
+  providers/calculator/evaluator.cpp
+  providers/calculator/functions.cpp
+  providers/calculator/numberformatter.cpp
+  providers/calculator/opcode.cpp
+  providers/calculator/settings.cpp
+
+  providers/calculator/floatcommon.c
+  providers/calculator/floatconst.c
+  providers/calculator/floatconvert.c
+  providers/calculator/floaterf.c
+  providers/calculator/floatexp.c
+  providers/calculator/floatgamma.c
+  providers/calculator/floathmath.c
+  providers/calculator/floatincgamma.c
+  providers/calculator/floatio.c
+  providers/calculator/floatipower.c
+  providers/calculator/floatlog.c
+  providers/calculator/floatlogic.c
+  providers/calculator/floatlong.c
+  providers/calculator/floatnum.c
+  providers/calculator/floatpower.c
+  providers/calculator/floatseries.c
+  providers/calculator/floattrig.c
+  providers/calculator/number.c
+  providers/calculator/cmath.cpp
+  providers/calculator/cnumberparser.cpp
+  providers/calculator/hmath.cpp
+  providers/calculator/quantity.cpp
+  providers/calculator/rational.cpp
+  providers/calculator/units.cpp
 )
 
 set(CMAKE_AUTOMOC On)
