@@ -11,7 +11,7 @@ Window {
     color: "transparent"
 
     width: 1000
-    height: 400
+    height: 650
     visible: true
     y: -height
 
@@ -28,6 +28,7 @@ Window {
         inputText.preHistoryText = ""
         inputText.historyIndex = -1
     }
+
     onActiveChanged: if (!active) visible = false
 
     Connections {
@@ -38,9 +39,14 @@ Window {
     Rectangle {
         id: background
         anchors {
-            fill: parent
+            top: parent.top
+            left: parent.left
+            right: parent.right
             margins: shadow.radius
         }
+        height: 400 + historyList.height
+
+        Behavior on height { NumberAnimation { duration: 50 } }
 
         color: Qt.rgba(0, 0, 0, 0.5)
         radius: 10
@@ -84,7 +90,8 @@ Window {
 
         anchors {
             top: background.top
-            bottom: inputText.top
+            bottom: historyList.top
+//            bottomMargin: 200
             left: background.left
             right: background.right
         }
@@ -202,6 +209,24 @@ Window {
         }
         text: (resultList.count > 0 && resultList.currentItem !== null) ? resultList.currentItem.type : ""
         color: "white"
+    }
+
+    ListView {
+        id: historyList
+        anchors {
+            bottom: inputText.top
+            bottomMargin: 15
+        }
+        x: inputText.x + inputText.cursorRectangle.x - inputText.width
+        height: inputText.historyIndex >= 0 ? 190 : 0
+        interactive: false
+        highlightFollowsCurrentItem: true
+        currentIndex: inputText.historyIndex
+
+        model: height ? Mangonel.history : 0
+        verticalLayoutDirection: ListView.BottomToTop
+
+        delegate: Text { text: modelData; color: "white"; font.bold: index == inputText.historyIndex; opacity: font.bold ? 1 : 0.4 }
     }
 
     TextInput {

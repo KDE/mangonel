@@ -37,14 +37,10 @@ public:
     explicit Calculator(QObject *parent);
 
     ~Calculator();
-    static double calculate(QString query);
 
 public slots:
     QList<Application *> getResults(QString query);
     int launch(QVariant selected);
-private:
-
-    void testCalc();
 };
 
 #endif // Calculator_H
