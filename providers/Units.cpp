@@ -41,9 +41,9 @@ Units::Units(QObject *parent) :
 Units::~Units()
 {}
 
-QList<Application *> Units::getResults(QString query)
+QList<ProviderResult *> Units::getResults(QString query)
 {
-    QList<Application*> list;
+    QList<ProviderResult*> list;
 
     QRegExp pattern("(\\d+)\\s*(\\w+)\\s+(?:\\=|to|is|in)\\s+(\\w+)$", Qt::CaseInsensitive);
     if (!query.contains(pattern) || pattern.captureCount() != 3) {
@@ -80,21 +80,22 @@ QList<Application *> Units::getResults(QString query)
     const QString inputString = QLocale::system().toString(inputValue.number(), 'f', precision + 1);
     const QString outputString = QLocale::system().toString(outputValue.number(), 'f', precision + 1);
 
-    Application *result = new Application;
+    ProviderResult *result = new ProviderResult;
     result->icon = "accessories-calculator";
     result->object = this;
     result->name = i18nc("conversion from one unit to another", "%1 %2 is %3 %4", inputString, inputValue.unit().symbol(), outputString, outputValue.unit().symbol());
     result->program = result->name;
     result->type = i18n("Unit conversion");
+    result->isCalculation = true;
     list.append(result);
 
     return list;
 }
 
-int Units::launch(QVariant selected)
+int Units::launch(const QString &exec)
 {
     QClipboard* clipboard = QApplication::clipboard();
-    clipboard->setText(selected.toString(), QClipboard::Selection);
+    clipboard->setText(exec, QClipboard::Selection);
     return 0;
 }
 

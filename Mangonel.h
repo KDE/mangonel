@@ -49,7 +49,8 @@ public:
     const QStringList &history() { return m_history; }
 
 public slots:
-    void getApp(QString query);
+    void setQuery(const QString &query);
+    void launch(QObject *selectedObject);
     void showConfig();
     void configureNotifications();
     QString selectionClipboardContent();
@@ -64,13 +65,20 @@ private slots:
     void setHotkey(const QKeySequence& hotkey);
 private:
     Mangonel();
-    
+    void storePopularities();
+
     QAction* m_actionShow;
     bool m_processingKey;
     QStringList m_history;
     QHash<QString, Provider*> m_providers;
-    QList<QPointer<Application>> m_apps;
+
+    // QPointer so it gets nulled when the object is deleted
+    QList<QPointer<ProviderResult>> m_apps;
+
+    QHash<QString, Popularity> m_popularities;
+
     int m_current;
+    QString m_currentQuery;
 };
 
 #endif // Mangonel_H

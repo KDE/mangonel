@@ -25,9 +25,6 @@
 
 #include "Provider.h"
 
-Application::Application()
-{}
-
 Provider::Provider(QObject *parent) :
     QObject(parent)
 {

@@ -40,13 +40,11 @@ public:
     ~Applications();
     
 public slots:
-    QList<Application*> getResults(QString query) override;
-    int launch(QVariant selected) override;
+    QList<ProviderResult*> getResults(QString query) override;
+    int launch(const QString &selected) override;
     
 private:
-    Application *createApp(const KService::Ptr &service);
-    void storePopularities();
-    QHash<QString, popularity> m_popularities;
+    ProviderResult *createApp(const KService::Ptr &service);
 };
 
 #endif

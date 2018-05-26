@@ -35,6 +35,7 @@
 #include <QTextDocument>
 #include <QClipboard>
 #include <QSettings>
+#include <QDateTime>
 
 #include <KLocalizedString>
 #include <KNotification>
@@ -80,6 +81,30 @@ Mangonel::Mangonel()
     m_providers["shell"] = new Shell(this);
     m_providers["Calculator"] = new Calculator(this);
     m_providers["Units"] = new Units(this);
+
+    settings.beginGroup("popularities");
+    for (const QString &key : settings.childGroups()) {
+        settings.beginGroup(key);
+        Popularity pop;
+        pop.count = settings.value("launches").toLongLong();
+        pop.lastUse = settings.value("lastUse").toLongLong();
+        pop.matchStrings = settings.value("matchStrings").toStringList();
+        m_popularities.insert(key, pop);
+        settings.endGroup();
+    }
+}
+
+void Mangonel::storePopularities()
+{
+    QSettings settings;
+    settings.beginGroup("popularities");
+    for (const QString &key : m_popularities.keys()) {
+        settings.beginGroup(key);
+        settings.setValue("launches", m_popularities[key].count);
+        settings.setValue("lastUse", m_popularities[key].lastUse);
+        settings.setValue("matchString", m_popularities[key].matchStrings);
+        settings.endGroup();
+    }
 }
 
 Mangonel::~Mangonel()
@@ -96,35 +121,85 @@ QList<QObject *> Mangonel::apps()
 {
     QList<QObject*> ret;
 
-    for (QPointer<Application> app : m_apps) {
+    for (QPointer<ProviderResult> app : m_apps) {
         ret.append(app.data());
     }
 
     return ret;
 }
 
-void Mangonel::getApp(QString query)
+void Mangonel::setQuery(const QString &query)
 {
-    for (QPointer<Application> app : m_apps) {
+    for (QPointer<ProviderResult> app : m_apps) {
         if (!app) {
             continue;
         }
 
         app->deleteLater();
     }
+
     m_apps.clear();
 
     if (query.length() > 0) {
         m_current = -1;
         for (Provider* provider : m_providers) {
-            QList<Application*> list = provider->getResults(query);
-            for (Application *app : list) {
+            QList<ProviderResult*> list = provider->getResults(query);
+            for (ProviderResult *app : list) {
                 app->setParent(this);
+
+                if (app->isCalculation) {
+                    m_apps.append(app);
+                    continue;
+                }
+                if (m_popularities.contains(app->program)) {
+                    const Popularity &popularity = m_popularities[app->program];
+                    app->priority = QDateTime::currentSecsSinceEpoch() - popularity.lastUse;
+                    app->priority -= (3600 * 360) * popularity.count;
+
+                    if (popularity.matchStrings.contains(query)) {
+                        app->priority /= 2;
+                    }
+                }
+
                 m_apps.append(app);
             }
         }
 
-        std::sort(m_apps.begin(), m_apps.end(), [](Application *a, Application *b) {
+        std::sort(m_apps.begin(), m_apps.end(), [&](ProviderResult *a, ProviderResult *b) {
+            if (a->isCalculation != b->isCalculation) {
+                if (a->isCalculation) {
+                    return true;
+                }
+                if (b->isCalculation) {
+                    return false;
+                }
+            }
+
+            const bool aStartMatch = a->name.startsWith(query, Qt::CaseInsensitive);
+            const bool bStartMatch = b->name.startsWith(query, Qt::CaseInsensitive);
+            if (aStartMatch != bStartMatch) {
+                return aStartMatch && !bStartMatch;
+            }
+
+            const bool aContains = a->name.contains(query, Qt::CaseInsensitive);
+            const bool bContains = b->name.contains(query, Qt::CaseInsensitive);
+            if (aContains != bContains) {
+                return aContains && !bContains;
+            }
+            if (m_popularities.contains(a->program)) {
+                if (!m_popularities.contains(b->program)) {
+                    return true;
+                }
+
+                const Popularity &aPopularity = m_popularities[a->program];
+                const Popularity &bPopularity = m_popularities[b->program];
+                if (aPopularity.count >= bPopularity.count) {
+                    return aPopularity.count >= bPopularity.count;
+                }
+
+                return aPopularity.lastUse > bPopularity.lastUse;
+            }
+
             if (a->priority != b->priority) {
                 return a->priority < b->priority;
             } else {
@@ -132,7 +207,47 @@ void Mangonel::getApp(QString query)
             }
         });
     }
+    m_currentQuery = query;
     emit appsChanged();
+}
+
+void Mangonel::launch(QObject *selectedObject)
+{
+    ProviderResult *selected = qobject_cast<ProviderResult*>(selectedObject);
+    if (!selected) {
+        qWarning() << "Trying to launch null pointer";
+        return;
+    }
+
+    addToHistory(m_currentQuery);
+    selected->launch();
+
+    if (selected->isCalculation) {
+        return;
+    }
+
+    Popularity pop;
+    const QString exec = selected->program;
+
+    if (m_popularities.contains(exec)) {
+        pop = m_popularities[exec];
+        pop.lastUse = QDateTime::currentSecsSinceEpoch();
+
+        // Cap it, so history doesn't haunt forever
+        pop.count = std::min(pop.count + 1, qint64(10));
+
+        if (pop.matchStrings.contains(m_currentQuery)) {
+            pop.matchStrings.removeAll(m_currentQuery);
+        }
+    } else {
+        pop.lastUse = QDateTime::currentSecsSinceEpoch();
+        pop.count = 0;
+    }
+    pop.matchStrings.prepend(m_currentQuery);
+
+    m_popularities[exec] = pop;
+
+    storePopularities();
 }
 
 void Mangonel::showConfig()

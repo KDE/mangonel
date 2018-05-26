@@ -29,13 +29,14 @@
 #include <QObject>
 #include <QVariant>
 
-struct popularity
+struct Popularity
 {
     qint64 lastUse;
     qint64 count;
+    QStringList matchStrings;
 };
 
-struct Application;
+struct ProviderResult;
 
 // Abstract base class of providers.
 class Provider : public QObject
@@ -49,12 +50,12 @@ public:
     virtual ~Provider() {}
 
 public slots:
-    virtual QList<Application*> getResults(QString query) = 0;
-    virtual int launch(QVariant selected) = 0;
+    virtual QList<ProviderResult*> getResults(QString query) = 0;
+    virtual int launch(const QString &exec) = 0;
 };
 
 // Struct stored in AppList.
-struct Application : public QObject
+struct ProviderResult : public QObject
 {
     Q_OBJECT
 
@@ -65,14 +66,13 @@ struct Application : public QObject
     Q_PROPERTY(int priority MEMBER priority CONSTANT)
 
 public:
-    Application();
-
+    bool isCalculation = false;
     QString name;
     QString completion;
     QString icon;
     long priority = 0;//INT_MAX;
-    QVariant program;
-    Provider* object; //Pointer to the search provider that provided this result.
+    QString program;
+    Provider *object; //Pointer to the search provider that provided this result.
     QString type;
 
 public slots:

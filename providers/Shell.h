@@ -40,8 +40,8 @@ public:
     ~Shell();
 
 public slots:
-    QList<Application*> getResults(QString query) override;
-    int launch(QVariant selected) override;
+    QList<ProviderResult*> getResults(QString query) override;
+    int launch(const QString &exec) override;
 private:
     QMap<QString, QString> index;
 };

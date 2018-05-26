@@ -47,9 +47,9 @@ Calculator::Calculator(QObject *parent) :
 Calculator::~Calculator()
 {}
 
-QList<Application*> Calculator::getResults(QString query)
+QList<ProviderResult*> Calculator::getResults(QString query)
 {
-    QList<Application*> list;
+    QList<ProviderResult*> list;
 
     Evaluator *ev = Evaluator::instance();
     query = ev->autoFix(query);
@@ -64,21 +64,22 @@ QList<Application*> Calculator::getResults(QString query)
         return list;
     }
 
-    Application *app = new Application;
+    ProviderResult *app = new ProviderResult;
     app->icon = "accessories-calculator";
     app->name = NumberFormatter::format(quantity);
     app->program = app->name;
     app->object = this;
     app->type = i18n("Calculation");
+    app->isCalculation = true;
     list.append(app);
 
     return list;
 }
 
-int Calculator::launch(QVariant selected)
+int Calculator::launch(const QString &exec)
 {
     QClipboard* clipboard = QApplication::clipboard();
-    clipboard->setText(selected.toString(), QClipboard::Selection);
+    clipboard->setText(exec, QClipboard::Selection);
     return 0;
 }
 

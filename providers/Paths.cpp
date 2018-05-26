@@ -48,9 +48,9 @@ Paths::Paths(QObject *parent) :
 Paths::~Paths()
 {}
 
-QList<Application *> Paths::getResults(QString query)
+QList<ProviderResult *> Paths::getResults(QString query)
 {
-    QList<Application*> list;
+    QList<ProviderResult*> list;
 
     QDir dir;
     if (query.startsWith("/")) {
@@ -78,7 +78,7 @@ QList<Application *> Paths::getResults(QString query)
     }
 
     for(const QFileInfo &path : paths) {
-        Application *result = new Application();
+        ProviderResult *result = new ProviderResult();
         result->name = subUser(path.absoluteFilePath());
         result->completion = result->name.left(result->name.lastIndexOf("/")) + "/" + path.fileName();
         QFileInfo info(path.absoluteFilePath());
@@ -99,9 +99,9 @@ QList<Application *> Paths::getResults(QString query)
     return list;
 }
 
-int Paths::launch(QVariant selected)
+int Paths::launch(const QString &exec)
 {
-    QDesktopServices::openUrl(QUrl::fromLocalFile(selected.toString()));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(exec));
     return 0;
 }
 

@@ -39,8 +39,8 @@ public:
     ~Calculator();
 
 public slots:
-    QList<Application *> getResults(QString query);
-    int launch(QVariant selected);
+    QList<ProviderResult *> getResults(QString query);
+    int launch(const QString &exec);
 };
 
 #endif // Calculator_H

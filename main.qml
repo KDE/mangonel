@@ -110,7 +110,11 @@ Window {
             height: resultList.height
 
             function launch() {
-                modelData.launch(modelData.program)
+                if (!modelData) {
+                    return
+                }
+
+                Mangonel.launch(modelData)
             }
 
             property string type: modelData.type
@@ -271,7 +275,7 @@ Window {
         focus: true
         font.pointSize: 15
         font.bold: true
-        onTextChanged: Mangonel.getApp(text)
+        onTextChanged: Mangonel.setQuery(text)
 
         Keys.onEscapePressed: window.visible = false
         Keys.onLeftPressed: {
@@ -298,7 +302,7 @@ Window {
             if (resultList.currentItem === null) {
                 return
             }
-            Mangonel.addToHistory(text)
+
             resultList.currentItem.launch()
             window.visible = false
         }

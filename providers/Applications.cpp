@@ -26,8 +26,6 @@
 
 #include "Applications.h"
 
-
-
 #include <KServiceTypeTrader>
 #include <QDebug>
 #include <KLocalizedString>
@@ -40,31 +38,24 @@
 Applications::Applications(QObject *parent) :
     Provider(parent)
 {
-    QSettings settings;
-    settings.beginGroup("applications");
-    for (const QString &key : settings.childGroups()) {
-        settings.beginGroup(key);
-        popularity pop;
-        pop.count = settings.value("launches").toLongLong();
-        pop.lastUse = settings.value("lastUse").toLongLong();
-        m_popularities.insert(key, pop);
-        settings.endGroup();
-    }
 }
 
 Applications::~Applications()
 {
-    storePopularities();
 }
 
-Application *Applications::createApp(const KService::Ptr &service)
+ProviderResult *Applications::createApp(const KService::Ptr &service)
 {
-    Application *app = new Application;
+    ProviderResult *app = new ProviderResult;
     app->name = service->name();
     app->completion = app->name;
     app->icon = service->icon();
     app->object = this;
-    app->program = service->exec();
+
+    QString exec = service->exec();
+    exec.remove(QRegularExpression("\\%[fFuUdDnNickvm]"));
+
+    app->program = exec;
     QFileInfo entryPathInfo(service->entryPath());
     app->priority = QDateTime::currentSecsSinceEpoch();
     if (entryPathInfo.exists()) {
@@ -81,82 +72,43 @@ Application *Applications::createApp(const KService::Ptr &service)
     return app;
 }
 
-QList<Application *> Applications::getResults(QString term)
+QList<ProviderResult *> Applications::getResults(QString term)
 {
-    QList<Application*> list;
+    QList<ProviderResult*> list;
     term = term.toHtmlEscaped();
-    term.replace('\'', " ");
-    QString query = "exist Exec and ( (exist Keywords and '%1' ~subin Keywords) or (exist GenericName and '%1' ~~ GenericName) or (exist Name and '%1' ~~ Name) or ('%1' ~~ Exec) )";
-    query = query.arg(term);
-    KService::List services = KServiceTypeTrader::self()->query("Application", query);
-    services.append(KServiceTypeTrader::self()->query("KCModule", query));
-    foreach(const KService::Ptr &service, services) {
-        if (service->noDisplay())
+    term.replace('\'', ' ');
+
+    static const QString query = "exist Exec and ( (exist Keywords and '%1' ~subin Keywords) or (exist GenericName and '%1' ~~ GenericName) or (exist Name and '%1' ~~ Name) or ('%1' ~~ Exec) )";
+
+    KService::List services = KServiceTypeTrader::self()->query("Application", query.arg(term));
+    services.append(KServiceTypeTrader::self()->query("KCModule", query.arg(term)));
+
+    for (const KService::Ptr &service : services) {
+        if (service->noDisplay()) {
             continue;
+        }
         
-        Application *app = createApp(service);
+        ProviderResult *app = createApp(service);
         if (app->name.isEmpty()) {
             delete app;
             continue;
         }
-        
-        if (m_popularities.contains(service->exec())) {
-            app->priority = QDateTime::currentSecsSinceEpoch() - m_popularities[service->exec()].lastUse;
-            app->priority -= (3600 * 360) * m_popularities[service->exec()].count;
-        } else {
-            qreal modifier = 1;
-            if (service->isApplication()) modifier *= 1.1;
-            if (app->name.startsWith(term)) modifier *= 1.5;
-            if (app->name.startsWith(term, Qt::CaseInsensitive)) modifier *= 1.1;
-            if (app->name.contains(term)) modifier *= 1.05;
-            if (app->name.contains(term, Qt::CaseInsensitive)) modifier *= 1.01;
-            if (!app->name.contains(term, Qt::CaseInsensitive)) modifier /= 2;
-
-            modifier += 1. / app->name.length();
-            app->priority /= modifier;
-        }
+        if (service->isApplication()) app->priority *= 1.1;
 
         list.append(app);
     }
     return list;
 }
 
-int Applications::launch(QVariant selected)
+int Applications::launch(const QString &selected)
 {
-    QString exec = selected.toString();
-    exec.remove(QRegularExpression("\\%[fFuUdDnNickvm]"));
-    popularity pop;
-    if (m_popularities.contains(exec)) {
-        pop = m_popularities[exec];
-        pop.lastUse = QDateTime::currentSecsSinceEpoch();
-        pop.count++;
-    } else {
-        pop.lastUse = QDateTime::currentSecsSinceEpoch();
-        pop.count = 0;
-    }
-    m_popularities[selected.toString()] = pop;
     
-    storePopularities();
-    
-    if (QProcess::startDetached(exec)) {
+    if (QProcess::startDetached(selected)) {
         return 0;
     } else {
         return 1;
     }
 }
 
-void Applications::storePopularities()
-{
-    QSettings settings;
-    settings.beginGroup("applications");
-    for (const QString &key : m_popularities.keys()) {
-        settings.beginGroup(key);
-        settings.setValue("launches", m_popularities[key].count);
-        settings.setValue("lastUse", m_popularities[key].lastUse);
-        settings.endGroup();
-    }
 
-}
-
-
-// kate: indent-mode cstyle; space-indent on; indent-width 4; 
+// kate: indent-mode cstyle; space-indent on; indent-width 4;

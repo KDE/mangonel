@@ -40,17 +40,15 @@ QMap<QString, QString> walkDir(QString path)
     QMap<QString, QString> binList;
     QDir dir = QDir(path);
     QFileInfoList list = dir.entryInfoList(QStringList(), QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-    foreach(QFileInfo file, list)
-    {
-        if (file.isDir())
-        {
-            if (file.isSymLink() && file.canonicalFilePath() != path)
+    for (const QFileInfo &file : list) {
+        if (file.isDir()) {
+            if (file.isSymLink() && file.canonicalFilePath() != path) {
                 binList.unite(walkDir(file.absoluteFilePath()));
-        }
-        else
-        {
-            if (file.isExecutable())
+            }
+        } else {
+            if (file.isExecutable()) {
                 binList.insert(file.fileName(), file.absoluteFilePath());
+            }
         }
     }
 
@@ -70,19 +68,20 @@ QStringList getPathEnv()
 Shell::Shell(QObject *parent) :
     Provider(parent)
 {
-    this->index.clear();
-    foreach(QString dir, getPathEnv())
-    {
-        this->index.unite(walkDir(dir));
+    index.clear();
+
+    for (const QString &dir : getPathEnv()) {
+        index.unite(walkDir(dir));
     }
 }
 
 Shell::~Shell()
 {}
 
-QList<Application *> Shell::getResults(QString query)
+QList<ProviderResult *> Shell::getResults(QString query)
 {
-    QList<Application*> list;
+    QList<ProviderResult*> list;
+    return list;
 
     QMapIterator<QString, QString> iterator(this->index);
     while (iterator.hasNext()) {
@@ -97,7 +96,7 @@ QList<Application *> Shell::getResults(QString query)
             args = "";
         }
 
-        Application *app = new Application;
+        ProviderResult *app = new ProviderResult;
         app->name = iterator.value() + args;
         app->completion = iterator.key();
         app->icon = "system-run";
@@ -112,11 +111,11 @@ QList<Application *> Shell::getResults(QString query)
     return list;
 }
 
-int Shell::launch(QVariant selected)
+int Shell::launch(const QString &exec)
 {
-    QStringList args = selected.toString().split(" ");
+    QStringList args = exec.split(" ");
     if (args.isEmpty()) {
-        qWarning() << "Asked to launch invalid program:" << selected;
+        qWarning() << "Asked to launch invalid program:" << exec;
         return 0;
     }
     QString program(args.takeFirst());
