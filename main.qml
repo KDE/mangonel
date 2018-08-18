@@ -42,15 +42,15 @@ Window {
             top: parent.top
             left: parent.left
             right: parent.right
-            margins: shadow.radius
         }
         height: 400 + historyList.height
 
         Behavior on height { NumberAnimation { duration: 50 } }
 
-        color: Qt.rgba(0, 0, 0, 0.5)
+        color: Qt.rgba(0, 0, 0, 0.75)
         radius: 10
-        visible: false
+        border.width: 5
+        border.color: "black"
 
         Rectangle {
             id: bottomBackground
@@ -63,16 +63,6 @@ Window {
             color: "black"
             height: inputText.height + 20
         }
-    }
-
-    DropShadow {
-        id: shadow
-        anchors.fill: background
-        radius: 10
-        samples: 17
-        color: Qt.rgba(0, 0, 0, 0.75)
-        source: background
-        cached: true
     }
 
     MouseArea {
@@ -134,15 +124,6 @@ Window {
                 source: "image://icon/" + modelData.icon
                 sourceSize.width: parent.width
                 sourceSize.height: parent.height - nameText.height - 20
-                visible: false
-            }
-
-            Glow {
-                id: iconGlow
-                anchors.fill: icon
-                source: icon
-                radius: 16
-                samples: 32
             }
 
             Text {
@@ -198,11 +179,15 @@ Window {
     }
 
     MaskedBlur {
-        anchors.fill: resultList
+        anchors.centerIn: resultList
+        width: parent.visible ? resultList.width : 0
+        height: parent.visible ? resultList.height : 0
         source: resultList
         maskSource: mask
-        radius: 8
+        radius: parent.visible ? 8 : 0
         samples: 24
+        Behavior on height { NumberAnimation { duration: 10 } }
+        Behavior on width { NumberAnimation { duration: 10 } }
     }
 
     Text {
