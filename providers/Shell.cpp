@@ -81,19 +81,23 @@ Shell::~Shell()
 QList<ProviderResult *> Shell::getResults(QString query)
 {
     QList<ProviderResult*> list;
-    return list;
+
+    QString command;
+    QString args;
+
+    if (query.contains(' ')) {
+        command = query.left(query.indexOf(" "));
+        args = query.right(query.length() - query.indexOf(" "));
+    } else {
+        command = query;
+    }
 
     QMapIterator<QString, QString> iterator(this->index);
     while (iterator.hasNext()) {
         iterator.next();
 
-        if (!iterator.key().startsWith(query.left(query.indexOf(" ")), Qt::CaseInsensitive)) {
+        if (!iterator.key().startsWith(command, Qt::CaseInsensitive)) {
             continue;
-        }
-
-        QString args = query.right(query.length() - query.indexOf(" "));
-        if (args == query) {
-            args = "";
         }
 
         ProviderResult *app = new ProviderResult;
