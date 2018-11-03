@@ -104,6 +104,7 @@ void Mangonel::storePopularities()
         settings.setValue("lastUse", m_popularities[key].lastUse);
         settings.setValue("matchString", m_popularities[key].matchStrings);
         settings.endGroup();
+        settings.sync();
     }
 }
 
@@ -137,54 +138,60 @@ void Mangonel::setQuery(const QString &query)
 
         app->deleteLater();
     }
-
     m_apps.clear();
 
-    if (query.length() > 0) {
-        m_current = -1;
-        for (Provider* provider : m_providers) {
-            QList<ProviderResult*> list = provider->getResults(query);
-            for (ProviderResult *app : list) {
-                app->setParent(this);
+    m_currentQuery = query;
 
-                if (app->isCalculation) {
-                    m_apps.append(app);
-                    continue;
-                }
-                if (m_popularities.contains(app->program)) {
-                    const Popularity &popularity = m_popularities[app->program];
-                    app->priority = QDateTime::currentSecsSinceEpoch() - popularity.lastUse;
-                    app->priority -= (3600 * 360) * popularity.count;
+    if (query.isEmpty()) {
+        emit appsChanged();
+        return;
+    }
 
-                    if (popularity.matchStrings.contains(query)) {
-                        app->priority /= 2;
-                    }
-                }
+    m_current = -1;
+    for (Provider* provider : m_providers) {
+        QList<ProviderResult*> list = provider->getResults(query);
+        for (ProviderResult *app : list) {
+            app->setParent(this);
 
+            if (app->isCalculation) {
                 m_apps.append(app);
+                continue;
             }
-        }
 
-        std::sort(m_apps.begin(), m_apps.end(), [&](ProviderResult *a, ProviderResult *b) {
+            if (m_popularities.contains(app->program)) {
+                const Popularity &popularity = m_popularities[app->program];
+                app->priority = QDateTime::currentSecsSinceEpoch() - popularity.lastUse;
+                app->priority -= (3600 * 360) * popularity.count;
+
+                if (popularity.matchStrings.contains(query)) {
+                    app->priority /= 2;
+                }
+            }
+
+            m_apps.append(app);
+        }
+    }
+
+    std::sort(m_apps.begin(), m_apps.end(), [&](ProviderResult *a, ProviderResult *b) {
             if (a->isCalculation != b->isCalculation) {
-                if (a->isCalculation) {
-                    return true;
-                }
-                if (b->isCalculation) {
-                    return false;
-                }
+            if (a->isCalculation) {
+            return true;
+            }
+            if (b->isCalculation) {
+            return false;
+            }
             }
 
             const bool aStartMatch = a->name.startsWith(query, Qt::CaseInsensitive);
             const bool bStartMatch = b->name.startsWith(query, Qt::CaseInsensitive);
             if (aStartMatch != bStartMatch) {
-                return aStartMatch && !bStartMatch;
+            return aStartMatch && !bStartMatch;
             }
 
             const bool aContains = a->name.contains(query, Qt::CaseInsensitive);
             const bool bContains = b->name.contains(query, Qt::CaseInsensitive);
             if (aContains != bContains) {
-                return aContains && !bContains;
+            return aContains && !bContains;
             }
             if (m_popularities.contains(a->program)) {
                 if (!m_popularities.contains(b->program)) {
@@ -205,9 +212,8 @@ void Mangonel::setQuery(const QString &query)
             } else {
                 return a->name > b->name;
             }
-        });
-    }
-    m_currentQuery = query;
+    });
+
     emit appsChanged();
 }
 
