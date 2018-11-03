@@ -102,7 +102,7 @@ void Mangonel::storePopularities()
         settings.beginGroup(key);
         settings.setValue("launches", m_popularities[key].count);
         settings.setValue("lastUse", m_popularities[key].lastUse);
-        settings.setValue("matchString", m_popularities[key].matchStrings);
+        settings.setValue("matchStrings", m_popularities[key].matchStrings);
         settings.endGroup();
         settings.sync();
     }
