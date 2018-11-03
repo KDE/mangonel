@@ -95,7 +95,7 @@ QList<ProviderResult *> Units::getResults(QString query)
 int Units::launch(const QString &exec)
 {
     QClipboard* clipboard = QApplication::clipboard();
-    clipboard->setText(exec, QClipboard::Selection);
+    clipboard->setText(exec);
     return 0;
 }
 
