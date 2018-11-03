@@ -79,7 +79,7 @@ QList<ProviderResult*> Calculator::getResults(QString query)
 int Calculator::launch(const QString &exec)
 {
     QClipboard* clipboard = QApplication::clipboard();
-    clipboard->setText(exec, QClipboard::Selection);
+    clipboard->setText(exec);
     return 0;
 }
 
