@@ -782,9 +782,9 @@ char* formatFixed(cfloatnum x, int prec, int base = 10)
     if (base != 10)
         flags += IO_FLAG_SHOW_BASE + IO_FLAG_SHOW_EXPBASE;
     if (prec < 0) {
-        flags |= IO_FLAG_SUPPRESS_TRL_ZERO;
         prec = HMATH_MAX_SHOWN;
     }
+    flags |= IO_FLAG_SUPPRESS_TRL_ZERO;
     char* result = _doFormat(x, base, base, IO_MODE_FIXPOINT, prec, flags);
     return result ? result : _doFormat(x, base, base, IO_MODE_SCIENTIFIC, HMATH_MAX_SHOWN, flags);
 }

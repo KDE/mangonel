@@ -22,11 +22,12 @@
 #include "settings.h"
 #include "quantity.h"
 
-QString NumberFormatter::format(Quantity q)
+QString NumberFormatter::format(Quantity q, int precision)
 {
     Settings* settings = Settings::instance();
 
     Quantity::Format format = q.format();
+    format.precision = precision;
     if (format.base == Quantity::Format::Base::Null) {
         switch (settings->resultFormat) {
         case 'b':

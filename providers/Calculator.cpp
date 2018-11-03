@@ -66,7 +66,7 @@ QList<ProviderResult*> Calculator::getResults(QString query)
 
     ProviderResult *app = new ProviderResult;
     app->icon = "accessories-calculator";
-    app->name = NumberFormatter::format(quantity);
+    app->name = NumberFormatter::format(quantity, 5);
     app->program = app->name;
     app->object = this;
     app->type = i18n("Calculation");

@@ -25,9 +25,9 @@
 #include <QtCore/QString>
 
 struct NumberFormatter {
-    static QString format(HNumber &num) { return format(Quantity(num)); }
-    static QString format(CNumber &num) { return format(Quantity(num)); }
-    static QString format(Quantity);
+    static QString format(HNumber &num, int precision = -1) { return format(Quantity(num), precision); }
+    static QString format(CNumber &num, int precision = -1) { return format(Quantity(num), precision); }
+    static QString format(Quantity, int precision = -1);
 };
 
 #endif
