@@ -28,8 +28,6 @@
 
 #include "Provider.h"
 
-typedef double (*calcFunct)(double val1, double val2);
-
 class Calculator : public Provider
 {
     Q_OBJECT

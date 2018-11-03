@@ -25,13 +25,15 @@
 
 #include "Units.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QClipboard>
 #include <QApplication>
 #include <klocalizedstring.h>
 #include <KUnitConversion/Converter>
 #include <cmath>
 #include <QDebug>
+
+#include "calculator/evaluator.h"
 
 Units::Units(QObject *parent) :
     Provider(parent)
@@ -45,20 +47,33 @@ QList<ProviderResult *> Units::getResults(QString query)
 {
     QList<ProviderResult*> list;
 
-    QRegExp pattern("(\\d+)\\s*(\\w+)\\s+(?:\\=|to|is|in)\\s+(\\w+)$", Qt::CaseInsensitive);
-    if (!query.contains(pattern) || pattern.captureCount() != 3) {
+    QRegularExpression pattern(R"raw((.+?)(\w+)\s+(?:\=|to|is|in)\s+(\w+)$)raw", QRegularExpression::CaseInsensitiveOption);
+    QRegularExpressionMatch match = pattern.match(query);
+    if (!match.hasMatch()) {
         return list;
     }
 
-    const KUnitConversion::Unit inputUnit = resolveUnitName(pattern.cap(2));
+    const KUnitConversion::Unit inputUnit = resolveUnitName(match.captured(2));
     if (!inputUnit.isValid()) {
         return list;
     }
 
-    const double inputNumber = pattern.cap(1).toDouble();
+    QString sourceAmount = match.captured(1);
+    bool ok = false;
+    double inputNumber = sourceAmount.toDouble(&ok);
+    if (!ok) {
+        Evaluator *ev = Evaluator::instance();
+        sourceAmount = ev->autoFix(sourceAmount);
+        ev->setExpression(sourceAmount);
+        const Quantity quantity = ev->evalNoAssign();
+        if (!ev->error().isEmpty()) {
+            return list;
+        }
+        inputNumber = Rational(quantity.numericValue().real).toDouble();
+    }
 
     const KUnitConversion::Value inputValue(inputNumber, inputUnit);
-    const KUnitConversion::Unit outputUnit = resolveUnitName(pattern.cap(3), inputUnit.category());
+    const KUnitConversion::Unit outputUnit = resolveUnitName(match.captured(3), inputUnit.category());
     if (!outputUnit.isValid()) {
         return list;
     }
@@ -69,7 +84,7 @@ QList<ProviderResult *> Units::getResults(QString query)
     qreal calculationResult = outputValue.number();
 
     if (calculationResult < 100) {
-        precision = 6;
+        precision = 5;
     }
 
     double scaledResult = calculationResult * std::pow(10, precision);
@@ -77,6 +92,7 @@ QList<ProviderResult *> Units::getResults(QString query)
         precision--;
         scaledResult = calculationResult * std::pow(10, precision);
     }
+
     const QString inputString = QLocale::system().toString(inputValue.number(), 'f', precision + 1);
     const QString outputString = QLocale::system().toString(outputValue.number(), 'f', precision + 1);
 
