@@ -6,14 +6,16 @@ import QtGraphicalEffects 1.0
 
 Window {
     id: window
-    flags: Qt.Dialog | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.X11BypassWindowManagerHint
+    flags: Qt.Dialog | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
 
     color: "transparent"
 
-    width: 1000
     height: 650
-    visible: true
-    y: -height
+
+    width:  Math.max(window.screen.width / 1.5, 800)
+    y: window.screen.height / 2 - height / 2
+    x: window.screen.width / 2 - width / 2
+    visible :false
 
     onVisibleChanged:{
         inputText.text = ""
@@ -325,22 +327,6 @@ Window {
             iconName: "application-exit"
             onTriggered: Qt.quit()
             shortcut: StandardKey.Quit
-        }
-    }
-
-    // Ugly hack to work around being shown with garbage on initial showing with nvidia driver
-    Component.onCompleted: uglyHackTimer.start()
-
-    Timer {
-        id: uglyHackTimer
-        repeat: false
-        interval: 100
-        onTriggered: {
-            window.width = Math.max(window.screen.width / 1.5, 800)
-            window.y = window.screen.height / 2 - height / 2
-            window.x = window.screen.width / 2 - width / 2
-            window.flags = Qt.Dialog | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint
-            window.visible = false
         }
     }
 }
