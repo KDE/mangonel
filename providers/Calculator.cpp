@@ -51,9 +51,12 @@ Calculator::~Calculator()
 
 QList<ProviderResult*> Calculator::getResults(QString query)
 {
+    query = query.trimmed();
+
     QList<ProviderResult*> list;
 
     Evaluator *ev = Evaluator::instance();
+    const QString origQuery = query;
     query = ev->autoFix(query);
     if (query.isEmpty()) {
         return list;
@@ -62,14 +65,19 @@ QList<ProviderResult*> Calculator::getResults(QString query)
     ev->setExpression(query);
 
     const Quantity quantity = ev->evalNoAssign();
-    if (!ev->error().isEmpty()) {
+    ProviderResult *app = new ProviderResult;
+
+    if (!ev->error().isEmpty() && query == origQuery) {
         return list;
     }
+    if (ev->error().isEmpty()) {
+        app->name = NumberFormatter::format(quantity);
+        app->program = app->name;
+    } else {
+        app->name = query + ":\n" + ev->error();
+    }
 
-    ProviderResult *app = new ProviderResult;
     app->icon = "accessories-calculator";
-    app->name = NumberFormatter::format(quantity);
-    app->program = app->name;
     app->object = this;
     app->type = i18n("Calculation");
     app->isCalculation = true;

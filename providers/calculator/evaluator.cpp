@@ -2096,7 +2096,7 @@ QString Evaluator::autoFix(const QString& expr)
             && tokens.at(0).isIdentifier()
             && FunctionRepo::instance()->find(tokens.at(0).text()))
         {
-            result.append("(ans)");
+            result.append("(0)");
         }
     }
 
