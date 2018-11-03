@@ -36,12 +36,14 @@
 
 #include "calculator/evaluator.h"
 #include "calculator/numberformatter.h"
+#include "calculator/settings.h"
 
 #include <iostream>
 
 Calculator::Calculator(QObject *parent) :
     Provider(parent)
 {
+    Settings::instance()->resultPrecision = 5;
 }
 
 Calculator::~Calculator()
@@ -66,7 +68,7 @@ QList<ProviderResult*> Calculator::getResults(QString query)
 
     ProviderResult *app = new ProviderResult;
     app->icon = "accessories-calculator";
-    app->name = NumberFormatter::format(quantity, 5);
+    app->name = NumberFormatter::format(quantity);
     app->program = app->name;
     app->object = this;
     app->type = i18n("Calculation");

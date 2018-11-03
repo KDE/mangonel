@@ -22,12 +22,11 @@
 #include "settings.h"
 #include "quantity.h"
 
-QString NumberFormatter::format(Quantity q, int precision)
+QString NumberFormatter::format(Quantity q)
 {
     Settings* settings = Settings::instance();
 
     Quantity::Format format = q.format();
-    format.precision = precision;
     if (format.base == Quantity::Format::Base::Null) {
         switch (settings->resultFormat) {
         case 'b':
@@ -86,19 +85,5 @@ QString NumberFormatter::format(Quantity q, int precision)
             format.notation = Quantity::Format::Notation::Polar;
     }
 
-    QString result = DMath::format(q, format);
-
-    result.replace('-', QString::fromUtf8("−"));
-
-    // Replace all spaces between units with dot operator.
-    int emptySpaces = 0;
-    for (auto& ch : result) {
-        if (ch.isSpace()) {
-            ++emptySpaces;
-            if (emptySpaces > 1)
-                ch = u'⋅';
-        }
-    }
-
-    return result;
+    return DMath::format(q, format);
 }

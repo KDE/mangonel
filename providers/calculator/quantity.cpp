@@ -28,6 +28,11 @@
 
 #include <QStringList>
 
+#include <QLocale>
+#include <QDebug>
+
+#include <cmath>
+
 #define RATIONAL_TOL HNumber("1e-20")
 
 #define ENSURE_DIMENSIONLESS(x) \
@@ -852,7 +857,37 @@ QString DMath::format(Quantity q, Quantity::Format format)
 
     number /= unit;
 
-    QString result = CMath::format(number, format);
+    QString result;
+
+    // Use locale appropriate output
+    if (format.base == Quantity::Format::Base::Decimal &&
+            format.mode == Quantity::Format::Mode::Fixed &&
+            q.isReal() && Rational(q.numericValue().real).toDouble() > 1.) {
+        // Ugly trick to strip trailing zeros
+        int precision = format.precision ? format.precision : 6;
+        double calculationResult = Rational(q.numericValue().real).toDouble();
+
+        double scaledResult = calculationResult * std::pow(10, precision);
+        while (precision > 0 && std::floor(scaledResult) == std::ceil(scaledResult)) {
+            precision--;
+            scaledResult = calculationResult * std::pow(10, precision);
+        }
+        result = QLocale::system().toString(calculationResult, 'f', precision + 1);
+    } else {
+        result = CMath::format(number, format);
+
+        result.replace('-', QString::fromUtf8("−"));
+
+        // Replace all spaces between units with dot operator.
+        int emptySpaces = 0;
+        for (auto& ch : result) {
+            if (ch.isSpace()) {
+                ++emptySpaces;
+                if (emptySpaces > 1)
+                    ch = u'⋅';
+            }
+        }
+    }
 
     if (!number.real.isZero() && !number.imag.isZero() && unit_name != " ")
         result = "(" + result + ")";
