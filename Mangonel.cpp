@@ -104,7 +104,6 @@ void Mangonel::storePopularities()
         settings.setValue("lastUse", m_popularities[key].lastUse);
         settings.setValue("matchStrings", m_popularities[key].matchStrings);
         settings.endGroup();
-        settings.sync();
     }
 }
 
@@ -295,7 +294,6 @@ void Mangonel::addToHistory(const QString &text)
     // Store history of session.
     QSettings settings;
     settings.setValue("history", m_history);
-    settings.sync();
 }
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4;
