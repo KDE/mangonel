@@ -108,7 +108,7 @@ QList<ProviderResult *> Shell::getResults(QString query)
         app->program = iterator.value() + args;
         app->type = i18n("Shell command");
 
-        app->priority = QFileInfo(iterator.value()).lastModified().toSecsSinceEpoch();
+        app->priority = QDateTime::currentSecsSinceEpoch() - QFileInfo(iterator.value()).lastModified().toSecsSinceEpoch();
 
         list.append(app);
     }

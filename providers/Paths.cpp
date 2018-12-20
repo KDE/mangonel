@@ -82,7 +82,7 @@ QList<ProviderResult *> Paths::getResults(QString query)
         result->name = subUser(path.absoluteFilePath());
         result->completion = result->name.left(result->name.lastIndexOf("/")) + "/" + path.fileName();
         QFileInfo info(path.absoluteFilePath());
-        result->priority = info.lastModified().toSecsSinceEpoch();
+        result->priority = QDateTime::currentSecsSinceEpoch() - info.lastModified().toSecsSinceEpoch();
         if (path.isDir()) {
             result->completion += "/";
             result->icon = "system-file-manager";
