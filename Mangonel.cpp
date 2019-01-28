@@ -150,6 +150,10 @@ void Mangonel::setQuery(const QString &query)
     for (Provider* provider : m_providers) {
         QList<ProviderResult*> list = provider->getResults(query);
         for (ProviderResult *app : list) {
+            if (!app) {
+                qWarning() << "got null app from" << provider;
+                continue;
+            }
             app->setParent(this);
 
             if (app->isCalculation) {
@@ -171,26 +175,29 @@ void Mangonel::setQuery(const QString &query)
         }
     }
 
-    std::sort(m_apps.begin(), m_apps.end(), [&](ProviderResult *a, ProviderResult *b) {
+    std::sort(m_apps.begin(), m_apps.end(), [&](const QPointer<ProviderResult> &a, const QPointer<ProviderResult> &b) {
+            Q_ASSERT(a);
+            Q_ASSERT(b);
+
             if (a->isCalculation != b->isCalculation) {
-            if (a->isCalculation) {
-            return true;
-            }
-            if (b->isCalculation) {
-            return false;
-            }
+                if (a->isCalculation) {
+                    return true;
+                }
+                if (b->isCalculation) {
+                    return false;
+                }
             }
 
             const bool aStartMatch = a->name.startsWith(query, Qt::CaseInsensitive);
             const bool bStartMatch = b->name.startsWith(query, Qt::CaseInsensitive);
             if (aStartMatch != bStartMatch) {
-            return aStartMatch && !bStartMatch;
+                return aStartMatch && !bStartMatch;
             }
 
             const bool aContains = a->name.contains(query, Qt::CaseInsensitive);
             const bool bContains = b->name.contains(query, Qt::CaseInsensitive);
             if (aContains != bContains) {
-            return aContains && !bContains;
+                return aContains && !bContains;
             }
             if (m_popularities.contains(a->program)) {
                 if (!m_popularities.contains(b->program)) {
@@ -208,9 +215,9 @@ void Mangonel::setQuery(const QString &query)
 
             if (a->priority != b->priority) {
                 return a->priority < b->priority;
-            } else {
-                return a->name > b->name;
             }
+
+            return a->name > b->name;
     });
 
     emit appsChanged();

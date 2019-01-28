@@ -72,7 +72,7 @@ public:
     QString icon;
     long priority = 0;//INT_MAX;
     QString program;
-    Provider *object; //Pointer to the search provider that provided this result.
+    Provider *object{}; //Pointer to the search provider that provided this result.
     QString type;
 
 public slots:
