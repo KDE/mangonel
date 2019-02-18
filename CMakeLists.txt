@@ -67,6 +67,9 @@ set(Mangonel_SRCS
   providers/calculator/units.cpp
 )
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
+
 set(CMAKE_AUTOMOC On)
 qt5_add_resources(Mangonel_SRCS resources.qrc)
 
@@ -86,6 +89,10 @@ target_link_libraries(mangonel
   KF5::UnitConversion
   KF5::Service
 )
+
+set(DO_CLANG_TIDY "clang-tidy" "-checks=*,-clang-analyzer-alpha.*,-modernize-use-auto,-fuchsia-default-arguments,-hicpp-use-auto")
+
+#set_target_properties(mangonel PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
 
 install(TARGETS mangonel ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES mangonel.notifyrc DESTINATION ${KNOTIFYRC_INSTALL_DIR})

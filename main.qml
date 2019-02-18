@@ -88,7 +88,6 @@ Window {
         }
         height: 350
         clip: true
-        model: Mangonel.apps
         orientation: Qt.Horizontal
         highlightMoveDuration: 50
         preferredHighlightBegin: width/2 - itemWidth/2
@@ -262,7 +261,7 @@ Window {
         focus: true
         font.pointSize: 15
         font.bold: true
-        onTextChanged: Mangonel.setQuery(text)
+        onTextChanged: resultList.model = Mangonel.setQuery(text)
 
         Keys.onEscapePressed: window.visible = false
         Keys.onLeftPressed: {

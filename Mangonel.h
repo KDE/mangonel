@@ -36,20 +36,15 @@
 class Mangonel : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QList<QObject*> apps READ apps NOTIFY appsChanged)
     Q_PROPERTY(QStringList history READ history NOTIFY historyChanged)
 
 public:
-    ~Mangonel();
-
     static Mangonel *instance();
-
-    QList<QObject*> apps();
 
     const QStringList &history() { return m_history; }
 
 public slots:
-    void setQuery(const QString &query);
+    QList<QObject*> setQuery(const QString &query);
     void launch(QObject *selectedObject);
     void showConfig();
     void configureNotifications();
@@ -68,16 +63,12 @@ private:
     void storePopularities();
 
     QAction* m_actionShow;
-    bool m_processingKey;
     QStringList m_history;
     QHash<QString, Provider*> m_providers;
 
-    // QPointer so it gets nulled when the object is deleted
-    QList<QPointer<ProviderResult>> m_apps;
-
     QHash<QString, Popularity> m_popularities;
 
-    int m_current;
+    int m_current = -1;
     QString m_currentQuery;
 };
 
