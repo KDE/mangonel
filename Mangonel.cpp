@@ -163,14 +163,18 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
                 }
             }
 
-            const bool aStartMatch = a->name.startsWith(m_currentQuery, Qt::CaseInsensitive);
-            const bool bStartMatch = b->name.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            const bool aStartMatch = a->name.startsWith(m_currentQuery, Qt::CaseInsensitive) ||
+                                        a->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            const bool bStartMatch = b->name.startsWith(m_currentQuery, Qt::CaseInsensitive) ||
+                                        b->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
             if (aStartMatch != bStartMatch) {
                 return aStartMatch && !bStartMatch;
             }
 
-            const bool aContains = a->name.contains(m_currentQuery, Qt::CaseInsensitive);
-            const bool bContains = b->name.contains(m_currentQuery, Qt::CaseInsensitive);
+            const bool aContains = a->name.contains(m_currentQuery, Qt::CaseInsensitive) ||
+                                    a->program.contains(m_currentQuery, Qt::CaseInsensitive);
+            const bool bContains = b->name.contains(m_currentQuery, Qt::CaseInsensitive) ||
+                                    b->program.contains(m_currentQuery, Qt::CaseInsensitive);
             if (aContains != bContains) {
                 return aContains && !bContains;
             }
