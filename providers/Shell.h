@@ -29,7 +29,9 @@
 #include "Provider.h"
 
 #include <QStringList>
+#include <QHash>
 
+class QFileSystemWatcher;
 
 class Shell : public Provider
 {
@@ -42,8 +44,15 @@ public:
 public slots:
     QList<ProviderResult*> getResults(QString query) override;
     int launch(const QString &exec) override;
+
+private slots:
+    void onDirectoryChanged(const QString &path);
+
 private:
-    QMap<QString, QString> index;
+    void walkDir(QString path);
+
+    QMap<QString, QString> m_index;
+    QFileSystemWatcher *m_fsWatcher;
 };
 
 #endif //Shell_H

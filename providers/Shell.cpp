@@ -32,46 +32,51 @@
 #include <QDebug>
 #include <QProcess>
 #include <QDateTime>
+#include <QFileSystemWatcher>
+
+void Shell::walkDir(QString path)
+{
+    QDir dir = QDir(QFileInfo(path).canonicalFilePath());
+    QFileInfoList list = dir.entryInfoList(QStringList(), QDir::NoDotAndDotDot | QDir::Files);
+
+    for (const QFileInfo &file : list) {
+        const QString canonicalPath = file.canonicalFilePath();
+
+        if (file.isFile() && file.isExecutable()) {
+            m_index[file.fileName()] = canonicalPath;
+        }
+    }
+}
 
 namespace
 {
-QMap<QString, QString> walkDir(QString path)
-{
-    QMap<QString, QString> binList;
-    QDir dir = QDir(path);
-    QFileInfoList list = dir.entryInfoList(QStringList(), QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-    for (const QFileInfo &file : list) {
-        if (file.isDir()) {
-            if (file.isSymLink() && file.canonicalFilePath() != path) {
-                binList.unite(walkDir(file.absoluteFilePath()));
-            }
-        } else {
-            if (file.isExecutable()) {
-                binList.insert(file.fileName(), file.absoluteFilePath());
-            }
-        }
-    }
-
-    return binList;
-}
-
-QStringList getPathEnv()
+QStringList parsePathEnv()
 {
     QString pathEnv = getenv("PATH");
     QStringList pathList = pathEnv.split(":", QString::SkipEmptyParts);
-    pathList.append(QDir::homePath() + "/bin");
-    pathList.removeDuplicates();
-    return pathList;
+    QStringList absPathList;
+    for (const QString &path : pathList) {
+        const QString canonicalPath = QFileInfo(path).canonicalFilePath();
+        if (canonicalPath.isEmpty()) {
+            continue;
+        }
+        absPathList.append(canonicalPath);
+    }
+
+    absPathList.removeDuplicates();
+    return absPathList;
 }
 }
 
 Shell::Shell(QObject *parent) :
-    Provider(parent)
+    Provider(parent),
+    m_fsWatcher(new QFileSystemWatcher)
 {
-    index.clear();
+    connect(m_fsWatcher, &QFileSystemWatcher::directoryChanged, this, &Shell::onDirectoryChanged);
 
-    for (const QString &dir : getPathEnv()) {
-        index.unite(walkDir(dir));
+    for (const QString &dir : parsePathEnv()) {
+        m_fsWatcher->addPath(dir);
+        walkDir(dir);
     }
 }
 
@@ -92,7 +97,7 @@ QList<ProviderResult *> Shell::getResults(QString query)
         command = query;
     }
 
-    QMapIterator<QString, QString> iterator(this->index);
+    QMapIterator<QString, QString> iterator(this->m_index);
     while (iterator.hasNext()) {
         iterator.next();
 
@@ -125,6 +130,30 @@ int Shell::launch(const QString &exec)
     QString program(args.takeFirst());
     QProcess::startDetached(program, args);
     return 0;
+}
+
+void Shell::onDirectoryChanged(const QString &path)
+{
+    // First remove the old
+    QStringList toRemove;
+    for (const QString &fullProgramPath : m_index.values()) {
+        if (!fullProgramPath.startsWith(path)) {
+            continue;
+        }
+
+        QFileInfo programInfo(fullProgramPath);
+        if (programInfo.dir().path() == path) {
+            toRemove.append(programInfo.fileName());
+        }
+    }
+
+    // Too lazy to use an iterator
+    for (const QString &program : toRemove) {
+        m_index.remove(program);
+    }
+
+    // Then re-index the path
+    walkDir(path);
 }
 
 
