@@ -32,6 +32,7 @@ Window {
     }
 
     onActiveChanged: if (!active) visible = false
+    onActiveFocusItemChanged: if (!activeFocusItem) visible = false
 
     Connections {
         target: Mangonel
