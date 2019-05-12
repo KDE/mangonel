@@ -157,7 +157,7 @@
 
 #define EXPMIN (-EXPMAX - 1)
 
-#define EXPZERO ((int)((-1) << (sizeof(int)*8-1)))
+#define EXPZERO ((int)((unsigned)(-1) << (sizeof(int)*8-1)))
 #define EXPNAN ((int)(~EXPZERO))
 
 #ifndef DECPRECISION

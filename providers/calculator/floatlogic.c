@@ -61,7 +61,7 @@ _signextend(
   signed char sign;
 
   sign = _signof(longint);
-  mask = (~0) << SIGNBIT;
+  mask = (unsigned)(~0) << SIGNBIT;
   if (sign < 0)
     longint->value[MAXIDX] |= mask;
   else
