@@ -194,10 +194,6 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
                     const Popularity &popularity = m_popularities[app->program];
                     app->priority = QDateTime::currentSecsSinceEpoch() - popularity.lastUse;
                     app->priority -= (3600 * 360) * popularity.count;
-
-                    if (popularity.matchStrings.contains(query)) {
-                        app->priority /= 2;
-                    }
                 }
             }
 
@@ -205,7 +201,7 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
         }
     }
 
-    std::sort(newResults.begin(), newResults.end(), [this](ProviderResult *a, ProviderResult *b) {
+    std::sort(newResults.begin(), newResults.end(), [this, &query](ProviderResult *a, ProviderResult *b) {
             Q_ASSERT(a);
             Q_ASSERT(b);
 
@@ -236,6 +232,13 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
 
                 const Popularity &aPopularity = m_popularities[a->program];
                 const Popularity &bPopularity = m_popularities[b->program];
+
+                const bool aHasMatchStrings = aPopularity.matchStrings.contains(query);
+                const bool bHasMatchStrings = bPopularity.matchStrings.contains(query);
+                if (aHasMatchStrings != bHasMatchStrings) {
+                    return aHasMatchStrings;
+                }
+
                 if (aPopularity.count != bPopularity.count) {
                     return aPopularity.count > bPopularity.count;
                 }
