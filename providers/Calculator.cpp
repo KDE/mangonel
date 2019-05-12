@@ -67,7 +67,8 @@ QList<ProviderResult*> Calculator::getResults(QString query)
     const Quantity quantity = ev->evalNoAssign();
     ProviderResult *app = new ProviderResult;
 
-    if (!ev->error().isEmpty() && query == origQuery) {
+    if (!ev->error().isEmpty()) {
+        qWarning() << ev->error();
         return list;
     }
     if (ev->error().isEmpty()) {

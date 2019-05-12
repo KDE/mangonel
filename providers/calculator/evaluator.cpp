@@ -86,12 +86,10 @@ const Quantity& Evaluator::checkOperatorResult(const Quantity& n)
             m_error = Evaluator::tr("cannot operate on a NaN");
         break;
     case Underflow:
-        m_error = Evaluator::tr("underflow - tiny result is out "
-                                "of SpeedCrunch's number range");
+        m_error = Evaluator::tr("underflow - tiny result is out number range");
         break;
     case Overflow:
-        m_error = Evaluator::tr("overflow - huge result is out of "
-                                "SpeedCrunch's number range");
+        m_error = Evaluator::tr("overflow - huge result is out of number range");
         break;
     case ZeroDivide:
         m_error = Evaluator::tr("division by zero");
@@ -135,7 +133,7 @@ QString Evaluator::stringFromFunctionError(Function* function)
     if (!function->error())
         return QString();
 
-    QString result = QString::fromLatin1("<b>%1</b>: ");
+    QString result = QString::fromLatin1("%1: ");
 
     switch (function->error()) {
     case Success: break;
@@ -146,12 +144,10 @@ QString Evaluator::stringFromFunctionError(Function* function)
         result += Evaluator::tr("does not take NaN as an argument");
         break;
     case Overflow:
-        result += Evaluator::tr("overflow - huge result is out of "
-                                "SpeedCrunch's number range");
+        result += Evaluator::tr("overflow - huge result is out of number range");
         break;
     case Underflow:
-        result += Evaluator::tr("underflow - tiny result is out of "
-                                "SpeedCrunch's number range");
+        result += Evaluator::tr("underflow - tiny result is out of number range");
         break;
     case OutOfLogicRange:
         result += Evaluator::tr("overflow - logic result exceeds "
@@ -1208,11 +1204,12 @@ void Evaluator::compile(const Tokens& tokens)
 
     for (int i = 0; i <= tokens.count() && !syntaxStack.hasError(); ++i) {
         // Helper token: Invalid is end-of-expression.
-        auto token = (i < tokens.count()) ? tokens.at(i)
+        Token token = (i < tokens.count()) ? tokens.at(i)
                                           : Token(Token::stxOperator);
-        auto tokenType = token.type();
-        if (tokenType >= Token::stxOperator)
+        Token::Type tokenType = token.type();
+        if (tokenType >= Token::stxOperator) {
             tokenType = Token::stxOperator;
+        }
 
 #ifdef EVALUATOR_DEBUG
         dbg << "\nToken: " << token.description() << "\n";
@@ -1934,7 +1931,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
                         stack.push(CMath::nan());
                         refs.insert(stack.count(), fname);
                     } else {
-                        m_error = "<b>" + fname + "</b>: "
+                        m_error = fname + ": "
                                   + tr("unknown function or variable");
                         return CMath::nan();
                     }
@@ -1952,7 +1949,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
                 function = FunctionRepo::instance()->find(fname);
 
                 if (!function && !m_assignFunc) {
-                    m_error = "<b>" + fname + "</b>: "
+                    m_error = fname + ": "
                               + tr("unknown function or variable");
                     return CMath::nan();
                 }
@@ -1973,7 +1970,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
                 // Show function signature if user has given no argument (yet).
                 if (function) {
                     if (!args.count()) {
-                        m_error = QString::fromLatin1("<b>%1</b>(%2)").arg(
+                        m_error = QString::fromLatin1("%1 (%2)").arg(
                             fname,
                             function->usage()
                         );
@@ -2061,6 +2058,9 @@ QString Evaluator::autoFix(const QString& expr)
 
     // No extra whitespaces at the beginning and at the end.
     result = result.trimmed();
+    if (result.isEmpty()) {
+        return result;
+    }
 
     // Strip trailing equal sign (=).
     while (result.endsWith("="))
@@ -2089,15 +2089,34 @@ QString Evaluator::autoFix(const QString& expr)
 
     // Special treatment for simple function
     // e.g. "cos" is regarded as "cos(ans)".
-    if (!result.isEmpty()) {
-        Tokens tokens = Evaluator::scan(result);
+    tokens = Evaluator::scan(result);
 
-        if (tokens.count() == 1
+    if (tokens.count() == 1
             && tokens.at(0).isIdentifier()
             && FunctionRepo::instance()->find(tokens.at(0).text()))
-        {
-            result.append("(0)");
+    {
+        result.append("(0)");
+    }
+
+    tokens = Evaluator::scan(result);
+    result.clear();
+    for (int i = 0; i < tokens.count(); ++i) {
+        if (i >= tokens.count() - 1) {
+            result += tokens[i].text() + " ";
+            continue;
         }
+
+        const Token &token = tokens[i];
+        const Token &next = tokens[i+1];
+        if (token.type() != Token::stxNumber ||
+                next.type() != Token::stxIdentifier ||
+                !m_variables.contains(next.text())) {
+            result += tokens[i].text() + " ";
+            continue;
+        }
+
+        result += "(" + token.text() + next.text() + ") ";
+        i += 1;
     }
 
     return result;

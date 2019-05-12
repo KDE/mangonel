@@ -97,10 +97,11 @@ QList<ProviderResult *> Units::getResults(QString query)
     const QString outputString = QLocale::system().toString(outputValue.number(), 'f', precision + 1);
 
     ProviderResult *result = new ProviderResult;
-    result->icon = "accessories-calculator";
+    result->icon = "exchange-positions";
     result->object = this;
     result->name = i18nc("conversion from one unit to another", "%1 %2 is %3 %4", inputString, inputValue.unit().symbol(), outputString, outputValue.unit().symbol());
     result->program = result->name;
+    result->completion = result->name;
     result->type = i18n("Unit conversion");
     result->isCalculation = true;
     list.append(result);
