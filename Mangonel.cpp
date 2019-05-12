@@ -155,12 +155,7 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
             Q_ASSERT(b);
 
             if (a->isCalculation != b->isCalculation) {
-                if (a->isCalculation) {
-                    return true;
-                }
-                if (b->isCalculation) {
-                    return false;
-                }
+                return a->isCalculation;
             }
 
             const bool aStartMatch = a->name.startsWith(m_currentQuery, Qt::CaseInsensitive) ||
@@ -168,7 +163,7 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
             const bool bStartMatch = b->name.startsWith(m_currentQuery, Qt::CaseInsensitive) ||
                                         b->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
             if (aStartMatch != bStartMatch) {
-                return aStartMatch && !bStartMatch;
+                return aStartMatch;
             }
 
             const bool aContains = a->name.contains(m_currentQuery, Qt::CaseInsensitive) ||
@@ -176,8 +171,9 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
             const bool bContains = b->name.contains(m_currentQuery, Qt::CaseInsensitive) ||
                                     b->program.contains(m_currentQuery, Qt::CaseInsensitive);
             if (aContains != bContains) {
-                return aContains && !bContains;
+                return aContains;
             }
+
             if (m_popularities.contains(a->program)) {
                 if (!m_popularities.contains(b->program)) {
                     return true;
