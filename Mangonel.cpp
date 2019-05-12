@@ -26,6 +26,7 @@
 
 #include "Mangonel.h"
 
+#include <QCryptographicHash>
 #include <QGuiApplication>
 #include <QVBoxLayout>
 #include <QDesktopWidget>
@@ -55,6 +56,38 @@
 
 #include <unistd.h>
 
+static QHash<QString, Popularity> getRecursivePopularity(QSettings &settings, const QString &path = QString())
+{
+    QHash<QString, Popularity> ret;
+    for (const QString &key : settings.childGroups()) {
+        settings.beginGroup(key);
+        const QString program = path + key;
+        Popularity pop;
+        pop.count = settings.value("launches").toLongLong();
+        pop.lastUse = settings.value("lastUse").toLongLong();
+        pop.matchStrings = settings.value("matchStrings").toStringList();
+
+        if (pop.count || pop.lastUse || !pop.matchStrings.isEmpty()) {
+            ret.insert(program, pop);
+        }
+
+        for (const QString &child : settings.childGroups()) {
+            settings.beginGroup(child);
+            const QString childPath = (path.isEmpty() ? "/" : "") + path + key + "/" + child + "/";
+            QHash<QString, Popularity> children = getRecursivePopularity(settings, childPath);
+            QHash<QString, Popularity>::const_iterator i = children.constBegin();
+            while (i != children.constEnd()) {
+                ret.insert(i.key(), i.value());
+                ++i;
+            }
+            settings.endGroup();
+        }
+
+        settings.endGroup();
+    }
+    return ret;
+}
+
 Mangonel::Mangonel()
 {
     // Setup our global shortcut.
@@ -83,29 +116,51 @@ Mangonel::Mangonel()
     m_providers["Calculator"] = new Calculator(this);
     m_providers["Units"] = new Units(this);
 
-    settings.beginGroup("popularities");
+    // Migrate old and broken
+    if (settings.childGroups().contains("popularities")) {
+        settings.beginGroup("popularities");
+        QHash<QString, Popularity> children = getRecursivePopularity(settings);
+        QHash<QString, Popularity>::const_iterator i = children.constBegin();
+        while (i != children.constEnd()) {
+            m_popularities.insert(i.key(), i.value());
+            ++i;
+        }
+        settings.endGroup();
+    }
+
+    settings.beginGroup("popularitiesv2");
     for (const QString &key : settings.childGroups()) {
         settings.beginGroup(key);
         Popularity pop;
+        const QString program = settings.value("program").toString();
         pop.count = settings.value("launches").toLongLong();
         pop.lastUse = settings.value("lastUse").toLongLong();
         pop.matchStrings = settings.value("matchStrings").toStringList();
-        m_popularities.insert(key, pop);
+        m_popularities.insert(program, pop);
         settings.endGroup();
     }
+    settings.endGroup();
 }
 
 void Mangonel::storePopularities()
 {
     QSettings settings;
-    settings.beginGroup("popularities");
+    settings.beginGroup("popularitiesv2");
     for (const QString &key : m_popularities.keys()) {
-        settings.beginGroup(key);
+        // QSettings is dumb and annoying
+        const QByteArray hashedProgram = QCryptographicHash::hash(key.toUtf8(), QCryptographicHash::Md5).toHex();
+        settings.beginGroup(QString::fromLatin1(hashedProgram));
+        settings.setValue("program", key);
         settings.setValue("launches", m_popularities[key].count);
         settings.setValue("lastUse", m_popularities[key].lastUse);
         settings.setValue("matchStrings", m_popularities[key].matchStrings);
         settings.endGroup();
     }
+    settings.endGroup();
+
+    // Remove legacy
+    settings.beginGroup("popularities");
+    settings.remove("");
 }
 
 Mangonel *Mangonel::instance()
