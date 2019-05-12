@@ -32,14 +32,6 @@
 #include <QDir>
 #include <QUrl>
 
-static QString subUser(QString path)
-{
-    QString homePath = QDir::homePath();
-    if (path.startsWith(homePath))
-        path = "~" + path.mid(homePath.length(), -1);
-    return path;
-}
-
 Paths::Paths(QObject *parent) :
     Provider(parent)
 {
@@ -79,10 +71,18 @@ QList<ProviderResult *> Paths::getResults(QString query)
 
     for(const QFileInfo &path : paths) {
         ProviderResult *result = new ProviderResult();
-        result->name = subUser(path.absoluteFilePath());
-        result->completion = result->name.left(result->name.lastIndexOf("/")) + "/" + path.fileName();
-        QFileInfo info(path.absoluteFilePath());
-        result->priority = QDateTime::currentSecsSinceEpoch() - info.lastModified().toSecsSinceEpoch();
+
+        result->program = path.absoluteFilePath();
+
+        static const QString homePath = QDir::homePath();
+        if (result->program.startsWith(homePath)) {
+            result->name = path.absoluteFilePath().mid(homePath.length());
+            result->completion = "~" + result->name.left(result->name.lastIndexOf("/")) + "/" + path.fileName();
+        } else {
+            result->name = path.absoluteFilePath();
+            result->completion = result->name.left(result->name.lastIndexOf("/")) + "/" + path.fileName();
+        }
+        result->priority = QDateTime::currentSecsSinceEpoch() - path.lastModified().toSecsSinceEpoch();
         if (path.isDir()) {
             result->completion += "/";
             result->icon = "system-file-manager";
@@ -91,7 +91,6 @@ QList<ProviderResult *> Paths::getResults(QString query)
         }
 
         result->object = this;
-        result->program = path.absoluteFilePath();
         result->type = i18n("Open path");
         list.append(result);
     }

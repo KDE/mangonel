@@ -77,6 +77,7 @@ QList<ProviderResult*> Calculator::getResults(QString query)
         app->name = query + ":\n" + ev->error();
     }
 
+    app->completion = app->name;
     app->icon = "accessories-calculator";
     app->object = this;
     app->type = i18n("Calculation");

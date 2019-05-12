@@ -186,6 +186,10 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
                 qWarning() << "got null app from" << provider;
                 continue;
             }
+            if (app->name.isEmpty()) {
+                qWarning() << "empty name!" << app->name << app->program << app->completion;
+                continue;
+            }
             QQmlEngine::setObjectOwnership(app, QQmlEngine::JavaScriptOwnership);
             app->setParent(this);
 
@@ -201,7 +205,7 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
         }
     }
 
-    std::sort(newResults.begin(), newResults.end(), [this, &query](ProviderResult *a, ProviderResult *b) {
+    std::sort(newResults.begin(), newResults.end(), [this](ProviderResult *a, ProviderResult *b) {
             Q_ASSERT(a);
             Q_ASSERT(b);
 
@@ -209,10 +213,14 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
                 return a->isCalculation;
             }
 
-            const bool aStartMatch = a->name.startsWith(m_currentQuery, Qt::CaseInsensitive) ||
-                                        a->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
-            const bool bStartMatch = b->name.startsWith(m_currentQuery, Qt::CaseInsensitive) ||
-                                        b->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            bool aStartMatch = a->name.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            bool bStartMatch = b->name.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            if (aStartMatch != bStartMatch) {
+                return aStartMatch;
+            }
+
+            aStartMatch = a->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            bStartMatch = b->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
             if (aStartMatch != bStartMatch) {
                 return aStartMatch;
             }
@@ -233,8 +241,8 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
                 const Popularity &aPopularity = m_popularities[a->program];
                 const Popularity &bPopularity = m_popularities[b->program];
 
-                const bool aHasMatchStrings = aPopularity.matchStrings.contains(query);
-                const bool bHasMatchStrings = bPopularity.matchStrings.contains(query);
+                const bool aHasMatchStrings = aPopularity.matchStrings.contains(m_currentQuery);
+                const bool bHasMatchStrings = bPopularity.matchStrings.contains(m_currentQuery);
                 if (aHasMatchStrings != bHasMatchStrings) {
                     return aHasMatchStrings;
                 }

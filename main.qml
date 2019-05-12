@@ -136,7 +136,7 @@ Window {
                     left: parent.left
                     right: parent.right
                 }
-                property string name: modelData.name
+                property string name: modelData.completion
                 onNameChanged: {
                     var index = name.toLowerCase().indexOf(inputText.text.toLowerCase())
                     if (index === -1) {
@@ -155,7 +155,7 @@ Window {
                 font.pointSize: 20
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                text: modelData.name
+                text: modelData.completion
                 wrapMode: Text.WordWrap
             }
         }
