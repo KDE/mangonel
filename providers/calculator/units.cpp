@@ -120,10 +120,10 @@ void Units::findUnit(Quantity& q)
         q.setDisplayUnit(temp.value.numericValue(), temp.name);
     } else {
         // Autogenerate unit name (product of base units).
-        auto dimension = q.getDimension();
-        auto i = dimension.constBegin();
+        QMap<QString, Rational> dimension = q.getDimension();
+        QMap<QString, Rational>::const_iterator i = dimension.constBegin();
         while (i != dimension.constEnd()) {
-            auto exponent = i.value().toString();
+            QString exponent = i.value().toString();
             if (exponent.contains('/'))
                 exponent = "^(" + exponent+')';
             else if (exponent == "1")
@@ -165,9 +165,9 @@ void Units::findUnit(Quantity& q)
                 unit_name += " candela";
             else if (i.key() == "temperature")
                 unit_name += " kelvin";
-            else if (i.key() == "information")
+            else if (i.key() == "information") {
                 unit_name += " bit";
-            else
+            } else
                 unit_name += " " + i.key(); // fall back to the dimension name
             unit_name += exponent;
             ++i;
@@ -320,6 +320,29 @@ const QList<Unit> Units::getList()
     ADD_UNIT(hartley);
     ADD_UNIT(byte);
 
+    ADD_UNIT(exabyte);
+    ADD_UNIT(terabyte);
+    ADD_UNIT(gigabyte);
+    ADD_UNIT(megabyte);
+    ADD_UNIT(kilobyte);
+
+    ADD_UNIT(exbibyte);
+    ADD_UNIT(tebibyte);
+    ADD_UNIT(gibibyte);
+    ADD_UNIT(mebibyte);
+    ADD_UNIT(kibibyte);
+    ADD_UNIT_ALIAS(exbibyte, eb);
+    ADD_UNIT_ALIAS(tebibyte, tb);
+    ADD_UNIT_ALIAS(gibibyte, gb);
+    ADD_UNIT_ALIAS(mebibyte, mb);
+    ADD_UNIT_ALIAS(kibibyte, kb);
+
+    ADD_UNIT(bps);
+    ADD_UNIT(tbps);
+    ADD_UNIT(gbps);
+    ADD_UNIT(mbps);
+    ADD_UNIT(kbps);
+
     ADD_UNIT(tablespoon);
     ADD_UNIT(teaspoon);
     ADD_UNIT(cup);
@@ -466,6 +489,24 @@ UNIT_CACHE(british_thermal_unit, HNumber("1055.056") * joule()) // International
 UNIT_CACHE(nat,                 bit() / HMath::ln(2))
 UNIT_CACHE(hartley,             HMath::ln(10) * nat())
 UNIT_CACHE(byte,                HNumber(8) * bit())
+
+UNIT_CACHE(exbibyte,            exbi() * byte())
+UNIT_CACHE(tebibyte,            tebi() * byte())
+UNIT_CACHE(gibibyte,            gibi() * byte())
+UNIT_CACHE(mebibyte,            mebi() * byte())
+UNIT_CACHE(kibibyte,            kibi() * byte())
+
+UNIT_CACHE(bps,                 bit() / second())
+UNIT_CACHE(tbps,                tebi() * bps())
+UNIT_CACHE(gbps,                gibi() * bps())
+UNIT_CACHE(mbps,                mebi() * bps())
+UNIT_CACHE(kbps,                kibi() * bps())
+
+UNIT_CACHE(exabyte,             exa()  * HNumber(8) * bit())
+UNIT_CACHE(terabyte,            tera() * HNumber(8) * bit())
+UNIT_CACHE(gigabyte,            giga() * HNumber(8) * bit())
+UNIT_CACHE(megabyte,            mega() * HNumber(8) * bit())
+UNIT_CACHE(kilobyte,            kilo() * HNumber(8) * bit())
 
 UNIT_CACHE(tablespoon,          HNumber(15) * milli()*liter())
 UNIT_CACHE(teaspoon,            HNumber(5) * milli()*liter())

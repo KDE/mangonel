@@ -201,6 +201,24 @@ public:
     static const Quantity hartley();
     static const Quantity byte();
 
+    static const Quantity exabyte();
+    static const Quantity terabyte();
+    static const Quantity gigabyte();
+    static const Quantity megabyte();
+    static const Quantity kilobyte();
+
+    static const Quantity exbibyte();
+    static const Quantity tebibyte();
+    static const Quantity gibibyte();
+    static const Quantity mebibyte();
+    static const Quantity kibibyte();
+
+    static const Quantity bps();
+    static const Quantity tbps();
+    static const Quantity gbps();
+    static const Quantity mbps();
+    static const Quantity kbps();
+
 
     // Cooking.
     // Note: these again differ from US to UK, Australia, Japan, ...
