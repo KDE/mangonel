@@ -189,14 +189,21 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
                     return aPopularity.count > bPopularity.count;
                 }
 
-                return aPopularity.lastUse > bPopularity.lastUse;
+                if (aPopularity.lastUse != bPopularity.lastUse) {
+                    return aPopularity.lastUse > bPopularity.lastUse;
+                }
             }
 
             if (a->priority != b->priority) {
                 return a->priority < b->priority;
             }
 
-            return a->name > b->name;
+            if (a->name != b->name) {
+                return a->name > b->name;
+            }
+
+            // They are 100% equal
+            return false;
     });
 
     QList<QObject*> ret;
