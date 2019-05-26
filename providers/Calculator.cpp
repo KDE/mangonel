@@ -68,7 +68,6 @@ QList<ProviderResult*> Calculator::getResults(QString query)
     ProviderResult *app = new ProviderResult;
 
     if (!ev->error().isEmpty()) {
-        qWarning() << ev->error();
         return list;
     }
     if (ev->error().isEmpty()) {

@@ -27,3 +27,9 @@ QPixmap IconProvider::requestPixmap(const QString &id, QSize *actualSize, const 
 
     return pixmap;
 }
+
+
+QQmlImageProviderBase::Flags IconProvider::flags() const
+{
+    return QQmlImageProviderBase::ForceAsynchronousImageLoading;
+}

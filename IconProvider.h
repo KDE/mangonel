@@ -8,7 +8,8 @@ class IconProvider : public QQuickImageProvider
 public:
     IconProvider();
 
-    QPixmap requestPixmap(const QString &id, QSize *actualSize, const QSize &requestedSize);
+    QPixmap requestPixmap(const QString &id, QSize *actualSize, const QSize &requestedSize) override;
+    Flags flags() const override;
 };
 
 #endif // ICONPROVIDER_H
