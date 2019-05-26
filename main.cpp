@@ -44,7 +44,7 @@ int main(int argc, char** argv)
                        QStringLiteral("mangonel"),
                        i18n("Mangonel"),
                        QStringLiteral("1.1"));
-    aboutData.setShortDescription(i18n("A simple application launcher by KDE.")),
+    aboutData.setShortDescription(i18n("A simple application launcher by KDE."));
     aboutData.setLicense(KAboutLicense::BSDL);
     aboutData.setHomepage(QByteArray("www.tarmack.eu/mangonel/"));
     aboutData.addAuthor(i18n("Martin Sandsmark"), i18n("Developer"), "martin.sandsmark@kde.org", "http://iskrembilen.com/");
