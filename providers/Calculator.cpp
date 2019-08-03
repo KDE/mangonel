@@ -65,11 +65,12 @@ QList<ProviderResult*> Calculator::getResults(QString query)
     ev->setExpression(query);
 
     const Quantity quantity = ev->evalNoAssign();
-    ProviderResult *app = new ProviderResult;
 
     if (!ev->error().isEmpty()) {
         return list;
     }
+
+    ProviderResult *app = new ProviderResult;
     if (ev->error().isEmpty()) {
         app->name = NumberFormatter::format(quantity);
         app->program = app->name;
