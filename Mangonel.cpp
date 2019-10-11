@@ -233,11 +233,13 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
                 return aContains;
             }
 
-            if (m_popularities.contains(a->program)) {
-                if (!m_popularities.contains(b->program)) {
-                    return true;
-                }
+            const bool aHasPopularity = m_popularities.contains(a->program);
+            const bool bHasPopularity = m_popularities.contains(b->program);
+            if (aHasPopularity != bHasPopularity) {
+                return aHasPopularity;
+            }
 
+            if (aHasPopularity && bHasPopularity) {
                 const Popularity &aPopularity = m_popularities[a->program];
                 const Popularity &bPopularity = m_popularities[b->program];
 
@@ -272,6 +274,7 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
     for (ProviderResult *result : newResults) {
         ret.append(result);
     }
+
     return ret;
 }
 
