@@ -39,7 +39,6 @@ class CurrencyRefresher : public QObject
 public slots:
     void refresh();
     void init();
-    void stop();
 
 private:
     QTimer *m_timer;

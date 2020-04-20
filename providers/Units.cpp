@@ -40,10 +40,10 @@
 
 void CurrencyRefresher::init()
 {
-    m_timer = new QTimer;
+    m_timer = new QTimer(this);
     m_timer->setInterval(86390 * 1000);
     refresh();
-    connect(m_timer, &QTimer::timeout, this, &CurrencyRefresher::refresh);
+    connect(thread(), &QThread::finished, m_timer, &QTimer::stop);
     m_timer->start();
 }
 
@@ -61,12 +61,6 @@ void CurrencyRefresher::refresh()
     }
 }
 
-void CurrencyRefresher::stop()
-{
-    m_timer->stop();
-    delete m_timer;
-}
-
 Units::Units(QObject *parent) :
     Provider(parent)
 {
@@ -79,10 +73,8 @@ Units::Units(QObject *parent) :
 
 Units::~Units()
 {
-    QMetaObject::invokeMethod(m_refresher, &CurrencyRefresher::stop, Qt::BlockingQueuedConnection);
     m_refresherThread->quit();
     m_refresherThread->wait();
-    delete m_refresher;
 }
 
 QList<ProviderResult *> Units::getResults(QString query)
