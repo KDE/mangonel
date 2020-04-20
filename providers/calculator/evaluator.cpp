@@ -48,13 +48,6 @@ QTextStream& operator<<(QTextStream& s, Quantity num)
 }
 #endif // EVALUATOR_DEBUG
 
-static Evaluator* s_evaluatorInstance = 0;
-
-static void s_deleteEvaluator()
-{
-    delete s_evaluatorInstance;
-}
-
 bool isMinus(const QChar& ch)
 {
     return ch == QLatin1Char('-') || ch == QChar(0x2212);
@@ -529,7 +522,7 @@ void TokenStack::reduce(QList<Token> tokens, Token&& top, int minPrecedence)
     }
 #endif // EVALUATOR_DEBUG
 
-    qSort(tokens.begin(), tokens.end(), tokenPositionCompare);
+    std::sort(tokens.begin(), tokens.end(), tokenPositionCompare);
 
     bool computeMinPrec = (minPrecedence == INVALID_PRECEDENCE);
     int min_prec = computeMinPrec ? MAX_PRECEDENCE : minPrecedence;
@@ -861,8 +854,9 @@ Tokens Evaluator::scan(const QString& expr) const
             numberBase = 10;
             expBase = 0;
 
-            // No break here on purpose (make sure Start is the next case)
 
+            // Make sure Start is the next case,
+            // fallthrough
         case Start:
             // Skip any whitespaces.
             if (ch.isSpace())
