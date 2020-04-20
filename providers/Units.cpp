@@ -32,16 +32,58 @@
 #include <KUnitConversion/Converter>
 #include <cmath>
 #include <QDebug>
+#include <QThread>
+#include <QTimer>
+#include <QElapsedTimer>
 
 #include "calculator/evaluator.h"
+
+void CurrencyRefresher::init()
+{
+    m_timer = new QTimer;
+    m_timer->setInterval(86390 * 1000);
+    refresh();
+    connect(m_timer, &QTimer::timeout, this, &CurrencyRefresher::refresh);
+    m_timer->start();
+}
+
+void CurrencyRefresher::refresh()
+{
+    QElapsedTimer timer; timer.start();
+    qDebug() << "Warming up currency converter";
+    KUnitConversion::Converter converter;
+    KUnitConversion::UnitCategory currency = converter.category(KUnitConversion::CurrencyCategory);
+    const KUnitConversion::Unit nok = currency.unit(KUnitConversion::UnitId::Nok);
+    const KUnitConversion::Value value = KUnitConversion::Value(1, nok);
+    converter.convert(value, KUnitConversion::UnitId::Usd);
+    if (timer.elapsed() > 0) {
+        qDebug() << "Currency converter warmed in" << timer.elapsed() << "ms";
+    }
+}
+
+void CurrencyRefresher::stop()
+{
+    m_timer->stop();
+    delete m_timer;
+}
 
 Units::Units(QObject *parent) :
     Provider(parent)
 {
+    m_refresher = new CurrencyRefresher;
+    m_refresherThread = new QThread(this);
+    m_refresher->moveToThread(m_refresherThread);
+    m_refresherThread->start();
+    QMetaObject::invokeMethod(m_refresher, &CurrencyRefresher::init);
 }
 
 Units::~Units()
-{}
+{
+    QMetaObject::invokeMethod(m_refresher, &CurrencyRefresher::stop, Qt::BlockingQueuedConnection);
+    m_refresherThread->quit();
+    m_refresherThread->wait();
+    delete m_refresher;
+}
 
 QList<ProviderResult *> Units::getResults(QString query)
 {

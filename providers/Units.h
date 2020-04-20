@@ -29,6 +29,21 @@
 #include "Provider.h"
 #include <KUnitConversion/Converter>
 
+class QThread;
+class QTimer;
+
+class CurrencyRefresher : public QObject
+{
+    Q_OBJECT
+
+public slots:
+    void refresh();
+    void init();
+    void stop();
+
+private:
+    QTimer *m_timer;
+};
 
 class Units : public Provider
 {
@@ -49,6 +64,9 @@ private:
     KUnitConversion::Unit matchUnitCaseInsensitive(const QString &name, const KUnitConversion::UnitCategory &category, const UnitMatchingLevel level);
 
     KUnitConversion::Converter m_converter;
+
+    CurrencyRefresher *m_refresher;
+    QThread *m_refresherThread;
 };
     
     
