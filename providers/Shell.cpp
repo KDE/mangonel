@@ -70,7 +70,7 @@ QStringList parsePathEnv()
 
 Shell::Shell(QObject *parent) :
     Provider(parent),
-    m_fsWatcher(new QFileSystemWatcher)
+    m_fsWatcher(new QFileSystemWatcher(this))
 {
     connect(m_fsWatcher, &QFileSystemWatcher::directoryChanged, this, &Shell::onDirectoryChanged);
 
