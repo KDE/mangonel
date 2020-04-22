@@ -28,8 +28,10 @@
 #define APPLICATIONS_H
 
 #include "Provider.h"
+#include <QHash>
 
-#include <kservicegroup.h>
+class QFileSystemWatcher;
+class QFileInfo;
 
 class Applications : public Provider
 {
@@ -38,13 +40,37 @@ public:
     Applications(QObject *parent);
 
     ~Applications();
-    
+
 public slots:
     QList<ProviderResult*> getResults(QString query) override;
     int launch(const QString &selected) override;
-    
+
+private slots:
+    void onDirectoryChanged(const QString &path);
+
 private:
-    ProviderResult *createApp(const KService::Ptr &service);
+    struct Application {
+        QString name;
+        QString exec;
+        qint64 lastModified = -1;
+        QString icon;
+        QString keywords;
+
+        bool isValid() const {
+            return !name.isEmpty() &&
+                !exec.isEmpty() &&
+                !icon.isEmpty() &&
+                lastModified != -1;
+        }
+    };
+
+    void loadDir(const QString &path);
+
+    ProviderResult *createApp(const Application &service);
+    Application loadDesktopFile(const QFileInfo &file);
+
+    QHash<QString, Application> m_applications;
+    QFileSystemWatcher *m_fsWatcher;
 };
 
 #endif
