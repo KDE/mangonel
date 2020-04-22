@@ -32,6 +32,9 @@
 #include <QDir>
 #include <QUrl>
 
+#include <sys/stat.h>
+#include <dirent.h>
+
 Paths::Paths(QObject *parent) :
     Provider(parent)
 {
@@ -39,6 +42,54 @@ Paths::Paths(QObject *parent) :
 
 Paths::~Paths()
 {}
+
+// QDir::entryList is very slow, so we do it ourself (on Linux, someone who knows the others need to fix them)
+static QStringList sortedDirList(const QString &dirPath, const QString &matchPrefix)
+{
+#ifdef Q_OS_LINUX
+    QByteArray path = dirPath.toLocal8Bit();
+    if (!path.endsWith('/')) {
+        path += '/';
+    }
+    DIR *dir = opendir(path.constData());
+    if (!dir) {
+        qWarning() << "Error opening dir:" << strerror(errno);
+        return {};
+    }
+    QHash<QString, qint64> entries;
+    struct stat statbuf;
+    dirent *ent;
+    while ((ent = readdir(dir))) {
+        if (ent->d_name[0] == '.') {
+            continue;
+        }
+        const QString name = QString::fromLocal8Bit(ent->d_name);
+        if (!name.startsWith(matchPrefix, Qt::CaseInsensitive)) {
+            continue;
+        }
+        QByteArray new_path = path + static_cast<const char*>(ent->d_name);
+        if (lstat(new_path.constData(), &statbuf) == -1) {
+            qWarning() << "Error stating file:" << strerror(errno);
+            continue;
+        }
+        if (S_ISCHR(statbuf.st_mode) ||
+                S_ISBLK(statbuf.st_mode) ||
+                S_ISFIFO(statbuf.st_mode)||
+                S_ISSOCK(statbuf.st_mode)) {
+            continue;
+        }
+        entries[name] = statbuf.st_mtime;
+    }
+    closedir(dir);
+    QStringList names = entries.keys();
+    std::sort(names.begin(), names.end(), [&](const QString &a, const QString &b) {
+            return entries[a] > entries[b];
+            });
+    return names;
+#else
+    return QDir(dirPath).entryList(QStringList(matchPrefix + '*'), QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files, QDir::Time);
+#endif
+}
 
 QList<ProviderResult *> Paths::getResults(QString query)
 {
@@ -76,24 +127,27 @@ QList<ProviderResult *> Paths::getResults(QString query)
     }
     timer.restart();
 
-    QFileInfoList paths = dir.entryInfoList(QStringList(part + '*'), QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files, QDir::Time);
+    QStringList paths = sortedDirList(dir.path(), part);
 
-    if (paths.size() > 10) {
-        paths = paths.mid(0, 10);
+    if (paths.size() > 100) {
+        paths = paths.mid(0, 100);
     }
 
     qint64 currentSecsSinceEpoch = QDateTime::currentSecsSinceEpoch();
-    for(const QFileInfo &path : paths) {
+
+    static const QString homePath = QDir::homePath();
+
+    for(const QString &name : paths) {
+        const QFileInfo path(dir.filePath(name));
         ProviderResult *result = new ProviderResult();
 
         result->program = path.absoluteFilePath();
 
-        static const QString homePath = QDir::homePath();
         if (result->program.startsWith(homePath)) {
-            result->name = path.absoluteFilePath().mid(homePath.length());
+            result->name = result->program.mid(homePath.length());
             result->completion = "~" + result->name.left(result->name.lastIndexOf("/")) + "/" + path.fileName();
         } else {
-            result->name = path.absoluteFilePath();
+            result->name = result->program;
             result->completion = result->name.left(result->name.lastIndexOf("/")) + "/" + path.fileName();
         }
         result->priority = currentSecsSinceEpoch - path.lastModified().toSecsSinceEpoch();
@@ -101,7 +155,7 @@ QList<ProviderResult *> Paths::getResults(QString query)
             result->completion += "/";
             result->icon = "system-file-manager";
         } else {
-            result->icon = m_mimeDb.mimeTypeForFile(path.absoluteFilePath()).iconName();
+            result->icon = m_mimeDb.mimeTypeForFile(path).iconName();
         }
 
         result->object = this;
