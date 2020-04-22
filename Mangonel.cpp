@@ -187,8 +187,8 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
     for (Provider* provider : m_providers) {
         timer.restart();
         QList<ProviderResult*> list = provider->getResults(query);
-        if (timer.elapsed() > 10) {
-            qWarning() << provider << "spent" << timer.elapsed() << "ms";
+        if (timer.elapsed() > 30) {
+            qWarning() << provider << "spent" << timer.elapsed() << "ms on" << query;
         }
         for (ProviderResult *app : list) {
             if (!app) {
