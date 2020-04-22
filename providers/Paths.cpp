@@ -50,6 +50,10 @@ QList<ProviderResult *> Paths::getResults(QString query)
         query.remove(0, 1);
     } else {
         dir = QDir::home();
+
+        if (query.startsWith('~')) {
+            query.remove(0, 1);
+        }
     }
 
     QStringList walk = query.split("/", QString::SkipEmptyParts);
@@ -59,16 +63,26 @@ QList<ProviderResult *> Paths::getResults(QString query)
 
     QString part = walk.takeFirst();
     while (walk.length() > 0) {
+        if (!dir.exists(part)) {
+            return list;
+        }
+
         dir.cd(part);
         part = walk.takeFirst();
     }
 
+    if (timer.elapsed() > 10) {
+        qDebug() << "walked in" << timer.elapsed() << "ms";
+    }
+    timer.restart();
+
     QFileInfoList paths = dir.entryInfoList(QStringList(part + '*'), QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files, QDir::Time);
 
-    if (paths.size() > 100) {
-        paths = paths.mid(0, 100);
+    if (paths.size() > 10) {
+        paths = paths.mid(0, 10);
     }
 
+    qint64 currentSecsSinceEpoch = QDateTime::currentSecsSinceEpoch();
     for(const QFileInfo &path : paths) {
         ProviderResult *result = new ProviderResult();
 
@@ -82,7 +96,7 @@ QList<ProviderResult *> Paths::getResults(QString query)
             result->name = path.absoluteFilePath();
             result->completion = result->name.left(result->name.lastIndexOf("/")) + "/" + path.fileName();
         }
-        result->priority = QDateTime::currentSecsSinceEpoch() - path.lastModified().toSecsSinceEpoch();
+        result->priority = currentSecsSinceEpoch - path.lastModified().toSecsSinceEpoch();
         if (path.isDir()) {
             result->completion += "/";
             result->icon = "system-file-manager";
