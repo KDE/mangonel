@@ -31,6 +31,7 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QUrl>
+#include <QDebug>
 
 #include <sys/stat.h>
 #include <dirent.h>
@@ -121,11 +122,6 @@ QList<ProviderResult *> Paths::getResults(QString query)
         dir.cd(part);
         part = walk.takeFirst();
     }
-
-    if (timer.elapsed() > 10) {
-        qDebug() << "walked in" << timer.elapsed() << "ms";
-    }
-    timer.restart();
 
     QStringList paths = sortedDirList(dir.path(), part);
 
