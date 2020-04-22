@@ -44,6 +44,7 @@ Calculator::Calculator(QObject *parent) :
     Provider(parent)
 {
     Settings::instance()->resultPrecision = 5;
+    Evaluator::instance();
 }
 
 Calculator::~Calculator()
