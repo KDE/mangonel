@@ -213,18 +213,6 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
                 return a->isCalculation;
             }
 
-            bool aStartMatch = a->name.startsWith(m_currentQuery, Qt::CaseInsensitive);
-            bool bStartMatch = b->name.startsWith(m_currentQuery, Qt::CaseInsensitive);
-            if (aStartMatch != bStartMatch) {
-                return aStartMatch;
-            }
-
-            aStartMatch = a->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
-            bStartMatch = b->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
-            if (aStartMatch != bStartMatch) {
-                return aStartMatch;
-            }
-
             const bool aContains = a->name.contains(m_currentQuery, Qt::CaseInsensitive) ||
                                     a->program.contains(m_currentQuery, Qt::CaseInsensitive);
             const bool bContains = b->name.contains(m_currentQuery, Qt::CaseInsensitive) ||
@@ -256,6 +244,18 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
                 if (aPopularity.lastUse != bPopularity.lastUse) {
                     return aPopularity.lastUse > bPopularity.lastUse;
                 }
+            }
+
+            bool aStartMatch = a->name.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            bool bStartMatch = b->name.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            if (aStartMatch != bStartMatch) {
+                return aStartMatch;
+            }
+
+            aStartMatch = a->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            bStartMatch = b->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            if (aStartMatch != bStartMatch) {
+                return aStartMatch;
             }
 
             if (a->priority != b->priority) {
