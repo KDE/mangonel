@@ -51,7 +51,8 @@ private slots:
 private:
     void walkDir(QString path);
 
-    QMap<QString, QString> m_index;
+    QHash<QString, QString> m_index;
+    QHash<QString, qint64> m_modified;
     QFileSystemWatcher *m_fsWatcher;
 };
 

@@ -44,6 +44,7 @@ void Shell::walkDir(QString path)
 
         if (file.isFile() && file.isExecutable()) {
             m_index[file.fileName()] = canonicalPath;
+            m_modified[file.fileName()] = file.lastModified().toSecsSinceEpoch();
         }
     }
 }
@@ -97,7 +98,8 @@ QList<ProviderResult *> Shell::getResults(QString query)
         command = query;
     }
 
-    QMapIterator<QString, QString> iterator(this->m_index);
+    const qint64 currentSecsSinceEpoch = QDateTime::currentSecsSinceEpoch();
+    QHashIterator<QString, QString> iterator(this->m_index);
     while (iterator.hasNext()) {
         iterator.next();
 
@@ -113,7 +115,7 @@ QList<ProviderResult *> Shell::getResults(QString query)
         app->program = iterator.value() + args;
         app->type = i18n("Shell command");
 
-        app->priority = QDateTime::currentSecsSinceEpoch() - QFileInfo(iterator.value()).lastModified().toSecsSinceEpoch();
+        app->priority = currentSecsSinceEpoch - m_modified[iterator.key()];
 
         list.append(app);
     }
@@ -150,6 +152,7 @@ void Shell::onDirectoryChanged(const QString &path)
     // Too lazy to use an iterator
     for (const QString &program : toRemove) {
         m_index.remove(program);
+        m_modified.remove(program);
     }
 
     // Then re-index the path
