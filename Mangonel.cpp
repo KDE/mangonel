@@ -38,6 +38,7 @@
 #include <QSettings>
 #include <QDateTime>
 #include <QQmlEngine>
+#include <QElapsedTimer>
 
 #include <KLocalizedString>
 #include <KNotification>
@@ -177,10 +178,18 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
         return {};
     }
 
+    const qint64 currentSecsSinceEpoch = QDateTime::currentSecsSinceEpoch();
+
+    QElapsedTimer timer;
+
     m_current = -1;
     QList<ProviderResult*> newResults;
     for (Provider* provider : m_providers) {
+        timer.restart();
         QList<ProviderResult*> list = provider->getResults(query);
+        if (timer.elapsed() > 10) {
+            qWarning() << provider << "spent" << timer.elapsed() << "ms";
+        }
         for (ProviderResult *app : list) {
             if (!app) {
                 qWarning() << "got null app from" << provider;
@@ -196,7 +205,7 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
             if (!app->isCalculation) {
                 if (m_popularities.contains(app->program)) {
                     const Popularity &popularity = m_popularities[app->program];
-                    app->priority = QDateTime::currentSecsSinceEpoch() - popularity.lastUse;
+                    app->priority = currentSecsSinceEpoch - popularity.lastUse;
                     app->priority -= (3600 * 360) * popularity.count;
                 }
             }
