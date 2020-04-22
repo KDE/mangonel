@@ -57,9 +57,8 @@ ProviderResult *Applications::createApp(const KService::Ptr &service)
 
     app->program = exec;
     QFileInfo entryPathInfo(service->entryPath());
-    app->priority = QDateTime::currentSecsSinceEpoch();
     if (entryPathInfo.exists()) {
-        app->priority = app->priority - entryPathInfo.lastModified().toSecsSinceEpoch();
+        app->priority = entryPathInfo.lastModified().toSecsSinceEpoch();
     } else {
         // KService can't give us the path to anything...
     }
@@ -83,6 +82,7 @@ QList<ProviderResult *> Applications::getResults(QString term)
     KService::List services = KServiceTypeTrader::self()->query("Application", query.arg(term));
     services.append(KServiceTypeTrader::self()->query("KCModule", query.arg(term)));
 
+    qint64 currentSecsSinceEpoch = QDateTime::currentSecsSinceEpoch();
     for (const KService::Ptr &service : services) {
         if (service->noDisplay()) {
             continue;
@@ -93,6 +93,7 @@ QList<ProviderResult *> Applications::getResults(QString term)
             delete app;
             continue;
         }
+        app->priority = currentSecsSinceEpoch - app->priority;
         if (service->isApplication()) app->priority *= 1.1;
 
         list.append(app);
