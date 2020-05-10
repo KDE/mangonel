@@ -27,20 +27,48 @@
 #define Units_H
 
 #include "Provider.h"
+#include <KUnitConversion/Converter>
 
+class QThread;
+class QTimer;
+
+class CurrencyRefresher : public QObject
+{
+    Q_OBJECT
+
+public slots:
+    void refresh();
+    void init();
+
+private:
+    QTimer *m_timer;
+};
 
 class Units : public Provider
 {
     Q_OBJECT
 public:
-    Units();
+    Units(QObject *parent);
     ~Units();
 public slots:
-    QList<Application> getResults(QString query);
-    int launch(QVariant selected);
+    QList<ProviderResult*> getResults(QString query) override;
+    int launch(const QString &exec) override;
+
+private:
+    enum UnitMatchingLevel {
+        OnlyCommonUnits,
+        AllUnits
+    };
+    KUnitConversion::Unit resolveUnitName(const QString &name, const KUnitConversion::UnitCategory &category = KUnitConversion::UnitCategory());
+    KUnitConversion::Unit matchUnitCaseInsensitive(const QString &name, const KUnitConversion::UnitCategory &category, const UnitMatchingLevel level);
+
+    KUnitConversion::Converter m_converter;
+
+    CurrencyRefresher *m_refresher;
+    QThread *m_refresherThread;
 };
     
     
 
 #endif // Units_H
-// kate: indent-mode cstyle; space-indent on; indent-width 4; 
+// kate: indent-mode cstyle; space-indent on; indent-width 4;

@@ -26,16 +26,24 @@
 
 #include "Mangonel.h"
 
+#include <QCryptographicHash>
+#include <QGuiApplication>
 #include <QVBoxLayout>
 #include <QDesktopWidget>
 #include <QDBusInterface>
+#include <QIcon>
 #include <QMenu>
-#include <KDE/Plasma/Theme>
-#include <KDE/KWindowSystem>
-#include <KDE/KNotification>
-#include <KDE/KNotifyConfigWidget>
 #include <QTextDocument>
 #include <QClipboard>
+#include <QSettings>
+#include <QDateTime>
+#include <QQmlEngine>
+#include <QElapsedTimer>
+
+#include <KLocalizedString>
+#include <KNotification>
+#include <KNotifyConfigWidget>
+#include <KGlobalAccel>
 
 #include "Config.h"
 //Include the providers.
@@ -45,295 +53,295 @@
 #include "providers/Calculator.h"
 #include "providers/Units.h"
 
+#include <QDebug>
+
 #include <unistd.h>
 
-#define WINDOW_WIDTH 220
-#define WINDOW_HEIGHT 200
-
-Mangonel::Mangonel(KApplication* app)
+static QHash<QString, Popularity> getRecursivePopularity(QSettings &settings, const QString &path = QString())
 {
-    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-    setContextMenuPolicy(Qt::ActionsContextMenu);
-    setAttribute(Qt::WA_InputMethodEnabled);
-    setAttribute(Qt::WA_MouseTracking, false);
-    app = app;
-    m_processingKey = false;
-    m_apps = 0;
-    QVBoxLayout* view = new QVBoxLayout(this);
-    setLayout(view);
-    view->setContentsMargins(0,10,0,8);
-    // Setup the search feedback label.
-    m_label = new Label(this);
-    // Instantiate the visual feedback field.
-    m_iconView = new IconView(this);
-    // Add all to our layout.
-    view->addWidget(m_iconView);
-    view->addWidget(m_label);
-    resize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    m_label->setMaximumWidth(WINDOW_WIDTH - 20);
+    QHash<QString, Popularity> ret;
+    for (const QString &key : settings.childGroups()) {
+        settings.beginGroup(key);
+        const QString program = path + key;
+        Popularity pop;
+        pop.count = settings.value("launches").toLongLong();
+        pop.lastUse = settings.value("lastUse").toLongLong();
+        pop.matchStrings = settings.value("matchStrings").toStringList();
 
+        if (pop.count || pop.lastUse || !pop.matchStrings.isEmpty()) {
+            ret.insert(program, pop);
+        }
+
+        for (const QString &child : settings.childGroups()) {
+            settings.beginGroup(child);
+            const QString childPath = (path.isEmpty() ? "/" : "") + path + key + "/" + child + "/";
+            QHash<QString, Popularity> children = getRecursivePopularity(settings, childPath);
+            QHash<QString, Popularity>::const_iterator i = children.constBegin();
+            while (i != children.constEnd()) {
+                ret.insert(i.key(), i.value());
+                ++i;
+            }
+            settings.endGroup();
+        }
+
+        settings.endGroup();
+    }
+    return ret;
+}
+
+Mangonel::Mangonel()
+{
     // Setup our global shortcut.
-    m_actionShow = new KAction(i18n("Show Mangonel"), this);
+    m_actionShow = new QAction(i18n("Show Mangonel"), this);
     m_actionShow->setObjectName(QString("show"));
-    KShortcut shortcut = m_actionShow->shortcut();
-    shortcut.setPrimary(QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Space));
-    m_actionShow->setGlobalShortcut(shortcut);
-    connect(m_actionShow, SIGNAL(triggered()), this, SLOT(showHide()));
+    QList<QKeySequence> shortcuts({QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Space)});
+    KGlobalAccel::self()->setShortcut(m_actionShow, shortcuts);
+    shortcuts = KGlobalAccel::self()->shortcut(m_actionShow);
+    connect(m_actionShow, SIGNAL(triggered()), this, SIGNAL(triggered()));
 
-    const KConfigGroup config = KGlobal::config()->group("mangonel_main");
-    m_history = config.readEntry("history", QStringList());
+    QString shortcutString;
+    if (!shortcuts.isEmpty()) {
+        shortcutString = shortcuts.first().toString();
+    }
 
-    QString shortcutString(m_actionShow->globalShortcut().toString());
-    QString message(i18nc("@info", "Press <shortcut>%1</shortcut> to show Mangonel.", shortcutString));
-
+    QString message = xi18nc("@info", "Press <shortcut>%1</shortcut> to show Mangonel.", shortcutString);
     KNotification::event(QLatin1String("startup"), message);
 
+    QSettings settings;
+    m_history = settings.value("history").toStringList();
+
     // Instantiate the providers.
-    m_providers["applications"] = new Applications();
-    m_providers["paths"] = new Paths();
-    m_providers["shell"] = new Shell();
-    m_providers["Calculator"] = new Calculator();
-    m_providers["Units"] = new Units();
+    m_providers["applications"] = new Applications(this);
+    m_providers["paths"] = new Paths(this);
+    m_providers["shell"] = new Shell(this);
+    m_providers["Calculator"] = new Calculator(this);
+    m_providers["Units"] = new Units(this);
 
-    connect(m_label, SIGNAL(textChanged(QString)), this, SLOT(getApp(QString)));
-
-    QAction* actionConfig = new QAction(KIcon("configure"), i18n("Configuration"), this);
-    addAction(actionConfig);
-    connect(actionConfig, SIGNAL(triggered(bool)), this, SLOT(showConfig()));
-
-    QAction* notifyConfig = new QAction(KIcon("configure-notifications"), i18n("Configure notifications"), this);
-    addAction(notifyConfig);
-    connect(notifyConfig, SIGNAL(triggered(bool)), this, SLOT(configureNotifications()));
-
-    QAction* quit = new QAction(KIcon("application-exit"), i18n("Quit"), this);
-    addAction(quit);
-    connect(quit, SIGNAL(triggered(bool)), app, SLOT(quit()));
-}
-
-Mangonel::~Mangonel()
-    // Store history of session.
-{
-    KConfigGroup config = KGlobal::config()->group("mangonel_main");
-    config.writeEntry("history", m_history);
-    config.config()->sync();
-}
-
-bool Mangonel::event(QEvent* event)
-{
-    event->ignore();
-    if (event->type() == QEvent::MouseButtonPress)
-    {
-        QMouseEvent* mouseEvent = static_cast<QMouseEvent*> (event);
-        if (mouseEvent->button() == Qt::MiddleButton)
-        {
-            event->accept();
-            m_label->appendText(QApplication::clipboard()->text(QClipboard::Selection));
+    // Migrate old and broken
+    if (settings.childGroups().contains("popularities")) {
+        settings.beginGroup("popularities");
+        QHash<QString, Popularity> children = getRecursivePopularity(settings);
+        QHash<QString, Popularity>::const_iterator i = children.constBegin();
+        while (i != children.constEnd()) {
+            m_popularities.insert(i.key(), i.value());
+            ++i;
         }
-        else if (!geometry().contains(mouseEvent->globalPos()))
-        {
-            hide();
-            event->accept();
+        settings.endGroup();
+    }
+
+    settings.beginGroup("popularitiesv2");
+    for (const QString &key : settings.childGroups()) {
+        settings.beginGroup(key);
+        Popularity pop;
+        const QString program = settings.value("program").toString();
+        pop.count = settings.value("launches").toLongLong();
+        pop.lastUse = settings.value("lastUse").toLongLong();
+        pop.matchStrings = settings.value("matchStrings").toStringList();
+        m_popularities.insert(program, pop);
+        settings.endGroup();
+    }
+    settings.endGroup();
+}
+
+void Mangonel::storePopularities()
+{
+    QSettings settings;
+    settings.beginGroup("popularitiesv2");
+    for (const QString &key : m_popularities.keys()) {
+        // QSettings is dumb and annoying
+        const QByteArray hashedProgram = QCryptographicHash::hash(key.toUtf8(), QCryptographicHash::Md5).toHex();
+        settings.beginGroup(QString::fromLatin1(hashedProgram));
+        settings.setValue("program", key);
+        settings.setValue("launches", m_popularities[key].count);
+        settings.setValue("lastUse", m_popularities[key].lastUse);
+        settings.setValue("matchStrings", m_popularities[key].matchStrings);
+        settings.endGroup();
+    }
+    settings.endGroup();
+
+    // Remove legacy
+    settings.beginGroup("popularities");
+    settings.remove("");
+}
+
+Mangonel *Mangonel::instance()
+{
+    static Mangonel s_instance;
+    return &s_instance;
+}
+
+QList<QObject *> Mangonel::setQuery(const QString &query)
+{
+    m_currentQuery = query;
+
+    if (query.isEmpty()) {
+        return {};
+    }
+
+    const qint64 currentSecsSinceEpoch = QDateTime::currentSecsSinceEpoch();
+
+    QElapsedTimer timer;
+
+    m_current = -1;
+    QList<ProviderResult*> newResults;
+    for (Provider* provider : m_providers) {
+        timer.restart();
+        QList<ProviderResult*> list = provider->getResults(query);
+        if (timer.elapsed() > 30) {
+            qWarning() << provider << "spent" << timer.elapsed() << "ms on" << query;
+        }
+        for (ProviderResult *app : list) {
+            if (!app) {
+                qWarning() << "got null app from" << provider;
+                continue;
+            }
+            if (app->name.isEmpty()) {
+                qWarning() << "empty name!" << app->name << app->program << app->completion;
+                continue;
+            }
+            QQmlEngine::setObjectOwnership(app, QQmlEngine::JavaScriptOwnership);
+            app->setParent(this);
+
+            if (!app->isCalculation) {
+                if (m_popularities.contains(app->program)) {
+                    const Popularity &popularity = m_popularities[app->program];
+                    app->priority = currentSecsSinceEpoch - popularity.lastUse;
+                    app->priority -= (3600 * 360) * popularity.count;
+                }
+            }
+
+            newResults.append(app);
         }
     }
-    else if (event->type() == QEvent::ContextMenu)
-    {
-        QContextMenuEvent* menuEvent = static_cast<QContextMenuEvent*> (event);
-        if (!geometry().contains(menuEvent->globalPos()))
-            event->accept();
+
+    std::sort(newResults.begin(), newResults.end(), [this](ProviderResult *a, ProviderResult *b) {
+            Q_ASSERT(a);
+            Q_ASSERT(b);
+
+            if (a->isCalculation != b->isCalculation) {
+                return a->isCalculation;
+            }
+
+            const bool aContains = a->name.contains(m_currentQuery, Qt::CaseInsensitive) ||
+                                    a->program.contains(m_currentQuery, Qt::CaseInsensitive);
+            const bool bContains = b->name.contains(m_currentQuery, Qt::CaseInsensitive) ||
+                                    b->program.contains(m_currentQuery, Qt::CaseInsensitive);
+            if (aContains != bContains) {
+                return aContains;
+            }
+
+            const bool aHasPopularity = m_popularities.contains(a->program);
+            const bool bHasPopularity = m_popularities.contains(b->program);
+            if (aHasPopularity != bHasPopularity) {
+                return aHasPopularity;
+            }
+
+            if (aHasPopularity && bHasPopularity) {
+                const Popularity &aPopularity = m_popularities[a->program];
+                const Popularity &bPopularity = m_popularities[b->program];
+
+                const bool aHasMatchStrings = aPopularity.matchStrings.contains(m_currentQuery);
+                const bool bHasMatchStrings = bPopularity.matchStrings.contains(m_currentQuery);
+                if (aHasMatchStrings != bHasMatchStrings) {
+                    return aHasMatchStrings;
+                }
+
+                if (aPopularity.count != bPopularity.count) {
+                    return aPopularity.count > bPopularity.count;
+                }
+
+                if (aPopularity.lastUse != bPopularity.lastUse) {
+                    return aPopularity.lastUse > bPopularity.lastUse;
+                }
+            }
+
+            bool aStartMatch = a->name.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            bool bStartMatch = b->name.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            if (aStartMatch != bStartMatch) {
+                return aStartMatch;
+            }
+
+            aStartMatch = a->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            bStartMatch = b->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
+            if (aStartMatch != bStartMatch) {
+                return aStartMatch;
+            }
+
+            if (a->priority != b->priority) {
+                return a->priority < b->priority;
+            }
+
+            if (a->name != b->name) {
+                return a->name > b->name;
+            }
+
+            // They are 100% equal
+            return false;
+    });
+
+    QList<QObject*> ret;
+    for (ProviderResult *result : newResults) {
+        ret.append(result);
     }
-    if (!event->isAccepted())
-        Plasma::Dialog::event(event);
-    return true;
+
+    return ret;
 }
 
-void Mangonel::inputMethodEvent(QInputMethodEvent* event)
+void Mangonel::launch(QObject *selectedObject)
 {
-    QString text = m_label->text();
-    text.chop(event->preeditString().length());
-    text = text.mid(0, text.length()+event->replacementStart());
-    text.append(event->commitString());
-    if (text == "~/")
-        text = "";
-    text.append(event->preeditString());
-    m_label->setPreEdit(event->preeditString());
-    m_label->setText(text);
-}
-void Mangonel::keyPressEvent(QKeyEvent* event)
-{
-    int key = event->key();
-    IconView::direction direction = IconView::right;
-    Application* CurrentApp;
-    if (m_processingKey)
+    ProviderResult *selected = qobject_cast<ProviderResult*>(selectedObject);
+    if (!selected) {
+        qWarning() << "Trying to launch null pointer";
         return;
-    m_processingKey = true;
-    switch (event->key())
-    {
-    case Qt::Key_Enter:
-    case Qt::Key_Return:
-        launch();
-    case Qt::Key_Escape:
-        hide();
-        break;
-    case Qt::Key_Up:
-        m_historyIndex += 2;
-    case Qt::Key_Down:
-        m_historyIndex -= 1;
-        if (m_historyIndex >= 0)
-        {
-            if (m_historyIndex < m_history.length())
-                m_label->setText(m_history[m_historyIndex]);
-        }
-        else
-            m_historyIndex = -1;
-        break;
-    case Qt::Key_Left:
-        direction = IconView::left;
-    case Qt::Key_Right:
-        m_iconView->moveItems(direction);
-        CurrentApp = m_iconView->selectedApp();
-        if (CurrentApp != 0)
-            m_label->setCompletion(CurrentApp->completion);
-        break;
-    default:
-        if (key == Qt::Key_Tab)
-        {
-            if (!m_label->completion().isEmpty())
-                m_label->setText(m_label->completion());
-        }
-        else if (key == Qt::Key_Backspace)
-        {
-            QString text = m_label->text();
-            text.chop(1);
-            if (text == "~/")
-                text = "";
-            m_label->setText(text);
-        }
-        else if (event->matches(QKeySequence::Paste))
-        {
-            m_label->appendText(QApplication::clipboard()->text());
-        }
-        else
-        {
-            m_label->appendText(event->text());
-        }
     }
-    m_processingKey = false;
-}
 
-void Mangonel::getApp(QString query)
-{
-    m_iconView->clear();
-    delete m_apps;
-    m_apps = 0;
-    if (query.length() > 0)
-    {
-        m_apps = new AppList();
-        m_current = -1;
-        foreach(Provider* provider, m_providers)
-        {
-            QList<Application> list = provider->getResults(query);
-            foreach(const Application &app, list) {
-                qDebug() << app.name << app.priority;
-                m_apps->insertSorted(app);
-            }
-        }
-        if (!m_apps->isEmpty())
-        {
-            for (int i = 0; i < m_apps->length(); i++)
-            {
-                m_iconView->addProgram(m_apps->at(i));
-            }
-            m_iconView->setFirst();
-            Application* CurrentApp = m_iconView->selectedApp();
-            if (CurrentApp != 0)
-                m_label->setCompletion(CurrentApp->completion);
-        }
-        else
-        {
-            m_label->setCompletion("");
-        }
+    addToHistory(m_currentQuery);
+    selected->launch();
+
+    if (selected->isCalculation) {
+        return;
     }
-}
 
-void Mangonel::launch()
-{
-    m_history.insert(0, m_label->text());
-    Application* app = m_iconView->selectedApp();
-    if (app != 0)
-        app->object->launch(app->program);
-}
+    Popularity pop;
+    const QString exec = selected->program;
 
-void Mangonel::showHide()
-{
-    if (isVisible())
-        hide();
-    else
-        show();
-}
+    if (m_popularities.contains(exec)) {
+        pop = m_popularities[exec];
+        pop.lastUse = QDateTime::currentSecsSinceEpoch();
 
-void Mangonel::show()
-{
-    resize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    m_historyIndex = -1;
-    QRect screen = qApp->desktop()->screenGeometry(this);
-    int x = (screen.width() - geometry().width()) / 2;
-    int y = (screen.height() - geometry().height()) / 2;
-    move(x, y);
-    QWidget::show();
-    KWindowSystem::forceActiveWindow(winId());
-    setFocus();
-}
+        // Cap it, so history doesn't haunt forever
+        pop.count = std::min(pop.count + 1, qint64(10));
 
-void Mangonel::hide()
-{
-    m_label->setText("");
-    m_iconView->clear();
-    delete m_apps;
-    m_apps = 0;
-    QWidget::hide();
-}
+        if (pop.matchStrings.contains(m_currentQuery)) {
+            pop.matchStrings.removeAll(m_currentQuery);
+        }
+    } else {
+        pop.lastUse = QDateTime::currentSecsSinceEpoch();
+        pop.count = 0;
+    }
+    pop.matchStrings.prepend(m_currentQuery);
 
-void Mangonel::focusInEvent(QFocusEvent* event)
-{
-    Q_UNUSED(event);
-    grabMouse();
-}
+    m_popularities[exec] = pop;
 
-void Mangonel::focusOutEvent(QFocusEvent* event)
-{
-    releaseMouse();
-    if (event->reason() != Qt::PopupFocusReason)
-        hide();
-}
-
-bool Mangonel::eventFilter(QObject *object, QEvent *event)
-{
-    Q_UNUSED(object);
-    if (event->type() == QEvent::FocusOut)
-        return true;
-    return false;
+    storePopularities();
 }
 
 void Mangonel::showConfig()
 {
-    KShortcut shortcut = m_actionShow->globalShortcut();
-    ConfigDialog* dialog = new ConfigDialog(this);
-    dialog->setHotkey(shortcut.primary());
+    QList<QKeySequence> shortcuts(KGlobalAccel::self()->globalShortcut(qApp->applicationName(), "show"));
+    ConfigDialog* dialog = new ConfigDialog;
+    if (!shortcuts.isEmpty()) {
+        dialog->setHotkey(shortcuts.first());
+    }
     connect(dialog, SIGNAL(hotkeyChanged(QKeySequence)), this, SLOT(setHotkey(QKeySequence)));
-    installEventFilter(this);
-    releaseMouse();
     dialog->exec();
-    removeEventFilter(this);
-    activateWindow();
-    setFocus();
 }
 
 void Mangonel::setHotkey(const QKeySequence& hotkey)
 {
-    KShortcut shortcut = KShortcut();
-    shortcut.setPrimary(hotkey);
-    m_actionShow->setGlobalShortcut(shortcut, KAction::ShortcutTypes(KAction::ActiveShortcut|KAction::DefaultShortcut), KAction::NoAutoloading);
-    qDebug() << hotkey.toString();
+    KGlobalAccel::self()->setShortcut(m_actionShow,
+                                      QList<QKeySequence>() << hotkey,
+                                      KGlobalAccel::NoAutoloading);
 }
 
 void Mangonel::configureNotifications()
@@ -341,234 +349,19 @@ void Mangonel::configureNotifications()
     KNotifyConfigWidget::configure();
 }
 
-IconView::IconView(QWidget* parent) : m_current(-1)
+QString Mangonel::selectionClipboardContent()
 {
-    Q_UNUSED(parent);
-    m_scene = new QGraphicsScene(QRectF(0, 0, rect().width()*4, rect().height()), this);
-    setScene(m_scene);
-    setFrameStyle(QFrame::NoFrame);
-    setStyleSheet("background: transparent; border: none");
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setFocusPolicy(Qt::NoFocus);
-    centerOn(QPoint(rect().width()*1.5, 0));
+    return QGuiApplication::clipboard()->text(QClipboard::Selection);
 }
 
-IconView::~IconView()
+void Mangonel::addToHistory(const QString &text)
 {
-    delete m_scene;
+    m_history.prepend(text);
+    emit historyChanged();
+
+    // Store history of session.
+    QSettings settings;
+    settings.setValue("history", m_history);
 }
 
-void IconView::clear()
-{
-    m_scene->clear();
-    m_items.clear();
-    m_current = -1;
-}
-
-void IconView::addProgram(Application application)
-{
-    ProgramView* program = new ProgramView(application);
-    m_items.append(program);
-    m_scene->addItem(program);
-}
-
-Application* IconView::selectedApp()
-{
-    if (m_current >= 0 and m_current < m_items.length())
-    {
-        return &m_items[m_current]->application;
-    }
-    else return 0;
-}
-
-void IconView::setFirst()
-{
-    if (!m_items.empty())
-        m_current = 0;
-    m_items[m_current]->show();
-    m_items[m_current]->setPos(rect().width() + (rect().width() - 128) / 2, 0);
-    centerOn(QPoint(rect().width()*1.5, 0));
-}
-
-void IconView::moveItems(IconView::direction direction)
-{
-    if (m_current < 0)
-        return;
-    int offset = rect().width();
-    int steps =  10;
-    int dx = offset / steps;
-    int index = 1;
-    if (direction == IconView::right)
-    {
-        if (m_current + 1 >= m_items.length())
-            return;
-        dx = -dx;
-        offset *= 2;
-    }
-    else
-    {
-        if (m_current < 1)
-            return;
-        offset = 0;
-        index = -1;
-    }
-    ProgramView* itemNew = m_items[m_current+index];
-    ProgramView* itemOld = m_items[m_current];
-    itemNew->setPos(offset + (rect().width() - 128) / 2, 0);
-    itemNew->show();
-    int startposNew = itemNew->pos().x();
-    int startPosOld = itemOld->pos().x();
-    for (int i = 0; i < steps / 2; i++)
-    {
-        itemNew->setPos(startposNew + (dx * i), 0);
-        QApplication::instance()->processEvents();
-        usleep(5000);
-    }
-    startposNew = itemNew->pos().x();
-    startPosOld = itemOld->pos().x();
-    for (int i = 0; i < steps / 2; i++)
-    {
-        itemNew->setPos(startposNew + (dx * i), 0);
-        itemOld->setPos(startPosOld + (dx * i), 0);
-        QApplication::instance()->processEvents();
-        usleep(5000);
-    }
-    startposNew = itemNew->pos().x();
-    startPosOld = itemOld->pos().x();
-    for (int i = 0; i < steps / 2; i++)
-    {
-        itemOld->setPos(startPosOld + (dx * i), 0);
-        QApplication::instance()->processEvents();
-        usleep(5000);
-    }
-    itemOld->hide();
-    itemNew->setPos(rect().width() + (rect().width() - 128) / 2, 0);
-    m_current += index;
-    centerOn(QPoint(rect().width()*1.5, 0));
-}
-
-
-ProgramView::ProgramView(Application app)
-{
-    hide();
-    m_icon = 0;
-    m_label = 0;
-    m_block = 0;
-    m_descriptionLabel = 0;
-    application = app;
-}
-
-ProgramView::~ProgramView()
-{
-    delete m_icon;
-    delete m_label;
-    delete m_block;
-    delete m_descriptionLabel;
-}
-
-void ProgramView::centerItems()
-{
-    m_icon->setPos(0, 0);
-    QRectF iconRect = m_icon->boundingRect();
-    QRectF labelRect = m_label->boundingRect();
-    QRectF blockRect = m_block->boundingRect();
-    QRectF descriptionRect = m_descriptionLabel->boundingRect();
-    m_block->setPos(
-        qreal(iconRect.width() / 2 - blockRect.width() / 2),
-        qreal(iconRect.height() / 2 - blockRect.height() / 2)
-    );
-    m_label->setPos(
-        qreal(iconRect.width() / 2 - labelRect.width() / 2),
-        qreal(iconRect.height() / 2 - labelRect.height() / 2)
-    );
-    m_descriptionLabel->setPos(
-        qreal(iconRect.width() / 2 - descriptionRect.width() / 2),
-        qreal(iconRect.height() / 2 - descriptionRect.height() / 2 + labelRect.height())
-    );
-}
-
-void ProgramView::show()
-{
-    if (m_icon == 0)
-        m_icon = new QGraphicsPixmapItem(KIcon(application.icon).pixmap(128), this);
-    if (m_label == 0)
-    {
-        m_label = new QGraphicsTextItem(application.name, this);
-        if (m_label->boundingRect().width() > WINDOW_WIDTH - 40)
-            m_label->adjustSize();
-        m_label->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
-        QColor color = Plasma::Theme().color(Plasma::Theme::TextColor);
-        m_label->setDefaultTextColor(color);
-    }
-    if (m_descriptionLabel == 0)
-    {
-        m_descriptionLabel = new QGraphicsTextItem(i18nc("the type of the application to be launched, shown beneath the application name", "(%1)", application.type), this);
-        if (m_descriptionLabel->boundingRect().width() > WINDOW_WIDTH - 40)
-            m_descriptionLabel->adjustSize();
-        m_descriptionLabel->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
-        QColor color = Plasma::Theme().color(Plasma::Theme::TextColor);
-        m_descriptionLabel->setDefaultTextColor(color);
-    }
-    if (m_block == 0)
-    {
-        QRectF nameRect = m_label->boundingRect();
-        QRectF descriptionRect = m_descriptionLabel->boundingRect();
-        QRectF rect(nameRect.x(), nameRect.y() +10, qMax(nameRect.width(), descriptionRect.width()), nameRect.height() + descriptionRect.height() + 5);
-        m_block = new QGraphicsRectItem(rect, this);
-        QBrush brush = QBrush(Qt::SolidPattern);
-        QColor color = Plasma::Theme().color(Plasma::Theme::BackgroundColor);
-        brush.setColor(color);
-        m_block->setBrush(brush);
-        m_block->setOpacity(0.7);
-    }
-    m_label->setZValue(10);
-    m_descriptionLabel->setZValue(10);
-    centerItems();
-    QGraphicsItemGroup::show();
-}
-
-
-AppList::AppList()
-{}
-
-AppList::~AppList()
-{}
-
-void AppList::insertSorted(const Application &item)
-{
-    int index = length() / 2;
-    if (length() > 0)
-    {
-        int span = 1 + length() / 2;
-        int priority = item.priority;
-        int item = value(index).priority;
-        while (!(
-                    priority > value(index - 1).priority and
-                    priority <= item
-                ))
-        {
-            span -= span / 2;
-            if (priority > item)
-                index += span;
-            else if (priority <= item)
-                index -= span;
-            if (index < 0)
-            {
-                index = 0;
-                break;
-            }
-            if (index >= length())
-            {
-                index = length();
-                break;
-            }
-            item = value(index).priority;
-        }
-    }
-    insert(index, item);
-}
-
-
-#include "Mangonel.moc"
-// kate: indent-mode cstyle; space-indent on; indent-width 4; 
+// kate: indent-mode cstyle; space-indent on; indent-width 4;

@@ -26,10 +26,8 @@
 #include "Config.h"
 
 #include <QDialogButtonBox>
-#include <KDE/KKeySequenceWidget>
-#include <KDE/KApplication>
-#include <KDE/KConfigGroup>
-#include <KDE/KAutostart>
+#include <QKeySequenceEdit>
+#include <KAutostart>
 #include <QSettings>
 #include <QLabel>
 #include <klocalizedstring.h>
@@ -50,7 +48,7 @@ ConfigDialog::ConfigDialog(QWidget* parent) : QDialog(parent, Qt::Dialog)
     // TODO: use normal global shortcut stuff
     QLabel* hotkeyLabel = new QLabel(i18n("Shortcut to show Mangonel:"), this);
     layout->addWidget(hotkeyLabel, 0, 0);
-    m_hotkeySelect = new KKeySequenceWidget(this);
+    m_hotkeySelect = new QKeySequenceEdit(this);
     this->connect(m_hotkeySelect, SIGNAL(keySequenceChanged(const QKeySequence&)), SIGNAL(hotkeyChanged(const QKeySequence&)));
     layout->addWidget(m_hotkeySelect, 0, 1);
 
@@ -83,5 +81,4 @@ void ConfigDialog::setAutostart(bool autostart)
     as.setAutostarts(autostart);
 }
 
-#include "Config.moc"
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 

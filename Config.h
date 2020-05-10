@@ -28,22 +28,27 @@
 
 #include <QDialog>
 
-class KKeySequenceWidget;
+class QKeySequenceEdit;
 
 class ConfigDialog : public QDialog
 {
     Q_OBJECT
+
 public:
     ConfigDialog(QWidget* parent = 0);
     ~ConfigDialog();
+
 public slots:
     void setHotkey(QKeySequence hotkey);
+
 signals:
     void hotkeyChanged(const QKeySequence& hotkey);
+
 private slots:
     void setAutostart(bool autostart);
+
 private:
-    KKeySequenceWidget *m_hotkeySelect;
+    QKeySequenceEdit *m_hotkeySelect;
 };
 
 #endif //Config_H

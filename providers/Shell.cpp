@@ -29,94 +29,135 @@
 #include <QDBusInterface>
 #include <QDir>
 #include <klocalizedstring.h>
+#include <QDebug>
+#include <QProcess>
+#include <QDateTime>
+#include <QFileSystemWatcher>
 
-
-Shell::Shell()
+void Shell::walkDir(QString path)
 {
-    this->index = QHash<QString, QString>();
-    foreach(QString dir, getPathEnv())
-    {
-        this->index.unite(walkDir(dir));
+    QDir dir = QDir(QFileInfo(path).canonicalFilePath());
+    QFileInfoList list = dir.entryInfoList(QStringList(), QDir::NoDotAndDotDot | QDir::Files);
+
+    for (const QFileInfo &file : list) {
+        const QString canonicalPath = file.canonicalFilePath();
+
+        if (file.isFile() && file.isExecutable()) {
+            m_index[file.fileName()] = canonicalPath;
+            m_modified[file.fileName()] = file.lastModified().toSecsSinceEpoch();
+        }
+    }
+}
+
+namespace
+{
+QStringList parsePathEnv()
+{
+    QString pathEnv = getenv("PATH");
+    QStringList pathList = pathEnv.split(":", QString::SkipEmptyParts);
+    QStringList absPathList;
+    for (const QString &path : pathList) {
+        const QString canonicalPath = QFileInfo(path).canonicalFilePath();
+        if (canonicalPath.isEmpty()) {
+            continue;
+        }
+        absPathList.append(canonicalPath);
+    }
+
+    absPathList.removeDuplicates();
+    return absPathList;
+}
+}
+
+Shell::Shell(QObject *parent) :
+    Provider(parent),
+    m_fsWatcher(new QFileSystemWatcher(this))
+{
+    connect(m_fsWatcher, &QFileSystemWatcher::directoryChanged, this, &Shell::onDirectoryChanged);
+
+    for (const QString &dir : parsePathEnv()) {
+        m_fsWatcher->addPath(dir);
+        walkDir(dir);
     }
 }
 
 Shell::~Shell()
 {}
 
-QList<Application> Shell::getResults(QString query)
+QList<ProviderResult *> Shell::getResults(QString query)
 {
-    QList<Application> list = QList<Application>();
-    foreach(QString key, this->index.keys())
-    {
-        if (key.startsWith(query.left(query.indexOf(" ")), Qt::CaseInsensitive))
-        {
-            QString args = query.right(query.length() - query.indexOf(" "));
-            if (args == query)
-                args = "";
-            Application app = Application();
-            app.name = key + args;
-            app.completion = key;
-            app.icon = "system-run";
-            app.object = this;
-            app.program = this->index[key] + args;
-            app.type = i18n("Shell command");
+    QList<ProviderResult*> list;
 
-            list.append(app);
+    QString command;
+    QString args;
+
+    if (query.contains(' ')) {
+        command = query.left(query.indexOf(" "));
+        args = query.right(query.length() - query.indexOf(" "));
+    } else {
+        command = query;
+    }
+
+    const qint64 currentSecsSinceEpoch = QDateTime::currentSecsSinceEpoch();
+    QHashIterator<QString, QString> iterator(this->m_index);
+    while (iterator.hasNext()) {
+        iterator.next();
+
+        if (!iterator.key().startsWith(command, Qt::CaseInsensitive)) {
+            continue;
         }
+
+        ProviderResult *app = new ProviderResult;
+        app->name = iterator.value() + args;
+        app->completion = iterator.key();
+        app->icon = "system-run";
+        app->object = this;
+        app->program = iterator.value() + args;
+        app->type = i18n("Shell command");
+
+        app->priority = currentSecsSinceEpoch - m_modified[iterator.key()];
+
+        list.append(app);
     }
     return list;
 }
 
-int Shell::launch(QVariant selected)
+int Shell::launch(const QString &exec)
 {
-    QStringList args = selected.toString().split(" ", QString::SkipEmptyParts);
-    QString exec = args.takeFirst();
-    QDBusInterface* dbus = new QDBusInterface(
-        "org.kde.klauncher",
-        "/KLauncher",
-        "org.kde.KLauncher"
-    );
-    dbus->call(
-        "exec_blind",
-        exec,
-        args
-    );
+    QStringList args = exec.split(" ");
+    if (args.isEmpty()) {
+        qWarning() << "Asked to launch invalid program:" << exec;
+        return 0;
+    }
+    QString program(args.takeFirst());
+    QProcess::startDetached(program, args);
     return 0;
 }
 
-
-namespace
+void Shell::onDirectoryChanged(const QString &path)
 {
-QHash<QString, QString> walkDir(QString path)
-{
-    QHash<QString, QString> binList = QHash<QString, QString>();
-    QDir dir = QDir(path);
-    QFileInfoList list = dir.entryInfoList(QStringList(), QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-    foreach(QFileInfo file, list)
-    {
-        if (file.isDir())
-        {
-            if (file.isSymLink() and file.canonicalFilePath() != path)
-                binList.unite(walkDir(file.absoluteFilePath()));
+    // First remove the old
+    QStringList toRemove;
+    for (const QString &fullProgramPath : m_index.values()) {
+        if (!fullProgramPath.startsWith(path)) {
+            continue;
         }
-        else
-        {
-            if (file.isExecutable())
-                binList.insert(file.fileName(), file.absoluteFilePath());
+
+        QFileInfo programInfo(fullProgramPath);
+        if (programInfo.dir().path() == path) {
+            toRemove.append(programInfo.fileName());
         }
     }
-    return binList;
+
+    // Too lazy to use an iterator
+    for (const QString &program : toRemove) {
+        m_index.remove(program);
+        m_modified.remove(program);
+    }
+
+    // Then re-index the path
+    walkDir(path);
 }
 
-QStringList getPathEnv()
-{
-    QString pathEnv = getenv("PATH");
-    QStringList pathList = pathEnv.split(":", QString::SkipEmptyParts);
-    pathList.append(QDir::homePath() + "/bin");
-    return pathList;
-}
-};
 
-
-#include "Shell.moc"
 // kate: indent-mode cstyle; space-indent on; indent-width 4; 

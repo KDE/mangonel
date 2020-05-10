@@ -28,21 +28,21 @@
 
 #include "Provider.h"
 
+#include <QMimeDatabase>
 
 class Paths : public Provider
 {
     Q_OBJECT
 public:
-    Paths();
+    Paths(QObject *parent);
     ~Paths();
-public slots:
-    QList<Application> getResults(QString query);
-    int launch(QVariant selected);
-};
 
-namespace
-{
-QString subUser(QString);
+public slots:
+    QList<ProviderResult*> getResults(QString query) override;
+    int launch(const QString &exec) override;
+
+private:
+    QMimeDatabase m_mimeDb;
 };
 
 #endif //Paths_H

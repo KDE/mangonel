@@ -29,25 +29,31 @@
 #include "Provider.h"
 
 #include <QStringList>
+#include <QHash>
 
+class QFileSystemWatcher;
 
 class Shell : public Provider
 {
     Q_OBJECT
-public:
-    Shell();
-    ~Shell();
-public slots:
-    QList<Application> getResults(QString query);
-    int launch(QVariant selected);
-private:
-    QHash<QString, QString> index;
-};
 
-namespace
-{
-QHash<QString, QString> walkDir(QString path);
-QStringList getPathEnv();
+public:
+    Shell(QObject *parent);
+    ~Shell();
+
+public slots:
+    QList<ProviderResult*> getResults(QString query) override;
+    int launch(const QString &exec) override;
+
+private slots:
+    void onDirectoryChanged(const QString &path);
+
+private:
+    void walkDir(QString path);
+
+    QHash<QString, QString> m_index;
+    QHash<QString, qint64> m_modified;
+    QFileSystemWatcher *m_fsWatcher;
 };
 
 #endif //Shell_H

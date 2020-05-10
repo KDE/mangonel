@@ -25,48 +25,208 @@
 
 #include "Units.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QClipboard>
 #include <QApplication>
 #include <klocalizedstring.h>
 #include <KUnitConversion/Converter>
+#include <cmath>
 #include <QDebug>
+#include <QThread>
+#include <QTimer>
+#include <QElapsedTimer>
 
-Units::Units()
-{}
+#include "calculator/evaluator.h"
+
+void CurrencyRefresher::init()
+{
+    m_timer = new QTimer(this);
+    m_timer->setInterval(86390 * 1000);
+    refresh();
+    connect(thread(), &QThread::finished, m_timer, &QTimer::stop);
+    m_timer->start();
+}
+
+void CurrencyRefresher::refresh()
+{
+    QElapsedTimer timer; timer.start();
+    qDebug() << "Warming up currency converter";
+    KUnitConversion::Converter converter;
+    KUnitConversion::UnitCategory currency = converter.category(KUnitConversion::CurrencyCategory);
+    const KUnitConversion::Unit nok = currency.unit(KUnitConversion::UnitId::Nok);
+    const KUnitConversion::Value value = KUnitConversion::Value(1, nok);
+    converter.convert(value, KUnitConversion::UnitId::Usd);
+    if (timer.elapsed() > 0) {
+        qDebug() << "Currency converter warmed in" << timer.elapsed() << "ms";
+    }
+}
+
+Units::Units(QObject *parent) :
+    Provider(parent)
+{
+    m_refresher = new CurrencyRefresher;
+    m_refresherThread = new QThread(this);
+    m_refresher->moveToThread(m_refresherThread);
+    m_refresherThread->start();
+    QMetaObject::invokeMethod(m_refresher, &CurrencyRefresher::init);
+}
 
 Units::~Units()
-{}
-
-QList< Application > Units::getResults(QString query)
 {
-    QList<Application> list = QList<Application>();
-    QRegExp pattern = QRegExp("(\\d+)\\s*(\\w+)\\s+(?:\\=|to|is|in)\\s+(\\w+)$", Qt::CaseInsensitive);
-    if (query.contains(pattern) && pattern.captureCount() == 3)
-    {
-        KUnitConversion::Converter converter;
-        KUnitConversion::Value value(pattern.cap(1).toDouble(), pattern.cap(2));
-        value = converter.convert(value, pattern.cap(3));
-        
-        if (value.isValid()) {
-            Application result;
-            result.icon = "accessories-calculator";
-            result.object = this;
-            result.name = value.toString();
-            result.program = result.name;
-            result.type = i18n("Unit conversion");
-            list.append(result);
-        }
+    m_refresherThread->quit();
+    m_refresherThread->wait();
+}
+
+QList<ProviderResult *> Units::getResults(QString query)
+{
+    QList<ProviderResult*> list;
+
+    QRegularExpression pattern(R"raw((.+?)(\w+)\s+(?:\=|to|is|in)\s+(\w+)$)raw", QRegularExpression::CaseInsensitiveOption);
+    QRegularExpressionMatch match = pattern.match(query);
+    if (!match.hasMatch()) {
+        return list;
     }
+
+    const KUnitConversion::Unit inputUnit = resolveUnitName(match.captured(2));
+    if (!inputUnit.isValid()) {
+        return list;
+    }
+
+    QString sourceAmount = match.captured(1);
+    bool ok = false;
+    double inputNumber = sourceAmount.toDouble(&ok);
+    if (!ok) {
+        Evaluator *ev = Evaluator::instance();
+        sourceAmount = ev->autoFix(sourceAmount);
+        ev->setExpression(sourceAmount);
+        const Quantity quantity = ev->evalNoAssign();
+        if (!ev->error().isEmpty()) {
+            return list;
+        }
+        inputNumber = Rational(quantity.numericValue().real).toDouble();
+    }
+
+    const KUnitConversion::Value inputValue(inputNumber, inputUnit);
+    const KUnitConversion::Unit outputUnit = resolveUnitName(match.captured(3), inputUnit.category());
+    if (!outputUnit.isValid()) {
+        return list;
+    }
+
+    const KUnitConversion::Value outputValue = m_converter.convert(inputValue, outputUnit);
+
+    int precision = 2;
+    qreal calculationResult = outputValue.number();
+
+    if (calculationResult < 100) {
+        precision = 5;
+    }
+
+    double scaledResult = calculationResult * std::pow(10, precision);
+    while (precision > 0 && std::floor(scaledResult) == std::ceil(scaledResult)) {
+        precision--;
+        scaledResult = calculationResult * std::pow(10, precision);
+    }
+
+    const QString inputString = QLocale::system().toString(inputValue.number(), 'f', precision + 1);
+    const QString outputString = QLocale::system().toString(outputValue.number(), 'f', precision + 1);
+
+    ProviderResult *result = new ProviderResult;
+    result->icon = "exchange-positions";
+    result->object = this;
+    result->name = i18nc("conversion from one unit to another", "%1 %2 is %3 %4", inputString, inputValue.unit().symbol(), outputString, outputValue.unit().symbol());
+    result->program = result->name;
+    result->completion = result->name;
+    result->type = i18n("Unit conversion");
+    result->isCalculation = true;
+    list.append(result);
+
     return list;
 }
 
-int Units::launch(QVariant selected)
+int Units::launch(const QString &exec)
 {
     QClipboard* clipboard = QApplication::clipboard();
-    clipboard->setText(selected.toString(), QClipboard::Selection);
+    clipboard->setText(exec);
     return 0;
 }
 
-#include "Units.moc"
-// kate: indent-mode cstyle; space-indent on; indent-width 4; 
+KUnitConversion::Unit Units::resolveUnitName(const QString &name, const KUnitConversion::UnitCategory &category)
+{
+    KUnitConversion::Unit unit;
+
+    if (!category.isNull()) {
+        unit = category.unit(name);
+    } else {
+        unit = m_converter.unit(name);
+    }
+
+    if (unit.isValid()) {
+        return unit;
+    }
+
+    // Didn't match directly, try to match without case sensitivity
+
+    if (!category.isNull()) {
+        // try only common first
+        unit = matchUnitCaseInsensitive(name, category, OnlyCommonUnits);
+        if (unit.isValid()) {
+            return unit;
+        }
+
+        // If not common, try something else
+        unit = matchUnitCaseInsensitive(name, category, AllUnits);
+        if (unit.isValid()) {
+            return unit;
+        }
+    } else {
+        for (const KUnitConversion::UnitCategory &candidateCategory : m_converter.categories()) {
+            unit = matchUnitCaseInsensitive(name, candidateCategory, OnlyCommonUnits);
+            if (unit.isValid()) {
+                return unit;
+            }
+        }
+
+        // Was not a common unit, try all units
+        for (const KUnitConversion::UnitCategory &candidateCategory : m_converter.categories()) {
+            unit = matchUnitCaseInsensitive(name, candidateCategory, AllUnits);
+            if (unit.isValid()) {
+                return unit;
+            }
+        }
+    }
+
+    return unit;
+}
+
+KUnitConversion::Unit Units::matchUnitCaseInsensitive(const QString &name, const KUnitConversion::UnitCategory &category, const UnitMatchingLevel level)
+{
+    if (category.isNull()) {
+        return KUnitConversion::Unit();
+    }
+
+    QSet<KUnitConversion::UnitId> commonIds;
+    if (level == OnlyCommonUnits) {
+        for (const KUnitConversion::Unit &unit : category.mostCommonUnits()) {
+            commonIds.insert(unit.id());
+        }
+    }
+
+    for (const QString &candidateName : category.allUnits()) {
+        if (name.compare(candidateName, Qt::CaseInsensitive)) {
+            continue;
+        }
+
+        KUnitConversion::Unit candidate = category.unit(candidateName);
+        if (level == OnlyCommonUnits && !commonIds.contains(candidate.id())) {
+            continue;
+        }
+
+        if (candidate.isValid()) {
+            return candidate;
+        }
+    }
+
+    return KUnitConversion::Unit();
+}
+
+// kate: indent-mode cstyle; space-indent on; indent-width 4;

@@ -26,113 +26,191 @@
 
 #include "Applications.h"
 
-
-
-#include <KServiceTypeTrader>
 #include <QDebug>
-#include <krun.h>
-#include <kconfiggroup.h>
+#include <KLocalizedString>
+#include <QProcess>
+#include <QSettings>
+#include <QRegularExpression>
+#include <QFileInfo>
+#include <QDateTime>
+#include <QFileSystemWatcher>
+#include <QStandardPaths>
+#include <QDir>
 
-Applications::Applications()
+Applications::Applications(QObject *parent) :
+    Provider(parent),
+    m_fsWatcher(new QFileSystemWatcher(this))
 {
-    const KConfigGroup config = KGlobal::config()->group("mangonel_applications");
-    
-    foreach(const QString &key, config.keyList()) {
-        QList<QVariant> values = config.readEntry<QList<QVariant> >(key, QList<QVariant>());
-        popularity pop;
-        pop.count = values[0].toInt();
-        pop.lastUse = values[1].toInt();
-        m_popularities.insert(key, pop);
+    for (const QString &dirPath : QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation)) {
+        m_fsWatcher->addPath(dirPath);
+        loadDir(dirPath);
     }
+    for (const QString &dirPath : QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation)) {
+        m_fsWatcher->addPath(dirPath + QStringLiteral("/kservices5/"));
+        loadDir(dirPath + QStringLiteral("/kservices5/")); // kcm files
+    }
+
+    connect(m_fsWatcher, &QFileSystemWatcher::directoryChanged, this, &Applications::onDirectoryChanged);
 }
 
 Applications::~Applications()
 {
-    storePopularities();
 }
 
-Application Applications::createApp(const KService::Ptr &service)
+ProviderResult *Applications::createApp(const Application &service)
 {
-        Application app;
-        app.name = service->name();
-        app.completion = app.name;
-        app.icon = service->icon();
-        app.object = this;
-        app.program = service->exec();
-        if (service->isApplication())
-            app.type = i18n("Run application");
-        else
-            app.type = i18n("Open control module");
-        
-        return app;
+    ProviderResult *app = new ProviderResult;
+    app->name = service.name;
+    app->completion = app->name;
+    app->icon = service.icon;
+    app->object = this;
+
+    QString exec = service.exec;
+    exec.remove(QRegularExpression("\\%[fFuUdDnNickvm]"));
+
+    app->program = exec;
+    app->priority = service.lastModified;
+
+    if (service.exec.contains("kcmshell")) { // so sue me
+        app->type = i18n("Open control module");
+    } else {
+        app->type = i18n("Run application");
+    }
+
+    return app;
 }
 
-QList< Application > Applications::getResults(QString term)
+QList<ProviderResult *> Applications::getResults(QString term)
 {
-    QList<Application> list;
-    QString query = "exist Exec and ( (exist Keywords and '%1' ~subin Keywords) or (exist GenericName and '%1' ~~ GenericName) or (exist Name and '%1' ~~ Name) or ('%1' ~~ Exec) )";
-    query = query.arg(term);
-    KService::List services = KServiceTypeTrader::self()->query("Application", query);
-    services.append(KServiceTypeTrader::self()->query("KCModule", query));
-    int priority = 0;
-    foreach(const KService::Ptr &service, services) {
-        if (service->noDisplay())
+    QList<ProviderResult*> list;
+    term = term.toLower(); // we lowercase the keywords when indexing
+
+    qint64 currentSecsSinceEpoch = QDateTime::currentSecsSinceEpoch();
+
+    for (const Application &application : m_applications) {
+        if (!application.keywords.contains(term)) {
             continue;
-        
-        Application app = createApp(service);
-        
-        if (m_popularities.contains(service->exec())) {
-            app.priority = time(NULL) - m_popularities[service->exec()].lastUse;
-            app.priority -= 3600 * m_popularities[service->exec()].count;
-        } else {
-            app.priority = ++priority;
-
-            if (service->isApplication())
-                app.priority *= 0.9;
         }
-        
+        ProviderResult *app = createApp(application);
+        if (app->name.isEmpty()) {
+            delete app;
+            continue;
+        }
+        app->priority = currentSecsSinceEpoch - app->priority;
+        //if (service->isApplication()) app->priority *= 1.1;
+
         list.append(app);
     }
     return list;
 }
 
-int Applications::launch(QVariant selected)
+int Applications::launch(const QString &selected)
 {
-    QString exec = selected.toString();
-    popularity pop;
-    if (m_popularities.contains(exec)) {
-        pop = m_popularities[exec];
-        pop.lastUse = time(NULL);
-        pop.count++;
-    } else {
-        pop.lastUse = time(NULL);
-        pop.count = 0;
-    }
-    m_popularities[exec] = pop;
-    
-    
-    storePopularities();
-    
-    if (KRun::run(exec, KUrl::List(), 0))
+    if (QProcess::startDetached(selected)) {
         return 0;
-    else
+    } else {
         return 1;
-}
-
-void Applications::storePopularities()
-{
-    KConfigGroup config = KGlobal::config()->group("mangonel_controlmodules");
-    
-    foreach(const QString &key, m_popularities.keys()) {
-        QList<QVariant> values;
-        values.append(m_popularities[key].count);
-        values.append(m_popularities[key].lastUse);
-        config.writeEntry(key, values);
     }
-    config.sync();
+}
+
+void Applications::onDirectoryChanged(const QString &path)
+{
+    QMutableHashIterator<QString, Application> it(m_applications);
+    while (it.hasNext()) {
+        it.next();
+        if (it.key().startsWith(path)) {
+            it.remove();
+        }
+    }
+    loadDir(path);
+}
+
+void Applications::loadDir(const QString &path)
+{
+    for (const QFileInfo &file : QDir(path).entryInfoList(QStringList("*.desktop"))) {
+        Application app = loadDesktopFile(file);
+        if (!app.isValid()) {
+            continue;
+        }
+        m_applications[file.absoluteFilePath()] = app;
+    }
+}
+
+Applications::Application Applications::loadDesktopFile(const QFileInfo &fileInfo)
+{
+    // Ugliest implementation of .desktop file reading ever
+    // Don't remember why I didn't use QSettings
+
+    QFile file(fileInfo.absoluteFilePath());
+    if (!file.open(QIODevice::ReadOnly)) {
+        qDebug() << "Failed to open" << fileInfo.fileName();
+        return {};
+    }
+
+    bool inCorrectGroup = false;
+
+    Application app;
+    app.lastModified = fileInfo.lastModified().toSecsSinceEpoch();
+    app.exec = fileInfo.fileName();
+    while (!file.atEnd()) {
+        QString line = file.readLine().simplified();
+
+        if (line.startsWith('[')) {
+            inCorrectGroup = (line == "[Desktop Entry]");
+            continue;
+        }
+
+        if (!inCorrectGroup) {
+            continue;
+        }
+
+        if (line.startsWith("Name") && !line.contains('[')) {
+            line.remove(0, line.indexOf('=') + 1);
+            app.name = line;
+            continue;
+        }
+        if (line.startsWith("Keywords") && !line.contains('[')) {
+            line.remove(0, line.indexOf('=') + 1);
+            app.keywords = line;
+            continue;
+        }
+
+
+        if (line.startsWith("Icon")) {
+            line.remove(0, line.indexOf('=') + 1);
+            app.icon = line;
+            continue;
+        }
+
+        if (line.startsWith("Exec")) {
+            line.remove(0, line.indexOf('=') + 1);
+            if (line.isEmpty()) {
+                continue;
+            }
+
+            app.exec = line.trimmed();
+            continue;
+        }
+
+        if (line.startsWith("NoDisplay=") && line.contains("true", Qt::CaseInsensitive)) {
+            return {};
+        }
+    }
+    if (!app.keywords.contains(app.name, Qt::CaseInsensitive)) {
+        app.keywords += ';' + app.name;
+    }
+    if (!app.keywords.contains(app.exec, Qt::CaseInsensitive)) {
+        app.keywords += ';' + app.exec;
+    }
+    app.keywords = app.keywords.toLower();
+
+    if (app.name.isEmpty()) {
+        qWarning() << "Missing name" << fileInfo.fileName() << app.exec;
+        app.name = app.exec;
+    }
+
+    return app;
 }
 
 
-#include "Applications.moc"
-
-// kate: indent-mode cstyle; space-indent on; indent-width 4; 
+// kate: indent-mode cstyle; space-indent on; indent-width 4;
