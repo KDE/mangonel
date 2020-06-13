@@ -196,6 +196,11 @@ Applications::Application Applications::loadDesktopFile(const QFileInfo &fileInf
             return {};
         }
     }
+
+    if (!app.isValid()) {
+        return {};
+    }
+
     if (!app.keywords.contains(app.name, Qt::CaseInsensitive)) {
         app.keywords += ';' + app.name;
     }
