@@ -114,21 +114,46 @@ QList<ProviderResult *> Units::getResults(QString query)
 
     const KUnitConversion::Value outputValue = m_converter.convert(inputValue, outputUnit);
 
-    int precision = 2;
-    qreal calculationResult = outputValue.number();
+    int inputPrecision = 1;
+    if (inputValue.number() < 1 || inputUnit.categoryId() != KUnitConversion::CurrencyCategory) {
+        qDebug() << inputUnit.categoryId();
+        qreal calculationResult = inputValue.number();
 
-    if (calculationResult < 100) {
-        precision = 5;
+        if (calculationResult < 100) {
+            inputPrecision = 5;
+        }
+
+        double scaledResult = calculationResult * std::pow(10, inputPrecision);
+        while (inputPrecision > 0 && std::floor(scaledResult) == std::ceil(scaledResult)) {
+            inputPrecision--;
+            scaledResult = calculationResult * std::pow(10, inputPrecision);
+        }
+    }
+    int outputPrecision = 1;
+    if (outputValue.number() < 1 || outputUnit.categoryId() != KUnitConversion::CurrencyCategory) {
+        qDebug() << outputUnit.categoryId();
+        qreal calculationResult = outputValue.number();
+
+        if (calculationResult < 100) {
+            outputPrecision = 5;
+        }
+
+        double scaledResult = calculationResult * std::pow(10, outputPrecision);
+        while (outputPrecision > 0 && std::floor(scaledResult) == std::ceil(scaledResult)) {
+            outputPrecision--;
+            scaledResult = calculationResult * std::pow(10, outputPrecision);
+        }
     }
 
-    double scaledResult = calculationResult * std::pow(10, precision);
-    while (precision > 0 && std::floor(scaledResult) == std::ceil(scaledResult)) {
-        precision--;
-        scaledResult = calculationResult * std::pow(10, precision);
-    }
+    QString inputString = QLocale::system().toString(inputValue.number(), 'f', inputPrecision + 1);
+    const QString outputString = QLocale::system().toString(outputValue.number(), 'f', outputPrecision + 1);
 
-    const QString inputString = QLocale::system().toString(inputValue.number(), 'f', precision + 1);
-    const QString outputString = QLocale::system().toString(outputValue.number(), 'f', precision + 1);
+    while (!inputString.isEmpty() && inputString.endsWith('0')) {
+        inputString.chop(1);
+    }
+    if (inputString.endsWith(QLocale::system().decimalPoint())) {
+        inputString.chop(1);
+    }
 
     ProviderResult *result = new ProviderResult;
     result->icon = "exchange-positions";
