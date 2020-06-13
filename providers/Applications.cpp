@@ -204,6 +204,10 @@ Applications::Application Applications::loadDesktopFile(const QFileInfo &fileInf
     }
     app.keywords = app.keywords.toLower();
 
+    if (app.icon.isEmpty()) {
+        app.icon = "application-x-executable";
+    }
+
     if (app.name.isEmpty()) {
         qWarning() << "Missing name" << fileInfo.fileName() << app.exec;
         app.name = app.exec;

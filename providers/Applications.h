@@ -59,7 +59,6 @@ private:
         bool isValid() const {
             return !name.isEmpty() &&
                 !exec.isEmpty() &&
-                !icon.isEmpty() &&
                 lastModified != -1;
         }
     };
