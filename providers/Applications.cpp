@@ -143,7 +143,7 @@ Applications::Application Applications::loadDesktopFile(const QFileInfo &fileInf
 
     QFile file(fileInfo.absoluteFilePath());
     if (!file.open(QIODevice::ReadOnly)) {
-        qDebug() << "Failed to open" << fileInfo.fileName();
+        qWarning() << "Failed to open" << fileInfo.fileName();
         return {};
     }
 
