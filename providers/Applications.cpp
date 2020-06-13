@@ -151,9 +151,20 @@ Applications::Application Applications::loadDesktopFile(const QFileInfo &fileInf
 
     Application app;
     app.lastModified = fileInfo.lastModified().toSecsSinceEpoch();
-    app.exec = fileInfo.fileName();
+
+    // Don't necessarily need to change this all the time, but the language can
+    // in theory be changed by the user. And this function isn't called often
+    // enough to be in a hot path.
+    QSet<QString> wantedLanguages;
+    { // Because Qt suddenly decided that being True C++™ was more important than ease of use
+        const QStringList languages = QLocale::system().uiLanguages();
+        wantedLanguages = QSet<QString>(languages.begin(), languages.end());
+        wantedLanguages.insert(QLocale::system().bcp47Name());
+        wantedLanguages.insert("en");
+    }
+
     while (!file.atEnd()) {
-        QString line = file.readLine().simplified();
+        const QString line = QString::fromLocal8Bit(file.readLine()).simplified();
 
         if (line.startsWith('[')) {
             inCorrectGroup = (line == "[Desktop Entry]");
@@ -164,31 +175,44 @@ Applications::Application Applications::loadDesktopFile(const QFileInfo &fileInf
             continue;
         }
 
-        if (line.startsWith("Name") && !line.contains('[')) {
-            line.remove(0, line.indexOf('=') + 1);
-            app.name = line;
+        const int separatorPos = line.indexOf('=');
+        if (separatorPos == -1) {
             continue;
         }
-        if (line.startsWith("Keywords") && !line.contains('[')) {
-            line.remove(0, line.indexOf('=') + 1);
-            app.keywords = line;
+        const QStringRef value = line.midRef(separatorPos + 1);
+
+        const int openBracketPos = line.indexOf('[');
+
+        // There is a bracket in the Key part, e. g. Foo[lang]=asdf
+        // These are translated versions of the entries.
+        if (openBracketPos != -1 && openBracketPos < separatorPos) {
+            const int closeBracketPos = line.indexOf(']');
+            if (closeBracketPos < openBracketPos) {
+                qWarning() << "Invalid brackets in" << fileInfo.fileName() << line;
+                continue;
+            }
+            if (!wantedLanguages.contains(line.mid(openBracketPos + 1, closeBracketPos - openBracketPos - 1))) {
+                continue;
+            }
+        }
+
+        if (line.startsWith("Name")) {
+            app.name = value.toString();
+            continue;
+        }
+        if (line.startsWith("Keywords")) {
+            app.keywords = value.toString();
             continue;
         }
 
 
         if (line.startsWith("Icon")) {
-            line.remove(0, line.indexOf('=') + 1);
-            app.icon = line;
+            app.icon = value.toString();
             continue;
         }
 
         if (line.startsWith("Exec")) {
-            line.remove(0, line.indexOf('=') + 1);
-            if (line.isEmpty()) {
-                continue;
-            }
-
-            app.exec = line.trimmed();
+            app.exec = value.toString();
             continue;
         }
 
