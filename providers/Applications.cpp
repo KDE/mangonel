@@ -197,6 +197,11 @@ Applications::Application Applications::loadDesktopFile(const QFileInfo &fileInf
         }
     }
 
+    if (app.name.isEmpty()) {
+        qWarning() << fileInfo.absoluteFilePath() << "missing name";
+        app.name = fileInfo.baseName();
+    }
+
     if (!app.isValid()) {
         return {};
     }
@@ -211,11 +216,6 @@ Applications::Application Applications::loadDesktopFile(const QFileInfo &fileInf
 
     if (app.icon.isEmpty()) {
         app.icon = "application-x-executable";
-    }
-
-    if (app.name.isEmpty()) {
-        qWarning() << "Missing name" << fileInfo.fileName() << app.exec;
-        app.name = app.exec;
     }
 
     return app;
