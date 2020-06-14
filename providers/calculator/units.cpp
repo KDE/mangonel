@@ -291,10 +291,20 @@ const QList<Unit> Units::getList()
     ADD_UNIT_ALIAS(UK_fluid_ounce, fluid_ounce_UK);
     ADD_UNIT(liter);
 
+    // Time
     ADD_UNIT(minute);
+    ADD_UNIT_ALIAS(minute, minutes);
+
     ADD_UNIT(hour);
+    ADD_UNIT_ALIAS(hour,   hours);
+    ADD_UNIT_ALIAS(hour,   h); // so sue me
+
     ADD_UNIT(day);
+    ADD_UNIT_ALIAS(day,    days);
+
     ADD_UNIT(week);
+    ADD_UNIT_ALIAS(week,   weeks);
+
     ADD_UNIT(julian_year);
     ADD_UNIT(tropical_year);
     ADD_UNIT(sidereal_year);
