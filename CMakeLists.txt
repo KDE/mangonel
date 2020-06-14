@@ -67,8 +67,8 @@ set(Mangonel_SRCS
   providers/calculator/units.cpp
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra -Wall")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
 
 set(CMAKE_AUTOMOC On)
 qt5_add_resources(Mangonel_SRCS resources.qrc)
