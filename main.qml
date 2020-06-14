@@ -12,7 +12,7 @@ Window {
 
     height: 650
 
-    width:  Math.max(window.screen.width / 1.5, 800)
+    width:  300;//Math.max(window.screen.width / 4, 300)
     y: window.screen.height / 2 - height / 2
     x: window.screen.width / 2 - width / 2
     visible :false
@@ -24,7 +24,7 @@ Window {
             requestActivate()
 
             var desktopWidth = window.screen.width
-            window.width = Math.max(desktopWidth / 1.5, 800)
+            window.width = Math.min(desktopWidth / 1.5, window.height * 2)
         }
 
         inputText.preHistoryText = ""

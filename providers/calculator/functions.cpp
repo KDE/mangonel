@@ -1078,17 +1078,17 @@ void FunctionRepo::setTranslatableFunctionUsages()
     FUNCTION_USAGE_i18n(idiv, i18n("dividend; divisor"));
     FUNCTION_USAGE_i18n(ieee754_decode, i18n("x; exponent_bits; significand_bits [; exponent_bias]"));
     FUNCTION_USAGE_i18n(ieee754_encode, i18n("x; exponent_bits; significand_bits [; exponent_bias]"));
-    FUNCTION_USAGE_i18n(log, i18nc("base; x", "Calculator logarithmic parameter"));
-    FUNCTION_USAGE_i18n(mask, i18nc("n; bits", "Calculator bitmask parameter"));
+    FUNCTION_USAGE_i18n(log, i18nc("Calculator logarithmic parameter", "base; x"));
+    FUNCTION_USAGE_i18n(mask, i18nc("Calculator bitmask parameter", "n; bits"));
     FUNCTION_USAGE_i18n(mod, i18n("value; modulo"));
     FUNCTION_USAGE_i18n(poicdf, i18n("events; average_events"));
     FUNCTION_USAGE_i18n(poimean, i18n("average_events"));
     FUNCTION_USAGE_i18n(poipmf, i18n("events; average_events"));
     FUNCTION_USAGE_i18n(poivar, i18n("average_events"));
-    FUNCTION_USAGE_i18n(round, i18nc("x [; precision]", "Calculator rounding parameter"));
+    FUNCTION_USAGE_i18n(round, i18nc("Calculator rounding parameter", "x [; precision]"));
     FUNCTION_USAGE_i18n(shl, i18nc("n; bits", "Calculator shl function parameter"));
     FUNCTION_USAGE_i18n(shr, i18nc("n; bits", "Calculator shr function parameter"));
-    FUNCTION_USAGE_i18n(unmask, i18nc("n; bits", "Calculator unmask function parameter"));
+    FUNCTION_USAGE_i18n(unmask, i18nc("Calculator unmask function parameter", "n; bits"));
 }
 
 void FunctionRepo::setFunctionNames()
@@ -1152,9 +1152,9 @@ void FunctionRepo::setFunctionNames()
     FUNCTION_NAME(lngamma, "ln(abs(Gamma))");
     FUNCTION_NAME(log, i18n("Logarithm to Arbitrary Base"));
     FUNCTION_NAME(mask, i18n("Mask to a bit size"));
-    FUNCTION_NAME(max, i18nc("Maximum", "Calculator function, largest of numbers"));
+    FUNCTION_NAME(max, i18nc("Calculator function, largest of numbers", "Maximum"));
     FUNCTION_NAME(median, i18n("Median Value (50th Percentile)"));
-    FUNCTION_NAME(min, i18nc("Minimum", "Calculator function, smallest of numbers"));
+    FUNCTION_NAME(min, i18nc("Calculator function, smallest of numbers", "Minimum"));
     FUNCTION_NAME(mod, i18n("Modulo"));
     FUNCTION_NAME(ncr, i18n("Combination (Binomial Coefficient)"));
     FUNCTION_NAME(not, i18n("Logical NOT"));
@@ -1184,7 +1184,7 @@ void FunctionRepo::setFunctionNames()
     FUNCTION_NAME(tanh, i18n("Hyperbolic Tangent"));
     FUNCTION_NAME(trunc, i18n("Truncation"));
     FUNCTION_NAME(unmask, i18n("Sign-extend a value"));
-    FUNCTION_NAME(variance, i18nc("Variance", "Calculator function"));
+    FUNCTION_NAME(variance, i18nc("Calculator function", "Variance"));
     FUNCTION_NAME(xor, i18n("Logical XOR"));
 }
 

@@ -130,7 +130,7 @@ QList<ProviderResult *> Units::getResults(QString query)
         }
     }
     int outputPrecision = 1;
-    if (outputValue.number() < 1 || outputUnit.categoryId() != KUnitConversion::CurrencyCategory) {
+    if (outputValue.number() < 1 && outputUnit.categoryId() != KUnitConversion::CurrencyCategory) {
         qDebug() << outputUnit.categoryId();
         qreal calculationResult = outputValue.number();
 
@@ -159,7 +159,7 @@ QList<ProviderResult *> Units::getResults(QString query)
     result->icon = "exchange-positions";
     result->object = this;
     result->name = i18nc("conversion from one unit to another", "%1 %2 is %3 %4", inputString, inputValue.unit().symbol(), outputString, outputValue.unit().symbol());
-    result->program = result->name;
+    result->program = outputString;
     result->completion = result->name;
     result->type = i18n("Unit conversion");
     result->isCalculation = true;
