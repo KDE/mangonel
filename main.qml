@@ -83,14 +83,13 @@ Window {
 
         anchors {
             top: background.top
-//            bottom: historyList.top
             left: background.left
             right: background.right
         }
         height: 350
         clip: true
         orientation: Qt.Horizontal
-        highlightMoveDuration: 50
+        highlightMoveDuration: 100
         preferredHighlightBegin: width/2 - itemWidth/2
         preferredHighlightEnd: width/2 +  itemWidth/2
         highlightRangeMode: ListView.StrictlyEnforceRange
@@ -113,7 +112,7 @@ Window {
             property string completion: modelData.completion
 
             opacity: ListView.view.currentIndex === index ? 1 : 0.2
-            Behavior on opacity { NumberAnimation { duration: 200 } }
+            Behavior on opacity { NumberAnimation { duration: 100 } }
 
             Image {
                 id: icon
