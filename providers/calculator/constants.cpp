@@ -559,7 +559,7 @@ void Constants::Private::retranslateText()
     QString cat;
 
     // http://en.wikipedia.org/wiki/Mathematical_constant
-    cat = i18n("Universal");
+    cat = i18nc("Universal", "https://en.wikipedia.org/wiki/Mathematical_constant");
 
     I18N_CONSTANT(i18n("Archimedes' constant Pi") + QString::fromUtf8(" (π)"));
     I18N_CONSTANT(i18n("Euler's number") + QString::fromUtf8(" (ℯ)"));
