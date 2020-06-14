@@ -163,6 +163,8 @@ private:
     QVector<Quantity> m_constants;
     QStringList m_identifiers;
     QSet<QString> m_functionsInUse;
+    QHash<QString, QString> m_unitFixups;
+    QSet<QString> m_allUnits;
     QHash<QString, Quantity> m_variables;
 
     const Quantity& checkOperatorResult(const Quantity&);

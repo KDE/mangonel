@@ -707,6 +707,11 @@ void Evaluator::initializeBuiltInVariables()
     QList<Unit> unitList(Units::getList());
     for (Unit& u : unitList) {
         m_variables[u.name] = u.value;
+        m_allUnits.insert(u.name);
+        const QString fixed = u.name.toLower().replace('_', ' ');
+        if (fixed != u.name) {
+            m_unitFixups[fixed] = u.name;
+        }
     }
 
     initializeAngleUnits();
@@ -2056,6 +2061,27 @@ QString Evaluator::autoFix(const QString& expr)
     result = result.trimmed();
     if (result.isEmpty()) {
         return result;
+    }
+
+    // Special handling of unit conversion, because a lot of units have _'s in them and different casing
+    QRegularExpression unitConversion(R"raw(([0-9\.,0-9]*?)\s*([a-z ]+?)\s+(?:\=|to|is|in)\s+([a-z ]+)$)raw", QRegularExpression::CaseInsensitiveOption);
+    QRegularExpressionMatch unitConversionMatch = unitConversion.match(expr);
+    if (unitConversionMatch.hasMatch()) {
+        const QString amount = unitConversionMatch.captured(1);
+        bool isNumber = amount.toFloat(&isNumber);
+        if (isNumber) {
+            QString unit1 = unitConversionMatch.captured(2).simplified().toLower();
+            QString unit2 = unitConversionMatch.captured(3).simplified().toLower();
+            if (m_unitFixups.contains(unit1)) {
+                unit1 = m_unitFixups[unit1];
+            }
+            if (m_unitFixups.contains(unit2)) {
+                unit2 = m_unitFixups[unit2];
+            }
+            if (m_allUnits.contains(unit1) && m_allUnits.contains(unit2)) {
+                result = amount + " " + unit1 + " in " + unit2;
+            }
+        }
     }
 
     // Strip trailing equal sign (=).
