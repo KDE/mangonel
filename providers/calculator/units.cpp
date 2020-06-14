@@ -187,9 +187,13 @@ const QList<Unit> Units::getList()
     QList<Unit> result;
 
     ADD_UNIT(meter);
+    ADD_UNIT_ALIAS(meter, meters);
     ADD_UNIT(second);
+    ADD_UNIT_ALIAS(second, seconds);
     ADD_UNIT(kilogram);
+    ADD_UNIT_ALIAS(kilogram, kilograms);
     ADD_UNIT(ampere);
+    ADD_UNIT_ALIAS(ampere, amperes);
     ADD_UNIT(mole);
     ADD_UNIT(candela);
     ADD_UNIT(kelvin);
@@ -266,8 +270,11 @@ const QList<Unit> Units::getList()
     ADD_UNIT(parsec);
     ADD_UNIT(inch);
     ADD_UNIT(foot);
+    ADD_UNIT_ALIAS(foot, feet);
     ADD_UNIT(yard);
+    ADD_UNIT_ALIAS(yard, yards);
     ADD_UNIT(mile);
+    ADD_UNIT_ALIAS(mile, miles);
     ADD_UNIT(rod);
     ADD_UNIT(furlong);
     ADD_UNIT(fathom);
@@ -292,10 +299,9 @@ const QList<Unit> Units::getList()
     ADD_UNIT_ALIAS(US_fluid_ounce, fluid_ounce_US);
     ADD_UNIT_ALIAS(UK_fluid_ounce, fluid_ounce_UK);
     ADD_UNIT(liter);
+    ADD_UNIT_ALIAS(liter, liters);
 
     // Time
-    ADD_UNIT_ALIAS(second, seconds);
-
     ADD_UNIT(minute);
     ADD_UNIT_ALIAS(minute, minutes);
 
@@ -333,18 +339,29 @@ const QList<Unit> Units::getList()
     ADD_UNIT(nat);
     ADD_UNIT(hartley);
     ADD_UNIT(byte);
+    ADD_UNIT_ALIAS(byte, bytes);
 
     ADD_UNIT(exabyte);
     ADD_UNIT(terabyte);
     ADD_UNIT(gigabyte);
     ADD_UNIT(megabyte);
     ADD_UNIT(kilobyte);
+    ADD_UNIT_ALIAS(exabyte, exabytes);
+    ADD_UNIT_ALIAS(terabyte, terabytes);
+    ADD_UNIT_ALIAS(gigabyte, gigabytes);
+    ADD_UNIT_ALIAS(megabyte, megabytes);
+    ADD_UNIT_ALIAS(kilobyte, kilobytes);
 
     ADD_UNIT(exbibyte);
     ADD_UNIT(tebibyte);
     ADD_UNIT(gibibyte);
     ADD_UNIT(mebibyte);
     ADD_UNIT(kibibyte);
+    ADD_UNIT_ALIAS(exbibyte, exbibytes);
+    ADD_UNIT_ALIAS(tebibyte, tebibytes);
+    ADD_UNIT_ALIAS(gibibyte, gibibytes);
+    ADD_UNIT_ALIAS(mebibyte, mebibytes);
+    ADD_UNIT_ALIAS(kibibyte, kibibytes);
     ADD_UNIT_ALIAS(exbibyte, eb);
     ADD_UNIT_ALIAS(tebibyte, tb);
     ADD_UNIT_ALIAS(gibibyte, gb);
@@ -358,8 +375,11 @@ const QList<Unit> Units::getList()
     ADD_UNIT(kbps);
 
     ADD_UNIT(tablespoon);
+    ADD_UNIT_ALIAS(tablespoon, tablespoons);
     ADD_UNIT(teaspoon);
+    ADD_UNIT_ALIAS(teaspoon, teaspoons);
     ADD_UNIT(cup);
+    ADD_UNIT_ALIAS(cup, cups);
 
     ADD_UNIT(gravity);
     ADD_UNIT_ALIAS(gravity, force);
