@@ -26,6 +26,8 @@
 #include "hmath.h"
 #include "cmath.h"
 
+#include <KLocalizedString>
+
 #include <QCoreApplication>
 #include <QHash>
 
@@ -37,7 +39,7 @@
 
 #define FUNCTION_INSERT(ID) insert(new Function(#ID, function_ ## ID, this))
 #define FUNCTION_USAGE(ID, USAGE) find(#ID)->setUsage(QString::fromLatin1(USAGE));
-#define FUNCTION_USAGE_TR(ID, USAGE) find(#ID)->setUsage(USAGE);
+#define FUNCTION_USAGE_i18n(ID, USAGE) find(#ID)->setUsage(USAGE);
 #define FUNCTION_NAME(ID, NAME) find(#ID)->setName(NAME)
 
 #define ENSURE_MINIMUM_ARGUMENT_COUNT(i) \
@@ -1065,125 +1067,125 @@ void FunctionRepo::setNonTranslatableFunctionUsages()
 
 void FunctionRepo::setTranslatableFunctionUsages()
 {
-    FUNCTION_USAGE_TR(binomcdf, tr("max; trials; probability"));
-    FUNCTION_USAGE_TR(binommean, tr("trials; probability"));
-    FUNCTION_USAGE_TR(binompmf, tr("hits; trials; probability"));
-    FUNCTION_USAGE_TR(binomvar, tr("trials; probability"));
-    FUNCTION_USAGE_TR(hypercdf, tr("max; total; hits; trials"));
-    FUNCTION_USAGE_TR(hypermean, tr("total; hits; trials"));
-    FUNCTION_USAGE_TR(hyperpmf, tr("count; total; hits; trials"));
-    FUNCTION_USAGE_TR(hypervar, tr("total; hits; trials"));
-    FUNCTION_USAGE_TR(idiv, tr("dividend; divisor"));
-    FUNCTION_USAGE_TR(ieee754_decode, tr("x; exponent_bits; significand_bits [; exponent_bias]"));
-    FUNCTION_USAGE_TR(ieee754_encode, tr("x; exponent_bits; significand_bits [; exponent_bias]"));
-    FUNCTION_USAGE_TR(log, tr("base; x"));
-    FUNCTION_USAGE_TR(mask, tr("n; bits"));
-    FUNCTION_USAGE_TR(mod, tr("value; modulo"));
-    FUNCTION_USAGE_TR(poicdf, tr("events; average_events"));
-    FUNCTION_USAGE_TR(poimean, tr("average_events"));
-    FUNCTION_USAGE_TR(poipmf, tr("events; average_events"));
-    FUNCTION_USAGE_TR(poivar, tr("average_events"));
-    FUNCTION_USAGE_TR(round, tr("x [; precision]"));
-    FUNCTION_USAGE_TR(shl, tr("n; bits"));
-    FUNCTION_USAGE_TR(shr, tr("n; bits"));
-    FUNCTION_USAGE_TR(unmask, tr("n; bits"));
+    FUNCTION_USAGE_i18n(binomcdf, i18n("max; trials; probability"));
+    FUNCTION_USAGE_i18n(binommean, i18n("trials; probability"));
+    FUNCTION_USAGE_i18n(binompmf, i18n("hits; trials; probability"));
+    FUNCTION_USAGE_i18n(binomvar, i18n("trials; probability"));
+    FUNCTION_USAGE_i18n(hypercdf, i18n("max; total; hits; trials"));
+    FUNCTION_USAGE_i18n(hypermean, i18n("total; hits; trials"));
+    FUNCTION_USAGE_i18n(hyperpmf, i18n("count; total; hits; trials"));
+    FUNCTION_USAGE_i18n(hypervar, i18n("total; hits; trials"));
+    FUNCTION_USAGE_i18n(idiv, i18n("dividend; divisor"));
+    FUNCTION_USAGE_i18n(ieee754_decode, i18n("x; exponent_bits; significand_bits [; exponent_bias]"));
+    FUNCTION_USAGE_i18n(ieee754_encode, i18n("x; exponent_bits; significand_bits [; exponent_bias]"));
+    FUNCTION_USAGE_i18n(log, i18nc("base; x", "Calculator logarithmic parameter"));
+    FUNCTION_USAGE_i18n(mask, i18nc("n; bits", "Calculator bitmask parameter"));
+    FUNCTION_USAGE_i18n(mod, i18n("value; modulo"));
+    FUNCTION_USAGE_i18n(poicdf, i18n("events; average_events"));
+    FUNCTION_USAGE_i18n(poimean, i18n("average_events"));
+    FUNCTION_USAGE_i18n(poipmf, i18n("events; average_events"));
+    FUNCTION_USAGE_i18n(poivar, i18n("average_events"));
+    FUNCTION_USAGE_i18n(round, i18nc("x [; precision]", "Calculator rounding parameter"));
+    FUNCTION_USAGE_i18n(shl, i18nc("n; bits", "Calculator shl function parameter"));
+    FUNCTION_USAGE_i18n(shr, i18nc("n; bits", "Calculator shr function parameter"));
+    FUNCTION_USAGE_i18n(unmask, i18nc("n; bits", "Calculator unmask function parameter"));
 }
 
 void FunctionRepo::setFunctionNames()
 {
-    FUNCTION_NAME(abs, tr("Absolute Value"));
-    FUNCTION_NAME(absdev, tr("Absolute Deviation"));
-    FUNCTION_NAME(arccos, tr("Arc Cosine"));
-    FUNCTION_NAME(and, tr("Logical AND"));
-    FUNCTION_NAME(arcosh, tr("Area Hyperbolic Cosine"));
-    FUNCTION_NAME(arsinh, tr("Area Hyperbolic Sine"));
-    FUNCTION_NAME(artanh, tr("Area Hyperbolic Tangent"));
-    FUNCTION_NAME(arcsin, tr("Arc Sine"));
-    FUNCTION_NAME(arctan, tr("Arc Tangent"));
-    FUNCTION_NAME(arctan2, tr("Arc Tangent with two Arguments"));
-    FUNCTION_NAME(average, tr("Average (Arithmetic Mean)"));
-    FUNCTION_NAME(bin, tr("Convert to Binary Representation"));
-    FUNCTION_NAME(binomcdf, tr("Binomial Cumulative Distribution Function"));
-    FUNCTION_NAME(binommean, tr("Binomial Distribution Mean"));
-    FUNCTION_NAME(binompmf, tr("Binomial Probability Mass Function"));
-    FUNCTION_NAME(binomvar, tr("Binomial Distribution Variance"));
-    FUNCTION_NAME(cart, tr("Convert to Cartesian Notation"));
-    FUNCTION_NAME(cbrt, tr("Cube Root"));
-    FUNCTION_NAME(ceil, tr("Ceiling"));
-    FUNCTION_NAME(conj, tr("Complex Conjugate"));
-    FUNCTION_NAME(cos, tr("Cosine"));
-    FUNCTION_NAME(cosh, tr("Hyperbolic Cosine"));
-    FUNCTION_NAME(cot, tr("Cotangent"));
-    FUNCTION_NAME(csc, tr("Cosecant"));
-    FUNCTION_NAME(dec, tr("Convert to Decimal Representation"));
-    FUNCTION_NAME(degrees, tr("Degrees of Arc"));
-    FUNCTION_NAME(erf, tr("Error Function"));
-    FUNCTION_NAME(erfc, tr("Complementary Error Function"));
-    FUNCTION_NAME(exp, tr("Exponential"));
-    FUNCTION_NAME(floor, tr("Floor"));
-    FUNCTION_NAME(frac, tr("Fractional Part"));
-    FUNCTION_NAME(gamma, tr("Extension of Factorials [= (x-1)!]"));
-    FUNCTION_NAME(gcd, tr("Greatest Common Divisor"));
-    FUNCTION_NAME(geomean, tr("Geometric Mean"));
-    FUNCTION_NAME(gradians, tr("Gradians of arc"));
-    FUNCTION_NAME(hex, tr("Convert to Hexadecimal Representation"));
-    FUNCTION_NAME(hypercdf, tr("Hypergeometric Cumulative Distribution Function"));
-    FUNCTION_NAME(hypermean, tr("Hypergeometric Distribution Mean"));
-    FUNCTION_NAME(hyperpmf, tr("Hypergeometric Probability Mass Function"));
-    FUNCTION_NAME(hypervar, tr("Hypergeometric Distribution Variance"));
-    FUNCTION_NAME(idiv, tr("Integer Quotient"));
-    FUNCTION_NAME(int, tr("Integer Part"));
-    FUNCTION_NAME(imag, tr("Imaginary Part"));
-    FUNCTION_NAME(ieee754_decode, tr("Decode IEEE-754 Binary Value"));
-    FUNCTION_NAME(ieee754_encode, tr("Encode IEEE-754 Binary Value"));
-    FUNCTION_NAME(ieee754_half_decode, tr("Decode 16-bit Half-Precision Value"));
-    FUNCTION_NAME(ieee754_half_encode, tr("Encode 16-bit Half-Precision Value"));
-    FUNCTION_NAME(ieee754_single_decode, tr("Decode 32-bit Single-Precision Value"));
-    FUNCTION_NAME(ieee754_single_encode, tr("Encode 32-bit Single-Precision Value"));
-    FUNCTION_NAME(ieee754_double_decode, tr("Decode 64-bit Double-Precision Value"));
-    FUNCTION_NAME(ieee754_double_encode, tr("Encode 64-bit Double-Precision Value"));
-    FUNCTION_NAME(ieee754_quad_decode, tr("Decode 128-bit Quad-Precision Value"));
-    FUNCTION_NAME(ieee754_quad_encode, tr("Encode 128-bit Quad-Precision Value"));
-    FUNCTION_NAME(lb, tr("Binary Logarithm"));
-    FUNCTION_NAME(lg, tr("Common Logarithm"));
-    FUNCTION_NAME(ln, tr("Natural Logarithm"));
+    FUNCTION_NAME(abs, i18n("Absolute Value"));
+    FUNCTION_NAME(absdev, i18n("Absolute Deviation"));
+    FUNCTION_NAME(arccos, i18n("Arc Cosine"));
+    FUNCTION_NAME(and, i18n("Logical AND"));
+    FUNCTION_NAME(arcosh, i18n("Area Hyperbolic Cosine"));
+    FUNCTION_NAME(arsinh, i18n("Area Hyperbolic Sine"));
+    FUNCTION_NAME(artanh, i18n("Area Hyperbolic Tangent"));
+    FUNCTION_NAME(arcsin, i18n("Arc Sine"));
+    FUNCTION_NAME(arctan, i18n("Arc Tangent"));
+    FUNCTION_NAME(arctan2, i18n("Arc Tangent with two Arguments"));
+    FUNCTION_NAME(average, i18n("Average (Arithmetic Mean)"));
+    FUNCTION_NAME(bin, i18n("Convert to Binary Representation"));
+    FUNCTION_NAME(binomcdf, i18n("Binomial Cumulative Distribution Function"));
+    FUNCTION_NAME(binommean, i18n("Binomial Distribution Mean"));
+    FUNCTION_NAME(binompmf, i18n("Binomial Probability Mass Function"));
+    FUNCTION_NAME(binomvar, i18n("Binomial Distribution Variance"));
+    FUNCTION_NAME(cart, i18n("Convert to Cartesian Notation"));
+    FUNCTION_NAME(cbrt, i18n("Cube Root"));
+    FUNCTION_NAME(ceil, i18n("Ceiling"));
+    FUNCTION_NAME(conj, i18n("Complex Conjugate"));
+    FUNCTION_NAME(cos, i18n("Cosine"));
+    FUNCTION_NAME(cosh, i18n("Hyperbolic Cosine"));
+    FUNCTION_NAME(cot, i18n("Cotangent"));
+    FUNCTION_NAME(csc, i18n("Cosecant"));
+    FUNCTION_NAME(dec, i18n("Convert to Decimal Representation"));
+    FUNCTION_NAME(degrees, i18n("Degrees of Arc"));
+    FUNCTION_NAME(erf, i18n("Error Function"));
+    FUNCTION_NAME(erfc, i18n("Complementary Error Function"));
+    FUNCTION_NAME(exp, i18n("Exponential"));
+    FUNCTION_NAME(floor, i18n("Floor"));
+    FUNCTION_NAME(frac, i18n("Fractional Part"));
+    FUNCTION_NAME(gamma, i18n("Extension of Factorials [= (x-1)!]"));
+    FUNCTION_NAME(gcd, i18n("Greatest Common Divisor"));
+    FUNCTION_NAME(geomean, i18n("Geometric Mean"));
+    FUNCTION_NAME(gradians, i18n("Gradians of arc"));
+    FUNCTION_NAME(hex, i18n("Convert to Hexadecimal Representation"));
+    FUNCTION_NAME(hypercdf, i18n("Hypergeometric Cumulative Distribution Function"));
+    FUNCTION_NAME(hypermean, i18n("Hypergeometric Distribution Mean"));
+    FUNCTION_NAME(hyperpmf, i18n("Hypergeometric Probability Mass Function"));
+    FUNCTION_NAME(hypervar, i18n("Hypergeometric Distribution Variance"));
+    FUNCTION_NAME(idiv, i18n("Integer Quotient"));
+    FUNCTION_NAME(int, i18n("Integer Part"));
+    FUNCTION_NAME(imag, i18n("Imaginary Part"));
+    FUNCTION_NAME(ieee754_decode, i18n("Decode IEEE-754 Binary Value"));
+    FUNCTION_NAME(ieee754_encode, i18n("Encode IEEE-754 Binary Value"));
+    FUNCTION_NAME(ieee754_half_decode, i18n("Decode 16-bit Half-Precision Value"));
+    FUNCTION_NAME(ieee754_half_encode, i18n("Encode 16-bit Half-Precision Value"));
+    FUNCTION_NAME(ieee754_single_decode, i18n("Decode 32-bit Single-Precision Value"));
+    FUNCTION_NAME(ieee754_single_encode, i18n("Encode 32-bit Single-Precision Value"));
+    FUNCTION_NAME(ieee754_double_decode, i18n("Decode 64-bit Double-Precision Value"));
+    FUNCTION_NAME(ieee754_double_encode, i18n("Encode 64-bit Double-Precision Value"));
+    FUNCTION_NAME(ieee754_quad_decode, i18n("Decode 128-bit Quad-Precision Value"));
+    FUNCTION_NAME(ieee754_quad_encode, i18n("Encode 128-bit Quad-Precision Value"));
+    FUNCTION_NAME(lb, i18n("Binary Logarithm"));
+    FUNCTION_NAME(lg, i18n("Common Logarithm"));
+    FUNCTION_NAME(ln, i18n("Natural Logarithm"));
     FUNCTION_NAME(lngamma, "ln(abs(Gamma))");
-    FUNCTION_NAME(log, tr("Logarithm to Arbitrary Base"));
-    FUNCTION_NAME(mask, tr("Mask to a bit size"));
-    FUNCTION_NAME(max, tr("Maximum"));
-    FUNCTION_NAME(median, tr("Median Value (50th Percentile)"));
-    FUNCTION_NAME(min, tr("Minimum"));
-    FUNCTION_NAME(mod, tr("Modulo"));
-    FUNCTION_NAME(ncr, tr("Combination (Binomial Coefficient)"));
-    FUNCTION_NAME(not, tr("Logical NOT"));
-    FUNCTION_NAME(npr, tr("Permutation (Arrangement)"));
-    FUNCTION_NAME(oct, tr("Convert to Octal Representation"));
-    FUNCTION_NAME(or, tr("Logical OR"));
-    FUNCTION_NAME(phase, tr("Phase of Complex Number"));
-    FUNCTION_NAME(poicdf, tr("Poissonian Cumulative Distribution Function"));
-    FUNCTION_NAME(poimean, tr("Poissonian Distribution Mean"));
-    FUNCTION_NAME(poipmf, tr("Poissonian Probability Mass Function"));
-    FUNCTION_NAME(poivar, tr("Poissonian Distribution Variance"));
-    FUNCTION_NAME(polar, tr("Convert to Polar Notation"));
-    FUNCTION_NAME(product, tr("Product"));
-    FUNCTION_NAME(radians, tr("Radians"));
-    FUNCTION_NAME(real, tr("Real Part"));
-    FUNCTION_NAME(round, tr("Rounding"));
-    FUNCTION_NAME(sec, tr("Secant"));
-    FUNCTION_NAME(shl, tr("Arithmetic Shift Left"));
-    FUNCTION_NAME(shr, tr("Arithmetic Shift Right"));
-    FUNCTION_NAME(sgn, tr("Signum"));
-    FUNCTION_NAME(sin, tr("Sine"));
-    FUNCTION_NAME(sinh, tr("Hyperbolic Sine"));
-    FUNCTION_NAME(sqrt, tr("Square Root"));
-    FUNCTION_NAME(stddev, tr("Standard Deviation (Square Root of Variance)"));
-    FUNCTION_NAME(sum, tr("Sum"));
-    FUNCTION_NAME(tan, tr("Tangent"));
-    FUNCTION_NAME(tanh, tr("Hyperbolic Tangent"));
-    FUNCTION_NAME(trunc, tr("Truncation"));
-    FUNCTION_NAME(unmask, tr("Sign-extend a value"));
-    FUNCTION_NAME(variance, tr("Variance"));
-    FUNCTION_NAME(xor, tr("Logical XOR"));
+    FUNCTION_NAME(log, i18n("Logarithm to Arbitrary Base"));
+    FUNCTION_NAME(mask, i18n("Mask to a bit size"));
+    FUNCTION_NAME(max, i18nc("Maximum", "Calculator function, largest of numbers"));
+    FUNCTION_NAME(median, i18n("Median Value (50th Percentile)"));
+    FUNCTION_NAME(min, i18nc("Minimum", "Calculator function, smallest of numbers"));
+    FUNCTION_NAME(mod, i18n("Modulo"));
+    FUNCTION_NAME(ncr, i18n("Combination (Binomial Coefficient)"));
+    FUNCTION_NAME(not, i18n("Logical NOT"));
+    FUNCTION_NAME(npr, i18n("Permutation (Arrangement)"));
+    FUNCTION_NAME(oct, i18n("Convert to Octal Representation"));
+    FUNCTION_NAME(or, i18n("Logical OR"));
+    FUNCTION_NAME(phase, i18n("Phase of Complex Number"));
+    FUNCTION_NAME(poicdf, i18n("Poissonian Cumulative Distribution Function"));
+    FUNCTION_NAME(poimean, i18n("Poissonian Distribution Mean"));
+    FUNCTION_NAME(poipmf, i18n("Poissonian Probability Mass Function"));
+    FUNCTION_NAME(poivar, i18n("Poissonian Distribution Variance"));
+    FUNCTION_NAME(polar, i18n("Convert to Polar Notation"));
+    FUNCTION_NAME(product, i18n("Product"));
+    FUNCTION_NAME(radians, i18n("Radians"));
+    FUNCTION_NAME(real, i18n("Real Part"));
+    FUNCTION_NAME(round, i18n("Rounding"));
+    FUNCTION_NAME(sec, i18n("Secant"));
+    FUNCTION_NAME(shl, i18n("Arithmetic Shift Left"));
+    FUNCTION_NAME(shr, i18n("Arithmetic Shift Right"));
+    FUNCTION_NAME(sgn, i18n("Signum"));
+    FUNCTION_NAME(sin, i18n("Sine"));
+    FUNCTION_NAME(sinh, i18n("Hyperbolic Sine"));
+    FUNCTION_NAME(sqrt, i18n("Square Root"));
+    FUNCTION_NAME(stddev, i18n("Standard Deviation (Square Root of Variance)"));
+    FUNCTION_NAME(sum, i18n("Sum"));
+    FUNCTION_NAME(tan, i18n("Tangent"));
+    FUNCTION_NAME(tanh, i18n("Hyperbolic Tangent"));
+    FUNCTION_NAME(trunc, i18n("Truncation"));
+    FUNCTION_NAME(unmask, i18n("Sign-extend a value"));
+    FUNCTION_NAME(variance, i18nc("Variance", "Calculator function"));
+    FUNCTION_NAME(xor, i18n("Logical XOR"));
 }
 
 void FunctionRepo::retranslateText()

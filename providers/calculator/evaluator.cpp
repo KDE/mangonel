@@ -27,6 +27,8 @@
 #include "rational.h"
 #include "units.h"
 
+#include <KLocalizedString>
+
 #include <QCoreApplication>
 #include <QRegularExpression>
 #include <QStack>
@@ -76,43 +78,43 @@ const Quantity& Evaluator::checkOperatorResult(const Quantity& n)
     case NoOperand:
         if (!m_assignFunc)
             // The arguments are still NaN, so ignore this error.
-            m_error = Evaluator::tr("cannot operate on a NaN");
+            m_error = i18n("cannot operate on a NaN");
         break;
     case Underflow:
-        m_error = Evaluator::tr("underflow - tiny result is out number range");
+        m_error = i18n("underflow - tiny result is out number range");
         break;
     case Overflow:
-        m_error = Evaluator::tr("overflow - huge result is out of number range");
+        m_error = i18n("overflow - huge result is out of number range");
         break;
     case ZeroDivide:
-        m_error = Evaluator::tr("division by zero");
+        m_error = i18n("division by zero");
         break;
     case OutOfLogicRange:
-        m_error = Evaluator::tr("overflow - logic result exceeds "
+        m_error = i18n("overflow - logic result exceeds "
                                 "maximum of 256 bits");
         break;
     case OutOfIntegerRange:
-        m_error = Evaluator::tr("overflow - integer result exceeds "
+        m_error = i18n("overflow - integer result exceeds "
                                 "maximum limit for integers");
         break;
     case TooExpensive:
-        m_error = Evaluator::tr("too time consuming - "
+        m_error = i18n("too time consuming - "
                                 "computation was rejected");
         break;
     case DimensionMismatch:
         // We cannot make any assumptions about the dimension of the arguments,
         // so ignore this error when assigning a function.
         if (!m_assignFunc)
-            m_error = Evaluator::tr("dimension mismatch - quantities with "
+            m_error = i18n("dimension mismatch - quantities with "
                                     "different dimensions cannot be "
                                     "compared, added, etc.");
         break;
     case InvalidDimension:
-        m_error = Evaluator::tr("invalid dimension - operation might "
+        m_error = i18n("invalid dimension - operation might "
                                 "require dimensionless arguments");
         break;
     case EvalUnstable:
-        m_error = Evaluator::tr("Computation aborted - encountered "
+        m_error = i18n("Computation aborted - encountered "
                                 "numerical instability");
         break;
     default:;
@@ -131,43 +133,43 @@ QString Evaluator::stringFromFunctionError(Function* function)
     switch (function->error()) {
     case Success: break;
     case InvalidParamCount:
-        result += Evaluator::tr("wrong number of arguments");
+        result += i18n("wrong number of arguments");
         break;
     case NoOperand:
-        result += Evaluator::tr("does not take NaN as an argument");
+        result += i18n("does not take NaN as an argument");
         break;
     case Overflow:
-        result += Evaluator::tr("overflow - huge result is out of number range");
+        result += i18n("overflow - huge result is out of number range");
         break;
     case Underflow:
-        result += Evaluator::tr("underflow - tiny result is out of number range");
+        result += i18n("underflow - tiny result is out of number range");
         break;
     case OutOfLogicRange:
-        result += Evaluator::tr("overflow - logic result exceeds "
+        result += i18n("overflow - logic result exceeds "
                                 "maximum of 256 bits");
         break;
     case OutOfIntegerRange:
-        result += Evaluator::tr("result out of range");
+        result += i18n("result out of range");
         break;
     case ZeroDivide:
-        result += Evaluator::tr("division by zero");
+        result += i18n("division by zero");
         break;
     case EvalUnstable:
-        result += Evaluator::tr("Computation aborted - "
+        result += i18n("Computation aborted - "
                                 "encountered numerical instability");
         break;
     case OutOfDomain:
-        result += Evaluator::tr("undefined for argument domain");
+        result += i18n("undefined for argument domain");
         break;
     case TooExpensive:
-        result += Evaluator::tr("computation too expensive");
+        result += i18n("computation too expensive");
         break;
     case InvalidDimension:
-        result += Evaluator::tr("invalid dimension - function "
+        result += i18n("invalid dimension - function "
                                 "might require dimensionless arguments");
         break;
     case DimensionMismatch:
-        result += Evaluator::tr("dimension mismatch - quantities with "
+        result += i18n("dimension mismatch - quantities with "
                                 "different dimensions cannot be compared, "
                                 "added, etc.");
         break;
@@ -175,10 +177,10 @@ QString Evaluator::stringFromFunctionError(Function* function)
     case BadLiteral:
     case InvalidPrecision:
     case InvalidParam:
-        result += Evaluator::tr("internal error, please report a bug");
+        result += i18n("internal error, please report a bug", "Internal error in the calculator");
         break;
     default:
-        result += Evaluator::tr("error");
+        result += i18n("error", "Unknown calculation function error");
         break;
     };
 
@@ -1646,7 +1648,7 @@ Quantity Evaluator::evalNoAssign()
 
         // Invalid expression?
         if (!tokens.valid()) {
-            m_error = tr("invalid expression");
+            m_error = i18n("invalid expression", "Invalid input from user to calculator");
             return Quantity(0);
         }
 
@@ -1706,7 +1708,7 @@ Quantity Evaluator::evalNoAssign()
         compile(tokens);
         if (!m_valid) {
             if (m_error.isEmpty())
-                m_error = tr("compile error");
+                m_error = i18n("compile error", "Calculator error during evaluation of user input");
             return CNumber(0);
         }
     }
@@ -1744,7 +1746,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
             // Unary operation.
             case Opcode::Neg:
                 if (stack.count() < 1) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return CMath::nan();
                 }
                 val1 = stack.pop();
@@ -1756,7 +1758,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
             // do the operation, push the result to stack.
             case Opcode::Add:
                 if (stack.count() < 2) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return CMath::nan();
                 }
                 val1 = stack.pop();
@@ -1767,7 +1769,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
             case Opcode::Sub:
                 if (stack.count() < 2) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return CMath::nan();
                 }
                 val1 = stack.pop();
@@ -1778,7 +1780,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
             case Opcode::Mul:
                 if (stack.count() < 2) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return CMath::nan();
                 }
                 val1 = stack.pop();
@@ -1789,7 +1791,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
             case Opcode::Div:
                 if (stack.count() < 2) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return CMath::nan();
                 }
                 val1 = stack.pop();
@@ -1800,7 +1802,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
             case Opcode::Pow:
                 if (stack.count() < 2) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return CMath::nan();
                 }
                 val1 = stack.pop();
@@ -1811,7 +1813,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
             case Opcode::Fact:
                 if (stack.count() < 1) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return CMath::nan();
                 }
                 val1 = stack.pop();
@@ -1821,7 +1823,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
             case Opcode::Modulo:
                 if (stack.count() < 2) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return CMath::nan();
                 }
                 val1 = stack.pop();
@@ -1832,7 +1834,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
             case Opcode::IntDiv:
                 if (stack.count() < 2) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return CMath::nan();
                 }
                 val1 = stack.pop();
@@ -1843,7 +1845,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
             case Opcode::LSh:
                 if (stack.count() < 2) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return DMath::nan();
                 }
                 val1 = stack.pop();
@@ -1854,7 +1856,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
             case Opcode::RSh:
                 if (stack.count() < 2) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return DMath::nan();
                 }
                 val1 = stack.pop();
@@ -1865,7 +1867,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
             case Opcode::BAnd:
                 if (stack.count() < 2) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return DMath::nan();
                 }
                 val1 = stack.pop();
@@ -1876,7 +1878,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
             case Opcode::BOr:
                 if (stack.count() < 2) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return DMath::nan();
                 }
                 val1 = stack.pop();
@@ -1887,17 +1889,17 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
             case Opcode::Conv:
                 if (stack.count() < 2) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return HMath::nan();
                 }
                 val1 = stack.pop();
                 val2 = stack.pop();
                 if (val1.isZero()) {
-                    m_error = tr("unit must not be zero");
+                    m_error = i18n("unit must not be zero");
                     return HMath::nan();
                 }
                 if (!val1.sameDimension(val2)) {
-                    m_error = tr("Conversion failed - dimension mismatch");
+                    m_error = i18n("Conversion failed - dimension mismatch");
                     return HMath::nan();
                 }
                 val2.setDisplayUnit(val1.numericValue(), opcode.text);
@@ -1926,7 +1928,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
                         refs.insert(stack.count(), fname);
                     } else {
                         m_error = fname + ": "
-                                  + tr("unknown function or variable");
+                                  + i18n("unknown function or variable");
                         return CMath::nan();
                     }
                 }
@@ -1944,12 +1946,12 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
                 if (!function && !m_assignFunc) {
                     m_error = fname + ": "
-                              + tr("unknown function or variable");
+                              + i18n("unknown function or variable");
                     return CMath::nan();
                 }
 
                 if (stack.count() < index) {
-                    m_error = tr("invalid expression");
+                    m_error = i18n("invalid expression");
                     return CMath::nan();
                 }
 
@@ -1991,7 +1993,7 @@ Quantity Evaluator::exec(const QVector<Opcode>& opcodes,
 
     // More than one value in stack? Unsuccessful execution.
     if (stack.count() != 1) {
-        m_error = tr("invalid expression");
+        m_error = i18n("invalid expression");
         return CMath::nan();
     }
     return stack.pop();
