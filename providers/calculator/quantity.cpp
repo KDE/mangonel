@@ -859,33 +859,17 @@ QString DMath::format(Quantity q, Quantity::Format format)
 
     QString result;
 
-    // Use locale appropriate output
-    if (format.base == Quantity::Format::Base::Decimal &&
-            format.mode == Quantity::Format::Mode::Fixed &&
-            q.isReal() && Rational(q.numericValue().real).toDouble() > 1.) {
-        // Ugly trick to strip trailing zeros
-        int precision = format.precision ? format.precision : 6;
-        double calculationResult = Rational(q.numericValue().real).toDouble();
+    result = CMath::format(number, format);
 
-        double scaledResult = calculationResult * std::pow(10, precision);
-        while (precision > 0 && std::floor(scaledResult) == std::ceil(scaledResult)) {
-            precision--;
-            scaledResult = calculationResult * std::pow(10, precision);
-        }
-        result = QLocale::system().toString(calculationResult, 'f', precision + 1);
-    } else {
-        result = CMath::format(number, format);
+    result.replace('-', QString::fromUtf8("−"));
 
-        result.replace('-', QString::fromUtf8("−"));
-
-        // Replace all spaces between units with dot operator.
-        int emptySpaces = 0;
-        for (auto& ch : result) {
-            if (ch.isSpace()) {
-                ++emptySpaces;
-                if (emptySpaces > 1)
-                    ch = u'⋅';
-            }
+    // Replace all spaces between units with dot operator.
+    int emptySpaces = 0;
+    for (auto& ch : result) {
+        if (ch.isSpace()) {
+            ++emptySpaces;
+            if (emptySpaces > 1)
+                ch = u'⋅';
         }
     }
 
