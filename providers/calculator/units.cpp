@@ -296,7 +296,11 @@ const QList<Unit> Units::getList()
     ADD_UNIT_ALIAS(UK_pint, pint_UK);
     ADD_UNIT(UK_fluid_ounce);
     ADD_UNIT(US_fluid_ounce);
+    ADD_UNIT_ALIAS(US_fluid_ounce, us_fl_oz);
+    ADD_UNIT_ALIAS(US_fluid_ounce, us_floz);
     ADD_UNIT_ALIAS(US_fluid_ounce, fluid_ounce_US);
+    ADD_UNIT_ALIAS(UK_fluid_ounce, uk_fl_oz);
+    ADD_UNIT_ALIAS(UK_fluid_ounce, uk_floz);
     ADD_UNIT_ALIAS(UK_fluid_ounce, fluid_ounce_UK);
     ADD_UNIT(liter);
     ADD_UNIT_ALIAS(liter, litre);
@@ -390,6 +394,27 @@ const QList<Unit> Units::getList()
     ADD_UNIT(elementary_charge);
     ADD_UNIT(knot);
     ADD_UNIT(horsepower);
+
+    switch(QLocale::system().measurementSystem()) {
+    case QLocale::ImperialUSSystem:
+        ADD_UNIT_ALIAS(US_pint, pint);
+        ADD_UNIT_ALIAS(US_gallon, gallon);
+        ADD_UNIT_ALIAS(US_quart, quart);
+        ADD_UNIT_ALIAS(US_pint, pint);
+        ADD_UNIT_ALIAS(US_fluid_ounce, fl_oz);
+        ADD_UNIT_ALIAS(US_fluid_ounce, floz);
+        break;
+    case QLocale::ImperialUKSystem:
+        ADD_UNIT_ALIAS(UK_pint, pint);
+        ADD_UNIT_ALIAS(UK_gallon, gallon);
+        ADD_UNIT_ALIAS(UK_quart, quart);
+        ADD_UNIT_ALIAS(UK_pint, pint);
+        ADD_UNIT_ALIAS(UK_fluid_ounce, fl_oz);
+        ADD_UNIT_ALIAS(UK_fluid_ounce, floz);
+        break;
+    default:
+        break;
+    }
 
     return result;
 }
