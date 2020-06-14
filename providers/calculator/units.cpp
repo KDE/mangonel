@@ -292,6 +292,8 @@ const QList<Unit> Units::getList()
     ADD_UNIT(liter);
 
     // Time
+    ADD_UNIT_ALIAS(second, seconds);
+
     ADD_UNIT(minute);
     ADD_UNIT_ALIAS(minute, minutes);
 
