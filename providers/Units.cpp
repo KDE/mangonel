@@ -242,9 +242,9 @@ KUnitConversion::Unit Units::matchUnitCaseInsensitive(const QString &name, const
     simpleName.remove(nonAlphaRegex);
 
     for (const QString &candidateName : category.allUnits()) {
-        QString simpleCandidateName = candidateName;
+        QString simpleCandidateName = candidateName.toLower();
         simpleCandidateName.remove(nonAlphaRegex);
-        if (simpleName.compare(simpleCandidateName) == 0) {
+        if (simpleCandidateName.startsWith(simpleName)) { // TODO: return multiple matches
             fallback = category.unit(candidateName);
         }
 
