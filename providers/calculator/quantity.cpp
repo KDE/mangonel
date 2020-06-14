@@ -865,12 +865,18 @@ QString DMath::format(Quantity q, Quantity::Format format)
 
     // Replace all spaces between units with dot operator.
     int emptySpaces = 0;
-    for (auto& ch : result) {
+    for (QChar& ch : result) {
         if (ch.isSpace()) {
             ++emptySpaces;
-            if (emptySpaces > 1)
+            if (emptySpaces > 1) {
                 ch = u'⋅';
+            }
         }
+    }
+
+    // '.' is hardcoded everywhere
+    if (format.mode == Quantity::Format::Mode::Fixed) {
+        result.replace('.', QLocale::system().decimalPoint());
     }
 
     if (!number.real.isZero() && !number.imag.isZero() && unit_name != " ")
