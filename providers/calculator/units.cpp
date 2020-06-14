@@ -25,6 +25,8 @@
 #include <QString>
 #include <QStringList>
 
+// TODO: find out how to get gettext to recognize these (or write a xgettext
+// replacement that actually supports C++ properly...)
 #define UNIT_CACHE(name, value) \
     const Quantity Units::name() \
     { \
