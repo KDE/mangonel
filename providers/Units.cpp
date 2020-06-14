@@ -236,7 +236,18 @@ KUnitConversion::Unit Units::matchUnitCaseInsensitive(const QString &name, const
         }
     }
 
+    KUnitConversion::Unit fallback;
+    static const QRegularExpression nonAlphaRegex("([^A-Za-z]+)");
+    QString simpleName = name;
+    simpleName.remove(nonAlphaRegex);
+
     for (const QString &candidateName : category.allUnits()) {
+        QString simpleCandidateName = candidateName;
+        simpleCandidateName.remove(nonAlphaRegex);
+        if (simpleName.compare(simpleCandidateName) == 0) {
+            fallback = category.unit(candidateName);
+        }
+
         if (name.compare(candidateName, Qt::CaseInsensitive)) {
             continue;
         }
@@ -251,7 +262,7 @@ KUnitConversion::Unit Units::matchUnitCaseInsensitive(const QString &name, const
         }
     }
 
-    return KUnitConversion::Unit();
+    return fallback;
 }
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4;
