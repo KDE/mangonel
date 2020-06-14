@@ -299,7 +299,9 @@ const QList<Unit> Units::getList()
     ADD_UNIT_ALIAS(US_fluid_ounce, fluid_ounce_US);
     ADD_UNIT_ALIAS(UK_fluid_ounce, fluid_ounce_UK);
     ADD_UNIT(liter);
+    ADD_UNIT_ALIAS(liter, litre);
     ADD_UNIT_ALIAS(liter, liters);
+    ADD_UNIT_ALIAS(liter, litres);
 
     // Time
     ADD_UNIT(minute);
