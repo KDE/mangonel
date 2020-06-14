@@ -177,10 +177,10 @@ QString Evaluator::stringFromFunctionError(Function* function)
     case BadLiteral:
     case InvalidPrecision:
     case InvalidParam:
-        result += i18n("internal error, please report a bug", "Internal error in the calculator");
+        result += i18nc("internal error, please report a bug", "Internal error in the calculator");
         break;
     default:
-        result += i18n("error", "Unknown calculation function error");
+        result += i18nc("error", "Unknown calculation function error");
         break;
     };
 
@@ -1648,7 +1648,7 @@ Quantity Evaluator::evalNoAssign()
 
         // Invalid expression?
         if (!tokens.valid()) {
-            m_error = i18n("invalid expression", "Invalid input from user to calculator");
+            m_error = i18nc("invalid expression", "Invalid input from user to calculator");
             return Quantity(0);
         }
 
@@ -1708,7 +1708,7 @@ Quantity Evaluator::evalNoAssign()
         compile(tokens);
         if (!m_valid) {
             if (m_error.isEmpty())
-                m_error = i18n("compile error", "Calculator error during evaluation of user input");
+                m_error = i18nc("compile error", "Calculator error during evaluation of user input");
             return CNumber(0);
         }
     }
