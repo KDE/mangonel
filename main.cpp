@@ -33,6 +33,8 @@
 #include <klocalizedstring.h>
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
+#include <QSurfaceFormat>
+
 
 int main(int argc, char** argv)
 {
@@ -53,6 +55,11 @@ int main(int argc, char** argv)
 
     KDBusService service(KDBusService::Unique);
     QObject::connect(&service, &KDBusService::activateRequested, Mangonel::instance(), &Mangonel::triggered);
+
+    QSurfaceFormat defaultFormat = QSurfaceFormat::defaultFormat();
+    defaultFormat.setOption(QSurfaceFormat::ResetNotification);
+    QSurfaceFormat::setDefaultFormat(defaultFormat);
+
 
     qmlRegisterSingletonType<Mangonel>("org.kde", 1, 0, "Mangonel", [](QQmlEngine *, QJSEngine*) -> QObject* {
         QQmlEngine::setObjectOwnership(Mangonel::instance(), QQmlEngine::CppOwnership);
