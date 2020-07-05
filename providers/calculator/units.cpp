@@ -22,6 +22,7 @@
 #include "quantity.h"
 #include "rational.h"
 
+#include <QLocale>
 #include <QString>
 #include <QStringList>
 
