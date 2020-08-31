@@ -196,6 +196,35 @@ Window {
         Behavior on width { NumberAnimation { duration: 10 } }
     }
 
+    // Can't use a MouseArea directly in the item delegates because it is invisible, because of the blur
+    Row {
+        id: clickableRow
+        anchors {
+            fill: resultList
+            margins: spacing
+            leftMargin: -resultList.itemWidth/2 + spacing*2
+        }
+        spacing: 35
+
+        Repeater {
+            id: clickableRepeater
+            model: 5
+            MouseArea {
+                height: resultList.height - clickableRow.spacing
+                width: resultList.itemWidth - clickableRow.spacing * 2
+                cursorShape: Qt.PointingHandCursor
+                property real diff: modelData - Math.floor(clickableRepeater.model/2)
+                onClicked: {
+                    const newIndex = resultList.currentIndex + diff;
+                    if (newIndex < 0 || newIndex >= resultList.count) {
+                        return;
+                    }
+                    resultList.currentIndex = newIndex;
+                }
+            }
+        }
+    }
+
     Text {
         anchors {
             left: background.left
