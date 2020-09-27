@@ -108,7 +108,12 @@ QList<ProviderResult *> Paths::getResults(QString query)
         }
     }
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QStringList walk = query.split("/", QString::SkipEmptyParts);
+#else
+    QStringList walk = query.split("/", Qt::SkipEmptyParts);
+#endif
+
     if (walk.isEmpty() || query.endsWith('/')) {
         walk.append("");
     }

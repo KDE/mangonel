@@ -54,7 +54,11 @@ namespace
 QStringList parsePathEnv()
 {
     QString pathEnv = getenv("PATH");
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
     QStringList pathList = pathEnv.split(":", QString::SkipEmptyParts);
+#else
+    QStringList pathList = pathEnv.split(":", Qt::SkipEmptyParts);
+#endif
     QStringList absPathList;
     for (const QString &path : pathList) {
         const QString canonicalPath = QFileInfo(path).canonicalFilePath();
@@ -124,7 +128,11 @@ QList<ProviderResult *> Shell::getResults(QString query)
 
 int Shell::launch(const QString &exec)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QStringList args = exec.split(" ");
+#else
+    QStringList args = QProcess::splitCommand(exec);
+#endif
     if (args.isEmpty()) {
         qWarning() << "Asked to launch invalid program:" << exec;
         return 0;

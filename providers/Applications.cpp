@@ -106,11 +106,21 @@ QList<ProviderResult *> Applications::getResults(QString term)
 
 int Applications::launch(const QString &selected)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     if (QProcess::startDetached(selected)) {
         return 0;
     } else {
         return 1;
     }
+#else
+    const QStringList commandAndArgs = QProcess::splitCommand(selected);
+
+    if (QProcess::startDetached(commandAndArgs[0], commandAndArgs.mid(1))) {
+        return 0;
+    } else {
+        return 1;
+    }
+#endif
 }
 
 void Applications::onDirectoryChanged(const QString &path)
