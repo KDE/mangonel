@@ -39,7 +39,9 @@ Window {
 
     Connections {
         target: Mangonel
-        onTriggered: window.visible = true
+        function onTriggered() {
+            window.visible = true
+        }
     }
 
     Rectangle {
