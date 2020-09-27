@@ -21,10 +21,13 @@ Window {
         inputText.text = ""
 
         if (visible) {
+            modality = Qt.ApplicationModal
             requestActivate()
 
             var desktopWidth = window.screen.width
             window.width = Math.min(desktopWidth / 1.5, window.height * 2)
+        } else {
+            modality = Qt.NonModal
         }
 
         inputText.preHistoryText = ""
