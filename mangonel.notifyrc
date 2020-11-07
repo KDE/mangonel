@@ -1,6 +1,7 @@
 [Global]
 IconName=mangonel
 Comment=Mangonel
+Comment[ast]=Mangonel
 Comment[bs]=Mangonel
 Comment[ca]=Mangonel
 Comment[ca@valencia]=Mangonel
@@ -79,6 +80,7 @@ Name[x-test]=xxstartupxx
 Name[zh_CN]=启动
 Name[zh_TW]=啟動
 Comment=Mangonel has started
+Comment[ast]=Mangonel anicióse
 Comment[bs]=Mangonel je pokrenut
 Comment[ca]=S'ha engegat el Mangonel
 Comment[ca@valencia]=S'ha engegat el Mangonel
