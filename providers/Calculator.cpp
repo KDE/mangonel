@@ -33,6 +33,8 @@
 #include <klocalizedstring.h>
 #include <QDebug>
 #include <QLocale>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 #include "calculator/evaluator.h"
 #include "calculator/numberformatter.h"
@@ -54,10 +56,16 @@ QList<ProviderResult*> Calculator::getResults(QString query)
 {
     query = query.trimmed();
 
+    // Replace #x# with #*#, where # are numbers
+    QRegularExpressionMatchIterator xMatches = QRegularExpression(R"([0-9]+\s*(x)\s*[0-9]+)").globalMatch(query);
+    while (xMatches.hasNext()) {
+        const QRegularExpressionMatch match = xMatches.next();
+        query.replace(match.capturedStart(1), 1, '*');
+    }
+
     QList<ProviderResult*> list;
 
     Evaluator *ev = Evaluator::instance();
-    const QString origQuery = query;
     query = ev->autoFix(query);
     if (query.isEmpty()) {
         return list;
