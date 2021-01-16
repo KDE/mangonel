@@ -379,6 +379,7 @@ QString Mangonel::selectionClipboardContent()
 void Mangonel::addToHistory(const QString &text)
 {
     m_history.prepend(text);
+    m_history.removeDuplicates();
     emit historyChanged();
 
     // Store history of session.
