@@ -33,6 +33,8 @@
 #include <QObject>
 #include <QPointer>
 
+class QGlobalShortcut;
+
 class Mangonel : public QObject
 {
     Q_OBJECT
@@ -65,6 +67,7 @@ private:
     QAction* m_actionShow;
     QStringList m_history;
     QHash<QString, Provider*> m_providers;
+    QPointer<QGlobalShortcut> m_shortcut;
 
     QHash<QString, Popularity> m_popularities;
 

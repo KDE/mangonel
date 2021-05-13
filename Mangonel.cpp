@@ -43,7 +43,10 @@
 #include <KLocalizedString>
 #include <KNotification>
 #include <KNotifyConfigWidget>
+
+#ifdef KGLOBALACCEL_FOUND
 #include <KGlobalAccel>
+#endif
 
 #include "Config.h"
 //Include the providers.
@@ -52,10 +55,13 @@
 #include "providers/Shell.h"
 #include "providers/Calculator.h"
 #include "providers/Units.h"
+#include "globalshortcut/qglobalshortcut.h"
 
 #include <QDebug>
 
 #include <unistd.h>
+
+static const char *s_shortcutKey = "globalshortcut";
 
 static QHash<QString, Popularity> getRecursivePopularity(QSettings &settings, const QString &path = QString())
 {
@@ -94,20 +100,38 @@ Mangonel::Mangonel()
     // Setup our global shortcut.
     m_actionShow = new QAction(i18n("Show Mangonel"), this);
     m_actionShow->setObjectName(QString("show"));
-    QList<QKeySequence> shortcuts({QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Space)});
-    KGlobalAccel::self()->setShortcut(m_actionShow, shortcuts);
-    shortcuts = KGlobalAccel::self()->shortcut(m_actionShow);
-    connect(m_actionShow, SIGNAL(triggered()), this, SIGNAL(triggered()));
 
-    QString shortcutString;
-    if (!shortcuts.isEmpty()) {
-        shortcutString = shortcuts.first().toString();
-    }
-
-    QString message = xi18nc("@info", "Press <shortcut>%1</shortcut> to show Mangonel.", shortcutString);
-    KNotification::event(QLatin1String("startup"), message);
 
     QSettings settings;
+
+    QKeySequence shortcut = QKeySequence::fromString(
+            settings.value(QLatin1String(s_shortcutKey)).toString()
+        );
+
+#ifdef KGLOBALACCEL_FOUND
+    if (shortcut.isEmpty()) {
+        // KGlobalAccel is broken, so migrate config
+        QList<QKeySequence> shortcuts = KGlobalAccel::self()->shortcut(m_actionShow);
+        if (!shortcuts.isEmpty() && !shortcuts.first().isEmpty()) {
+            qDebug() << "Migrating from kglobalaccel";
+            KGlobalAccel::self()->removeAllShortcuts(m_actionShow);
+            settings.setValue(QLatin1String(s_shortcutKey), shortcuts.first().toString());
+        }
+    }
+#endif
+
+    if (shortcut.isEmpty()) {
+        shortcut = QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_Space);
+        settings.setValue(QLatin1String(s_shortcutKey), shortcut.toString());
+    }
+    m_shortcut = new QGlobalShortcut(shortcut, this);
+    connect(m_shortcut, &QGlobalShortcut::activated, m_actionShow, &QAction::trigger);
+    connect(m_actionShow, &QAction::triggered, this, &Mangonel::triggered);
+    qDebug() << m_shortcut.data();
+
+    QString message = xi18nc("@info", "Press <shortcut>%1</shortcut> to show Mangonel.", m_shortcut->key().toString());
+    KNotification::event(QLatin1String("startup"), message);
+
     m_history = settings.value("history").toStringList();
 
     // Instantiate the providers.
@@ -328,20 +352,18 @@ void Mangonel::launch(QObject *selectedObject)
 
 void Mangonel::showConfig()
 {
-    QList<QKeySequence> shortcuts(KGlobalAccel::self()->globalShortcut(qApp->applicationName(), "show"));
     ConfigDialog* dialog = new ConfigDialog;
-    if (!shortcuts.isEmpty()) {
-        dialog->setHotkey(shortcuts.first());
-    }
+    dialog->setHotkey(m_shortcut->key());
     connect(dialog, SIGNAL(hotkeyChanged(QKeySequence)), this, SLOT(setHotkey(QKeySequence)));
     dialog->exec();
 }
 
 void Mangonel::setHotkey(const QKeySequence& hotkey)
 {
-    KGlobalAccel::self()->setShortcut(m_actionShow,
-                                      QList<QKeySequence>() << hotkey,
-                                      KGlobalAccel::NoAutoloading);
+    QSettings settings;
+    settings.setValue(QLatin1String(s_shortcutKey), hotkey.toString());
+
+    m_shortcut->setKey(hotkey);
 }
 
 void Mangonel::configureNotifications()

@@ -11,15 +11,24 @@ include (FeatureSummary)
 
 find_package (Qt5 CONFIG REQUIRED Core Widgets Quick)
 
-find_package (KF5 REQUIRED COMPONENTS
-    I18n
-    GlobalAccel
-    NotifyConfig
-    Notifications
-    DBusAddons
-    UnitConversion
-    Service
+find_package (KF5
+    REQUIRED COMPONENTS
+        I18n
+        NotifyConfig
+        Notifications
+        DBusAddons
+        UnitConversion
+        Service
+    OPTIONAL_COMPONENTS
+        GlobalAccel
+
 )
+set(EXTRA_LIBRARIES)
+
+if (KF5GlobalAccel_FOUND)
+  set(EXTRA_LIBRARIES ${EXTRA_LIBRARIES} KF5::GlobalAccel)
+  add_definitions(-DKGLOBALACCEL_FOUND)
+endif()
 
 set(Mangonel_SRCS
   Mangonel.cpp
@@ -65,7 +74,27 @@ set(Mangonel_SRCS
   providers/calculator/quantity.cpp
   providers/calculator/rational.cpp
   providers/calculator/units.cpp
+
+  globalshortcut/qglobalshortcut.cpp
 )
+
+if(APPLE)
+  set(Mangonel_SRCS ${Mangonel_SRCS}
+    globalshortcut/qglobalshortcut_macx.cpp
+  )
+elseif(WIN32)
+  set(Mangonel_SRCS ${Mangonel_SRCS}
+    globalshortcut/qglobalshortcut_win.cpp
+  )
+else() # Just assume Linux
+  set(Mangonel_SRCS ${Mangonel_SRCS}
+    globalshortcut/qglobalshortcut_x11.cpp
+  )
+  find_package(Qt5X11Extras REQUIRED)
+  find_package(X11 REQUIRED)
+  find_package(XCB REQUIRED)
+  set(EXTRA_LIBRARIES ${EXTRA_LIBRARIES} Qt5::X11Extras X11::X11 XCB::XCB)
+endif()
 
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra -Wall")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
@@ -78,10 +107,10 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 add_executable(mangonel ${Mangonel_SRCS})
 
 target_link_libraries(mangonel
+  ${EXTRA_LIBRARIES}
   Qt5::Core
   Qt5::Widgets
   Qt5::Quick
-  KF5::GlobalAccel
   KF5::I18n
   KF5::DBusAddons
   KF5::NotifyConfig
