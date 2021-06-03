@@ -127,7 +127,6 @@ Mangonel::Mangonel()
     m_shortcut = new QGlobalShortcut(shortcut, this);
     connect(m_shortcut, &QGlobalShortcut::activated, m_actionShow, &QAction::trigger);
     connect(m_actionShow, &QAction::triggered, this, &Mangonel::triggered);
-    qDebug() << m_shortcut.data();
 
     QString message = xi18nc("@info", "Press <shortcut>%1</shortcut> to show Mangonel.", m_shortcut->key().toString());
     KNotification::event(QLatin1String("startup"), message);
