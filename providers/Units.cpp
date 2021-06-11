@@ -136,17 +136,11 @@ ProviderResult *Units::createResult(const KUnitConversion::Unit &inputUnit, cons
 
 QList<ProviderResult *> Units::getResults(QString query)
 {
-    QList<ProviderResult*> list;
 
     QRegularExpression pattern(R"raw((.+?)(\w+)\s+(?:\=|to|is|in)\s+(\w+)$)raw", QRegularExpression::CaseInsensitiveOption);
     QRegularExpressionMatch match = pattern.match(query);
     if (!match.hasMatch()) {
-        return list;
-    }
-
-    const KUnitConversion::Unit inputUnit = resolveUnitName(match.captured(2));
-    if (!inputUnit.isValid()) {
-        return list;
+        return {};
     }
 
     QString sourceAmount = match.captured(1);
@@ -158,18 +152,37 @@ QList<ProviderResult *> Units::getResults(QString query)
         ev->setExpression(sourceAmount);
         const Quantity quantity = ev->evalNoAssign();
         if (!ev->error().isEmpty()) {
-            return list;
+            return {};
         }
-        inputNumber = Rational(quantity.numericValue().real).toDouble();
+        if (!quantity.isReal()) {
+            return {};
+        }
+        const Rational rationalNumber(quantity.numericValue().real);
+        if (!rationalNumber.isValid()) {
+            return {};
+        }
+        inputNumber = rationalNumber.toDouble();
     }
 
-    const KUnitConversion::Value inputValue(inputNumber, inputUnit);
-    const KUnitConversion::Unit outputUnit = resolveUnitName(match.captured(3), inputUnit.category());
-    if (!outputUnit.isValid()) {
-        return list;
-    }
+    QList<ProviderResult*> list;
 
-    list.append(createResult(inputUnit, inputValue, outputUnit));
+    QSet<KUnitConversion::UnitId> usedInputs;
+    QSet<KUnitConversion::UnitId> usedOutputs;
+    for (const KUnitConversion::Unit &inputUnit : resolveUnitName(match.captured(2))) {
+        if (usedInputs.contains(inputUnit.id())) {
+            continue;
+        }
+        usedInputs.insert(inputUnit.id());
+        for (const KUnitConversion::Unit &outputUnit : resolveUnitName(match.captured(3), inputUnit.category())) {
+            if (usedOutputs.contains(outputUnit.id())) {
+                continue;
+            }
+            usedOutputs.insert(outputUnit.id());
+
+            const KUnitConversion::Value inputValue(inputNumber, inputUnit);
+            list.append(createResult(inputUnit, inputValue, outputUnit));
+        }
+    }
 
     return list;
 }
@@ -181,7 +194,7 @@ int Units::launch(const QString &exec)
     return 0;
 }
 
-KUnitConversion::Unit Units::resolveUnitName(const QString &name, const KUnitConversion::UnitCategory &category)
+QList<KUnitConversion::Unit> Units::resolveUnitName(const QString &name, const KUnitConversion::UnitCategory &category)
 {
     KUnitConversion::Unit unit;
 
@@ -192,47 +205,44 @@ KUnitConversion::Unit Units::resolveUnitName(const QString &name, const KUnitCon
     }
 
     if (unit.isValid()) {
-        return unit;
+        return {unit};
     }
+
+    QList<KUnitConversion::Unit> units;
 
     // Didn't match directly, try to match without case sensitivity
 
     if (!category.isNull()) {
         // try only common first
-        unit = matchUnitCaseInsensitive(name, category, OnlyCommonUnits);
-        if (unit.isValid()) {
-            return unit;
+        units.append(matchUnitCaseInsensitive(name, category, OnlyCommonUnits));
+
+        if (!units.isEmpty()) {
+            return units;
         }
 
         // If not common, try something else
-        unit = matchUnitCaseInsensitive(name, category, AllUnits);
-        if (unit.isValid()) {
-            return unit;
-        }
+        units.append(matchUnitCaseInsensitive(name, category, AllUnits));
     } else {
         for (const KUnitConversion::UnitCategory &candidateCategory : m_converter.categories()) {
-            unit = matchUnitCaseInsensitive(name, candidateCategory, OnlyCommonUnits);
-            if (unit.isValid()) {
-                return unit;
-            }
+            units.append(matchUnitCaseInsensitive(name, candidateCategory, OnlyCommonUnits));
+        }
+        if (!units.isEmpty()) {
+            return units;
         }
 
         // Was not a common unit, try all units
         for (const KUnitConversion::UnitCategory &candidateCategory : m_converter.categories()) {
-            unit = matchUnitCaseInsensitive(name, candidateCategory, AllUnits);
-            if (unit.isValid()) {
-                return unit;
-            }
+            units.append(matchUnitCaseInsensitive(name, candidateCategory, AllUnits));
         }
     }
 
-    return unit;
+    return units;
 }
 
-KUnitConversion::Unit Units::matchUnitCaseInsensitive(const QString &name, const KUnitConversion::UnitCategory &category, const UnitMatchingLevel level)
+QList<KUnitConversion::Unit> Units::matchUnitCaseInsensitive(const QString &name, const KUnitConversion::UnitCategory &category, const UnitMatchingLevel level)
 {
     if (category.isNull()) {
-        return KUnitConversion::Unit();
+        return {};
     }
 
     QSet<KUnitConversion::UnitId> commonIds;
@@ -242,7 +252,7 @@ KUnitConversion::Unit Units::matchUnitCaseInsensitive(const QString &name, const
         }
     }
 
-    KUnitConversion::Unit fallback;
+    QList<KUnitConversion::Unit> units;
     static const QRegularExpression nonAlphaRegex("([^A-Za-z]+)");
     QString simpleName = name;
     simpleName.remove(nonAlphaRegex);
@@ -250,8 +260,8 @@ KUnitConversion::Unit Units::matchUnitCaseInsensitive(const QString &name, const
     for (const QString &candidateName : category.allUnits()) {
         QString simpleCandidateName = candidateName.toLower();
         simpleCandidateName.remove(nonAlphaRegex);
-        if (simpleCandidateName.startsWith(simpleName)) { // TODO: return multiple matches
-            fallback = category.unit(candidateName);
+        if (simpleCandidateName.startsWith(simpleName)) {
+            units.append(category.unit(candidateName));
         }
 
         if (name.compare(candidateName, Qt::CaseInsensitive)) {
@@ -264,11 +274,11 @@ KUnitConversion::Unit Units::matchUnitCaseInsensitive(const QString &name, const
         }
 
         if (candidate.isValid()) {
-            return candidate;
+            return {candidate};
         }
     }
 
-    return fallback;
+    return units;
 }
 
 // kate: indent-mode cstyle; space-indent on; indent-width 4;

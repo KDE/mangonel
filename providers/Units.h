@@ -59,8 +59,8 @@ private:
         OnlyCommonUnits,
         AllUnits
     };
-    KUnitConversion::Unit resolveUnitName(const QString &name, const KUnitConversion::UnitCategory &category = KUnitConversion::UnitCategory());
-    KUnitConversion::Unit matchUnitCaseInsensitive(const QString &name, const KUnitConversion::UnitCategory &category, const UnitMatchingLevel level);
+    QList<KUnitConversion::Unit> resolveUnitName(const QString &name, const KUnitConversion::UnitCategory &category = KUnitConversion::UnitCategory());
+    QList<KUnitConversion::Unit> matchUnitCaseInsensitive(const QString &name, const KUnitConversion::UnitCategory &category, const UnitMatchingLevel level);
     ProviderResult *createResult(const KUnitConversion::Unit &inputUnit, const KUnitConversion::Value &inputValue, const KUnitConversion::Unit &outputUnit);
 
     KUnitConversion::Converter m_converter;
