@@ -77,41 +77,8 @@ Units::~Units()
     m_refresherThread->wait();
 }
 
-QList<ProviderResult *> Units::getResults(QString query)
+ProviderResult *Units::createResult(const KUnitConversion::Unit &inputUnit, const KUnitConversion::Value &inputValue, const KUnitConversion::Unit &outputUnit)
 {
-    QList<ProviderResult*> list;
-
-    QRegularExpression pattern(R"raw((.+?)(\w+)\s+(?:\=|to|is|in)\s+(\w+)$)raw", QRegularExpression::CaseInsensitiveOption);
-    QRegularExpressionMatch match = pattern.match(query);
-    if (!match.hasMatch()) {
-        return list;
-    }
-
-    const KUnitConversion::Unit inputUnit = resolveUnitName(match.captured(2));
-    if (!inputUnit.isValid()) {
-        return list;
-    }
-
-    QString sourceAmount = match.captured(1);
-    bool ok = false;
-    double inputNumber = sourceAmount.toDouble(&ok);
-    if (!ok) {
-        Evaluator *ev = Evaluator::instance();
-        sourceAmount = ev->autoFix(sourceAmount);
-        ev->setExpression(sourceAmount);
-        const Quantity quantity = ev->evalNoAssign();
-        if (!ev->error().isEmpty()) {
-            return list;
-        }
-        inputNumber = Rational(quantity.numericValue().real).toDouble();
-    }
-
-    const KUnitConversion::Value inputValue(inputNumber, inputUnit);
-    const KUnitConversion::Unit outputUnit = resolveUnitName(match.captured(3), inputUnit.category());
-    if (!outputUnit.isValid()) {
-        return list;
-    }
-
     const KUnitConversion::Value outputValue = m_converter.convert(inputValue, outputUnit);
 
     int inputPrecision = 1;
@@ -163,7 +130,46 @@ QList<ProviderResult *> Units::getResults(QString query)
     result->completion = result->name;
     result->type = i18n("Unit conversion");
     result->isCalculation = true;
-    list.append(result);
+
+    return result;
+}
+
+QList<ProviderResult *> Units::getResults(QString query)
+{
+    QList<ProviderResult*> list;
+
+    QRegularExpression pattern(R"raw((.+?)(\w+)\s+(?:\=|to|is|in)\s+(\w+)$)raw", QRegularExpression::CaseInsensitiveOption);
+    QRegularExpressionMatch match = pattern.match(query);
+    if (!match.hasMatch()) {
+        return list;
+    }
+
+    const KUnitConversion::Unit inputUnit = resolveUnitName(match.captured(2));
+    if (!inputUnit.isValid()) {
+        return list;
+    }
+
+    QString sourceAmount = match.captured(1);
+    bool ok = false;
+    double inputNumber = sourceAmount.toDouble(&ok);
+    if (!ok) {
+        Evaluator *ev = Evaluator::instance();
+        sourceAmount = ev->autoFix(sourceAmount);
+        ev->setExpression(sourceAmount);
+        const Quantity quantity = ev->evalNoAssign();
+        if (!ev->error().isEmpty()) {
+            return list;
+        }
+        inputNumber = Rational(quantity.numericValue().real).toDouble();
+    }
+
+    const KUnitConversion::Value inputValue(inputNumber, inputUnit);
+    const KUnitConversion::Unit outputUnit = resolveUnitName(match.captured(3), inputUnit.category());
+    if (!outputUnit.isValid()) {
+        return list;
+    }
+
+    list.append(createResult(inputUnit, inputValue, outputUnit));
 
     return list;
 }
