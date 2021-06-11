@@ -216,17 +216,17 @@ QList<KUnitConversion::Unit> Units::resolveUnitName(const QString &name, const K
 
     if (!category.isNull()) {
         // try only common first
-        units.append(matchUnitCaseInsensitive(name, category, OnlyCommonUnits));
+        units.append(findCompatibleUnits(name, category, OnlyCommonUnits));
 
         if (!units.isEmpty()) {
             return units;
         }
 
         // If not common, try something else
-        units.append(matchUnitCaseInsensitive(name, category, AllUnits));
+        units.append(findCompatibleUnits(name, category, AllUnits));
     } else {
         for (const KUnitConversion::UnitCategory &candidateCategory : m_converter.categories()) {
-            units.append(matchUnitCaseInsensitive(name, candidateCategory, OnlyCommonUnits));
+            units.append(findCompatibleUnits(name, candidateCategory, OnlyCommonUnits));
         }
         if (!units.isEmpty()) {
             return units;
@@ -234,14 +234,14 @@ QList<KUnitConversion::Unit> Units::resolveUnitName(const QString &name, const K
 
         // Was not a common unit, try all units
         for (const KUnitConversion::UnitCategory &candidateCategory : m_converter.categories()) {
-            units.append(matchUnitCaseInsensitive(name, candidateCategory, AllUnits));
+            units.append(findCompatibleUnits(name, candidateCategory, AllUnits));
         }
     }
 
     return units;
 }
 
-QList<KUnitConversion::Unit> Units::matchUnitCaseInsensitive(const QString &name, const KUnitConversion::UnitCategory &category, const UnitMatchingLevel level)
+QList<KUnitConversion::Unit> Units::findCompatibleUnits(const QString &name, const KUnitConversion::UnitCategory &category, const UnitMatchingLevel level)
 {
     if (category.isNull()) {
         return {};
