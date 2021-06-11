@@ -83,7 +83,6 @@ ProviderResult *Units::createResult(const KUnitConversion::Unit &inputUnit, cons
 
     int inputPrecision = 1;
     if (inputValue.number() < 1 || inputUnit.categoryId() != KUnitConversion::CurrencyCategory) {
-        qDebug() << inputUnit.categoryId();
         qreal calculationResult = inputValue.number();
 
         if (calculationResult < 100) {
@@ -98,7 +97,6 @@ ProviderResult *Units::createResult(const KUnitConversion::Unit &inputUnit, cons
     }
     int outputPrecision = 1;
     if (outputValue.number() < 1 && outputUnit.categoryId() != KUnitConversion::CurrencyCategory) {
-        qDebug() << outputUnit.categoryId();
         qreal calculationResult = outputValue.number();
 
         if (calculationResult < 100) {
