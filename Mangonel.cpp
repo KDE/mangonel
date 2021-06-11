@@ -241,10 +241,6 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
             Q_ASSERT(a);
             Q_ASSERT(b);
 
-            if (a->isCalculation != b->isCalculation) {
-                return a->isCalculation;
-            }
-
             const bool aContains = a->name.contains(m_currentQuery, Qt::CaseInsensitive) ||
                                     a->program.contains(m_currentQuery, Qt::CaseInsensitive);
             const bool bContains = b->name.contains(m_currentQuery, Qt::CaseInsensitive) ||
@@ -288,6 +284,10 @@ QList<QObject *> Mangonel::setQuery(const QString &query)
             bStartMatch = b->program.startsWith(m_currentQuery, Qt::CaseInsensitive);
             if (aStartMatch != bStartMatch) {
                 return aStartMatch;
+            }
+
+            if (a->isCalculation != b->isCalculation) {
+                return a->isCalculation;
             }
 
             if (a->priority != b->priority) {
