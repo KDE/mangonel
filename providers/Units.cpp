@@ -166,6 +166,7 @@ QList<ProviderResult *> Units::getResults(QString query)
 
     QSet<KUnitConversion::UnitId> usedInputs;
     QSet<KUnitConversion::UnitId> usedOutputs;
+    int priority = 0;
     for (const KUnitConversion::Unit &inputUnit : resolveUnitName(match.captured(2))) {
         if (usedInputs.contains(inputUnit.id())) {
             continue;
@@ -178,7 +179,10 @@ QList<ProviderResult *> Units::getResults(QString query)
             usedOutputs.insert(outputUnit.id());
 
             const KUnitConversion::Value inputValue(inputNumber, inputUnit);
-            list.append(createResult(inputUnit, inputValue, outputUnit));
+
+            ProviderResult *result = createResult(inputUnit, inputValue, outputUnit);
+            result->priority = priority++;
+            list.append(result);
         }
     }
 
