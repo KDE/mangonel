@@ -54,21 +54,17 @@ Calculator::~Calculator()
 
 QList<ProviderResult*> Calculator::getResults(QString query)
 {
-    query = query.trimmed();
-
-    // Replace #x# with #*#, where # are numbers
+    // Replace #x# with #*#, where # are numbers, consider e. g. 32x32 the same as 32*32
     QRegularExpressionMatchIterator xMatches = QRegularExpression(R"([0-9]+\s*(x)\s*[0-9]+)").globalMatch(query);
     while (xMatches.hasNext()) {
         const QRegularExpressionMatch match = xMatches.next();
         query.replace(match.capturedStart(1), 1, '*');
     }
 
-    QList<ProviderResult*> list;
-
     Evaluator *ev = Evaluator::instance();
     query = ev->autoFix(query);
     if (query.isEmpty()) {
-        return list;
+        return {};
     }
 
     ev->setExpression(query);
@@ -76,12 +72,16 @@ QList<ProviderResult*> Calculator::getResults(QString query)
     const Quantity quantity = ev->evalNoAssign();
 
     if (!ev->error().isEmpty()) {
-        return list;
+        return {};
     }
 
     ProviderResult *app = new ProviderResult;
     if (ev->error().isEmpty()) {
         app->name = NumberFormatter::format(quantity);
+
+        if (app->name.compare(query.trimmed(), Qt::CaseInsensitive) == 0) {
+            return {};
+        }
         app->program = app->name;
     } else {
         app->name = query + ":\n" + ev->error();
@@ -92,9 +92,8 @@ QList<ProviderResult*> Calculator::getResults(QString query)
     app->object = this;
     app->type = i18n("Calculation");
     app->isCalculation = true;
-    list.append(app);
 
-    return list;
+    return {app};
 }
 
 int Calculator::launch(const QString &exec)
