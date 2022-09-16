@@ -123,8 +123,8 @@ set(DO_CLANG_TIDY "clang-tidy" "-checks=*,-clang-analyzer-alpha.*,-modernize-use
 
 #set_target_properties(mangonel PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
 
-install(TARGETS mangonel ${INSTALL_TARGETS_DEFAULT_ARGS})
-install(FILES mangonel.notifyrc DESTINATION ${KNOTIFYRC_INSTALL_DIR})
-install(PROGRAMS mangonel.desktop DESTINATION ${AUTOSTART_INSTALL_DIR})
+install(TARGETS mangonel ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+install(FILES mangonel.notifyrc DESTINATION ${KDE_INSTALL_KNOTIFY5RCDIR})
+install(PROGRAMS mangonel.desktop DESTINATION ${KDE_INSTALL_AUTOSTARTDIR})
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
