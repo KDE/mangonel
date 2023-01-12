@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: mangonel\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-06-13 00:22+0000\n"
-"PO-Revision-Date: 2022-10-08 10:36+0200\n"
+"PO-Revision-Date: 2023-01-11 09:30+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -31,17 +31,17 @@ msgstr "Temuri.doghonadze@gmail.com"
 #: Config.cpp:40
 #, kde-format
 msgid "Mangonel Configuration"
-msgstr ""
+msgstr "Mangonel -ის მორგება"
 
 #: Config.cpp:49
 #, kde-format
 msgid "Shortcut to show Mangonel:"
-msgstr ""
+msgstr "Mangonel-ის ჩვენების მალსახმობი:"
 
 #: Config.cpp:55
 #, kde-format
 msgid "Automatically launch Mangonel on login:"
-msgstr ""
+msgstr "შესვლისას Mangonel-ის ავტომატური გაშვება:"
 
 #: main.cpp:47
 #, kde-format
@@ -51,7 +51,7 @@ msgstr "Mangonel"
 #: main.cpp:49
 #, kde-format
 msgid "A simple application launcher by KDE."
-msgstr ""
+msgstr "მარტივი აპლიკაციების გამშვები KDE-სგან."
 
 #: main.cpp:52
 #, kde-format
@@ -71,7 +71,7 @@ msgstr "Bart Kroon"
 #: main.cpp:53
 #, kde-format
 msgid "Developer, original author"
-msgstr ""
+msgstr "პროგრამისტი და საწყისი ავტორი"
 
 #: Mangonel.cpp:101
 #, kde-format
@@ -82,7 +82,7 @@ msgstr "Mangonel-ის ჩვენება"
 #, kde-kuit-format
 msgctxt "@info"
 msgid "Press <shortcut>%1</shortcut> to show Mangonel."
-msgstr ""
+msgstr "გასახსნელად დააწექით <shortcut>%1</shortcut>."
 
 #: providers/Applications.cpp:75
 #, kde-format
@@ -108,7 +108,7 @@ msgstr "უნივერსალური"
 #: providers/calculator/constants.cpp:564
 #, kde-format
 msgid "Archimedes' constant Pi"
-msgstr ""
+msgstr "არქიმედეს კონსტანტა პი"
 
 #: providers/calculator/constants.cpp:565
 #, kde-format
@@ -128,7 +128,7 @@ msgstr "ზოგადი ფიზიკა"
 #: providers/calculator/constants.cpp:571
 #, kde-format
 msgid "Characteristic Impedance of Vacuum"
-msgstr ""
+msgstr "ვაკუუმის გამტარიანობა"
 
 #: providers/calculator/constants.cpp:572
 #, kde-format
@@ -173,12 +173,12 @@ msgstr "ელექტრომაგნიტური"
 #: providers/calculator/constants.cpp:584
 #, kde-format
 msgid "Bohr-Procopiu Magneton"
-msgstr ""
+msgstr "ბორის მაგნეტრონი"
 
 #: providers/calculator/constants.cpp:585
 #, kde-format
 msgid "Conductance Quantum"
-msgstr ""
+msgstr "კვანტის გამტარობა"
 
 #: providers/calculator/constants.cpp:586
 #, kde-format
@@ -213,7 +213,7 @@ msgstr "ატომური მაგნეტრონი"
 #: providers/calculator/constants.cpp:592
 #, kde-format
 msgid "Resistance Quantum"
-msgstr ""
+msgstr "კვანტის წინაღობა"
 
 #: providers/calculator/constants.cpp:593
 #, kde-format
@@ -223,12 +223,12 @@ msgstr ""
 #: providers/calculator/constants.cpp:594
 #, kde-format
 msgid "von Klitzing Constant"
-msgstr ""
+msgstr "ფონ კლიცინგის მუდმივა"
 
 #: providers/calculator/constants.cpp:597
 #, kde-format
 msgid "Atomic & Nuclear"
-msgstr ""
+msgstr "ატომური და ბირთვული"
 
 #: providers/calculator/constants.cpp:599
 #, kde-format
@@ -268,7 +268,7 @@ msgstr ""
 #: providers/calculator/constants.cpp:606
 #, kde-format
 msgid "Rydberg Constant"
-msgstr ""
+msgstr "რიდგბერგის მუდმივა"
 
 #: providers/calculator/constants.cpp:607
 #, kde-format
@@ -283,27 +283,27 @@ msgstr ""
 #: providers/calculator/constants.cpp:611
 #, kde-format
 msgid "Physico-chemical"
-msgstr ""
+msgstr "ფიზიკო-ქიმიური"
 
 #: providers/calculator/constants.cpp:613
 #, kde-format
 msgid "Atomic Mass Unit"
-msgstr ""
+msgstr "ატომური მასის ერთეული"
 
 #: providers/calculator/constants.cpp:614
 #, kde-format
 msgid "Avogadro's Number"
-msgstr ""
+msgstr "ავოგადროს მუდმივა"
 
 #: providers/calculator/constants.cpp:615
 #, kde-format
 msgid "Boltzmann Constant"
-msgstr ""
+msgstr "ბოლცმანის მუდმივა"
 
 #: providers/calculator/constants.cpp:616
 #, kde-format
 msgid "Compton wavelength"
-msgstr ""
+msgstr "კომპტონის ტალღის სიგრძე"
 
 #: providers/calculator/constants.cpp:617
 #, kde-format
@@ -313,17 +313,17 @@ msgstr ""
 #: providers/calculator/constants.cpp:618
 #, kde-format
 msgid "Electron volt"
-msgstr ""
+msgstr "ელექტრონ-ვოლტი"
 
 #: providers/calculator/constants.cpp:619
 #, kde-format
 msgid "Faraday Constant"
-msgstr ""
+msgstr "ფარადეის მუდმივა"
 
 #: providers/calculator/constants.cpp:620
 #, kde-format
 msgid "First Radiation Constant"
-msgstr ""
+msgstr "პირველი გამოსხივების მუდმივა"
 
 #: providers/calculator/constants.cpp:621
 #, kde-format
@@ -333,7 +333,7 @@ msgstr ""
 #: providers/calculator/constants.cpp:622
 #, kde-format
 msgid "Gas Constant"
-msgstr ""
+msgstr "აირის მუდმივა"
 
 #: providers/calculator/constants.cpp:623
 #, kde-format
@@ -348,17 +348,17 @@ msgstr ""
 #: providers/calculator/constants.cpp:625
 #, kde-format
 msgid "Molar Planck Constant"
-msgstr ""
+msgstr "მოლარული პლანკის მუდმივა"
 
 #: providers/calculator/constants.cpp:626
 #, kde-format
 msgid "Second Radiation Constant"
-msgstr ""
+msgstr "მეორე გამოსხივების მუდმივა"
 
 #: providers/calculator/constants.cpp:627
 #, kde-format
 msgid "Stefan-Boltzmann Constant"
-msgstr ""
+msgstr "შტეფან-ბოლცმანის მუდმივა"
 
 #: providers/calculator/constants.cpp:628
 #, kde-format
@@ -418,7 +418,7 @@ msgstr "დედამიწის მასა"
 #: providers/calculator/constants.cpp:645
 #, kde-format
 msgid "Mean Earth Radius"
-msgstr ""
+msgstr "დედამიწის დაახლოებით რადიუსი"
 
 #: providers/calculator/constants.cpp:646
 #, kde-format
@@ -953,12 +953,12 @@ msgstr "შეცდომა NaN-ზე ოპერრირებისას
 #: providers/calculator/evaluator.cpp:84
 #, kde-format
 msgid "underflow - tiny result is out number range"
-msgstr ""
+msgstr "არშევსება - შედეგი რიცხვების დიაპაზონის მინიმუმზე ნაკლებია"
 
 #: providers/calculator/evaluator.cpp:87 providers/calculator/evaluator.cpp:142
 #, kde-format
 msgid "overflow - huge result is out of number range"
-msgstr ""
+msgstr "გადავსება - შედეგი რიცხვების დიაპაზონის მინიმუმზე მეტია"
 
 #: providers/calculator/evaluator.cpp:90 providers/calculator/evaluator.cpp:155
 #, kde-format
@@ -1002,7 +1002,7 @@ msgstr ""
 #: providers/calculator/evaluator.cpp:136
 #, kde-format
 msgid "wrong number of arguments"
-msgstr ""
+msgstr "არგუმენტების არასწორი რიცხვი"
 
 #: providers/calculator/evaluator.cpp:139
 #, kde-format
@@ -1027,7 +1027,7 @@ msgstr ""
 #: providers/calculator/evaluator.cpp:165
 #, kde-format
 msgid "computation too expensive"
-msgstr ""
+msgstr "გამოთვლა მეტისმეტად ძვირია"
 
 #: providers/calculator/evaluator.cpp:168
 #, kde-format
@@ -1038,25 +1038,25 @@ msgstr ""
 #, kde-format
 msgctxt "Internal error in the calculator"
 msgid "internal error, please report a bug"
-msgstr ""
+msgstr "შიდა შეცდომა. შეგვატყობინეთ, გეთაყვა"
 
 #: providers/calculator/evaluator.cpp:183
 #, kde-format
 msgctxt "Unknown calculation function error"
 msgid "error"
-msgstr ""
+msgstr "შეცდომა"
 
 #: providers/calculator/evaluator.cpp:1656
 #, kde-format
 msgctxt "Invalid input from user to calculator"
 msgid "invalid expression"
-msgstr ""
+msgstr "არასწორი გამოსახულება"
 
 #: providers/calculator/evaluator.cpp:1716
 #, kde-format
 msgctxt "Unknown calculator error during evaluation of user input"
 msgid "compile error"
-msgstr ""
+msgstr "აგების შეცდომა"
 
 #: providers/calculator/evaluator.cpp:1754
 #: providers/calculator/evaluator.cpp:1766
@@ -1076,23 +1076,23 @@ msgstr ""
 #: providers/calculator/evaluator.cpp:2001
 #, kde-format
 msgid "invalid expression"
-msgstr ""
+msgstr "არასწორი გამოსახულება"
 
 #: providers/calculator/evaluator.cpp:1903
 #, kde-format
 msgid "unit must not be zero"
-msgstr ""
+msgstr "ერთეული ნულოვანი ვერ იქნება"
 
 #: providers/calculator/evaluator.cpp:1907
 #, kde-format
 msgid "Conversion failed - dimension mismatch"
-msgstr ""
+msgstr "გადაყვანის შეცდომა - სივრცე არ ემთხვევა"
 
 #: providers/calculator/evaluator.cpp:1936
 #: providers/calculator/evaluator.cpp:1954
 #, kde-format
 msgid "unknown function or variable"
-msgstr ""
+msgstr "უცნობი ფუნქცია ან ცვლადი"
 
 #: providers/calculator/functions.cpp:1070
 #, kde-format
@@ -1193,12 +1193,12 @@ msgstr ""
 #: providers/calculator/functions.cpp:1096
 #, kde-format
 msgid "Absolute Value"
-msgstr ""
+msgstr "აბსოლუტური მნიშვნელობა"
 
 #: providers/calculator/functions.cpp:1097
 #, kde-format
 msgid "Absolute Deviation"
-msgstr ""
+msgstr "აბსოლუტური აცდენა"
 
 #: providers/calculator/functions.cpp:1098
 #, kde-format
@@ -1298,7 +1298,7 @@ msgstr "Cosine"
 #: providers/calculator/functions.cpp:1117
 #, kde-format
 msgid "Hyperbolic Cosine"
-msgstr ""
+msgstr "ჰიპერბოლური კოსინუსი"
 
 #: providers/calculator/functions.cpp:1118
 #, kde-format
@@ -1318,12 +1318,12 @@ msgstr ""
 #: providers/calculator/functions.cpp:1121
 #, kde-format
 msgid "Degrees of Arc"
-msgstr ""
+msgstr "რკალის კუთხეები"
 
 #: providers/calculator/functions.cpp:1122
 #, kde-format
 msgid "Error Function"
-msgstr ""
+msgstr "შეცდომის ფუნქცია"
 
 #: providers/calculator/functions.cpp:1123
 #, kde-format
@@ -1333,7 +1333,7 @@ msgstr ""
 #: providers/calculator/functions.cpp:1124
 #, kde-format
 msgid "Exponential"
-msgstr ""
+msgstr "ექსპოტენციალური"
 
 #: providers/calculator/functions.cpp:1125
 #, kde-format
@@ -1353,17 +1353,17 @@ msgstr ""
 #: providers/calculator/functions.cpp:1128
 #, kde-format
 msgid "Greatest Common Divisor"
-msgstr ""
+msgstr "უდიდესი საერთო გამყოფი"
 
 #: providers/calculator/functions.cpp:1129
 #, kde-format
 msgid "Geometric Mean"
-msgstr ""
+msgstr "საშუალო გეომეტრიული"
 
 #: providers/calculator/functions.cpp:1130
 #, kde-format
 msgid "Gradians of arc"
-msgstr ""
+msgstr "რკალის გრადიანები"
 
 #: providers/calculator/functions.cpp:1131
 #, kde-format
@@ -1398,12 +1398,12 @@ msgstr ""
 #: providers/calculator/functions.cpp:1137
 #, kde-format
 msgid "Integer Part"
-msgstr ""
+msgstr "მთელი ნაწილი"
 
 #: providers/calculator/functions.cpp:1138
 #, kde-format
 msgid "Imaginary Part"
-msgstr ""
+msgstr "წარმოსახვითი ნაწილი"
 
 #: providers/calculator/functions.cpp:1139
 #, kde-format
@@ -1458,17 +1458,17 @@ msgstr ""
 #: providers/calculator/functions.cpp:1149
 #, kde-format
 msgid "Binary Logarithm"
-msgstr ""
+msgstr "ბინარული ალგორითმი"
 
 #: providers/calculator/functions.cpp:1150
 #, kde-format
 msgid "Common Logarithm"
-msgstr ""
+msgstr "ზოგადი ალგორითმი"
 
 #: providers/calculator/functions.cpp:1151
 #, kde-format
 msgid "Natural Logarithm"
-msgstr ""
+msgstr "ნატურალური ალგორითმი"
 
 #: providers/calculator/functions.cpp:1153
 #, kde-format
@@ -1478,7 +1478,7 @@ msgstr ""
 #: providers/calculator/functions.cpp:1154
 #, kde-format
 msgid "Mask to a bit size"
-msgstr ""
+msgstr "ნიღაბი ბიტის ზომამდე"
 
 #: providers/calculator/functions.cpp:1155
 #, kde-format
@@ -1510,7 +1510,7 @@ msgstr ""
 #: providers/calculator/functions.cpp:1160
 #, kde-format
 msgid "Logical NOT"
-msgstr ""
+msgstr "ლოგიკური არა"
 
 #: providers/calculator/functions.cpp:1161
 #, kde-format
@@ -1525,7 +1525,7 @@ msgstr ""
 #: providers/calculator/functions.cpp:1163
 #, kde-format
 msgid "Logical OR"
-msgstr ""
+msgstr "ლოგიკური ან"
 
 #: providers/calculator/functions.cpp:1164
 #, kde-format
@@ -1570,12 +1570,12 @@ msgstr "რადიანები"
 #: providers/calculator/functions.cpp:1172
 #, kde-format
 msgid "Real Part"
-msgstr ""
+msgstr "რეალური ნაწილი"
 
 #: providers/calculator/functions.cpp:1173
 #, kde-format
 msgid "Rounding"
-msgstr ""
+msgstr "დამრგვალება"
 
 #: providers/calculator/functions.cpp:1174
 #, kde-format
@@ -1605,12 +1605,12 @@ msgstr "სინუსიოდი"
 #: providers/calculator/functions.cpp:1179
 #, kde-format
 msgid "Hyperbolic Sine"
-msgstr ""
+msgstr "ჰიპერბოლური სინუსი"
 
 #: providers/calculator/functions.cpp:1180
 #, kde-format
 msgid "Square Root"
-msgstr ""
+msgstr "კვადრატული ფესვი"
 
 #: providers/calculator/functions.cpp:1181
 #, kde-format
@@ -1630,12 +1630,12 @@ msgstr "ტანგენსი"
 #: providers/calculator/functions.cpp:1184
 #, kde-format
 msgid "Hyperbolic Tangent"
-msgstr ""
+msgstr "ჰიპერბოლური ტანგენსი"
 
 #: providers/calculator/functions.cpp:1185
 #, kde-format
 msgid "Truncation"
-msgstr ""
+msgstr "წაკვეთა"
 
 #: providers/calculator/functions.cpp:1186
 #, kde-format
@@ -1646,12 +1646,12 @@ msgstr ""
 #, kde-format
 msgctxt "Calculator function"
 msgid "Variance"
-msgstr ""
+msgstr "ცვალებადობა"
 
 #: providers/calculator/functions.cpp:1188
 #, kde-format
 msgid "Logical XOR"
-msgstr ""
+msgstr "ლოგიკური არ-ანა"
 
 #: providers/Paths.cpp:163
 #, kde-format
@@ -1667,9 +1667,9 @@ msgstr "გარსის ბრძანება"
 #, kde-format
 msgctxt "conversion from one unit to another"
 msgid "%1 %2 is %3 %4"
-msgstr ""
+msgstr "%1 %2-ი %3 %4-ა"
 
 #: providers/Units.cpp:129
 #, kde-format
 msgid "Unit conversion"
-msgstr ""
+msgstr "ერთეულის გადაყვანა"
