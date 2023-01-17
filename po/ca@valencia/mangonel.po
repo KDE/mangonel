@@ -34,7 +34,7 @@ msgstr "antonibella5@yahoo.com"
 #: Config.cpp:40
 #, kde-format
 msgid "Mangonel Configuration"
-msgstr "Configuració de Mangonel"
+msgstr "Configureu Mangonel"
 
 #: Config.cpp:49
 #, kde-format
