@@ -306,12 +306,12 @@ msgstr "Constant de Boltzmann"
 #: providers/calculator/constants.cpp:616
 #, kde-format
 msgid "Compton wavelength"
-msgstr "Llargària d'ona de Compton"
+msgstr "Longitud d'ona de Compton"
 
 #: providers/calculator/constants.cpp:617
 #, kde-format
 msgid "Compton wavelength over 2 pi"
-msgstr "Llargària d'ona de Compton aproximadament 2 pi"
+msgstr "Longitud d'ona de Compton aproximadament 2 pi"
 
 #: providers/calculator/constants.cpp:618
 #, kde-format
