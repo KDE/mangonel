@@ -37,7 +37,7 @@ msgstr "Configuración de Mangonel"
 #: Config.cpp:49
 #, kde-format
 msgid "Shortcut to show Mangonel:"
-msgstr "Atallo para mostrar Mangonel:"
+msgstr "Atallo para amosar Mangonel:"
 
 #: Config.cpp:55
 #, kde-format
@@ -77,13 +77,13 @@ msgstr "Desenvolvedor e autor orixinal."
 #: Mangonel.cpp:101
 #, kde-format
 msgid "Show Mangonel"
-msgstr "Mostrar Mangonel"
+msgstr "Amosar Mangonel"
 
 #: Mangonel.cpp:131
 #, kde-kuit-format
 msgctxt "@info"
 msgid "Press <shortcut>%1</shortcut> to show Mangonel."
-msgstr "Prema <shortcut>%1</shortcut> para mostrar Mangonel."
+msgstr "Prema <shortcut>%1</shortcut> para amosar Mangonel."
 
 #: providers/Applications.cpp:75
 #, kde-format
