@@ -50,7 +50,7 @@ msgstr "Mangonel"
 #: main.cpp:49
 #, kde-format
 msgid "A simple application launcher by KDE."
-msgstr "KDE의 간단한 프로그램 실행기."
+msgstr "KDE의 간단한 앱 실행기."
 
 #: main.cpp:52
 #, kde-format
@@ -91,7 +91,7 @@ msgstr "제어 모듈 열기"
 #: providers/Applications.cpp:77
 #, kde-format
 msgid "Run application"
-msgstr "프로그램 실행"
+msgstr "앱 실행"
 
 #: providers/Calculator.cpp:93
 #, kde-format
