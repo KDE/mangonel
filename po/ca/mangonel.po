@@ -1,16 +1,16 @@
 # Translation of mangonel.po to Catalan
-# Copyright (C) 2013-2022 This_file_is_part_of_KDE
+# Copyright (C) 2013-2023 This_file_is_part_of_KDE
 # This file is distributed under the license LGPL version 2.1 or
 # version 3 or later versions approved by the membership of KDE e.V.
 #
 # Antoni Bella Pérez <antonibella5@yahoo.com>, 2013, 2019, 2020.
-# Josep M. Ferrer <txemaq@gmail.com>, 2019, 2020, 2021, 2022.
+# Josep M. Ferrer <txemaq@gmail.com>, 2019, 2020, 2021, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: mangonel\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2021-06-13 00:22+0000\n"
-"PO-Revision-Date: 2022-05-22 15:00+0200\n"
+"PO-Revision-Date: 2023-08-25 16:15+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
-"X-Generator: Lokalize 20.12.0\n"
+"X-Generator: Lokalize 23.04.3\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1212,7 +1212,7 @@ msgstr "Desviació absoluta"
 #: providers/calculator/functions.cpp:1098
 #, kde-format
 msgid "Arc Cosine"
-msgstr "Arc cosinus"
+msgstr "Arccosinus"
 
 #: providers/calculator/functions.cpp:1099
 #, kde-format
@@ -1237,12 +1237,12 @@ msgstr "Tangent hiperbòlica de l'àrea"
 #: providers/calculator/functions.cpp:1103
 #, kde-format
 msgid "Arc Sine"
-msgstr "Arc sinus"
+msgstr "Arcsinus"
 
 #: providers/calculator/functions.cpp:1104
 #, kde-format
 msgid "Arc Tangent"
-msgstr "Arc tangent"
+msgstr "Arctangent"
 
 #: providers/calculator/functions.cpp:1105
 #, kde-format
