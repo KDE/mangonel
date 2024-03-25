@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: mangonel\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:41+0000\n"
-"PO-Revision-Date: 2024-02-26 21:30+0100\n"
+"PO-Revision-Date: 2024-03-24 10:34+0100\n"
 "Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
 "Language-Team: Esperanto <kde-i18n-eo.org>\n"
 "Language: eo\n"
@@ -31,17 +31,17 @@ msgstr ""
 #: Config.cpp:40
 #, kde-format
 msgid "Mangonel Configuration"
-msgstr ""
+msgstr "Mangonel-Agordo"
 
 #: Config.cpp:49
 #, kde-format
 msgid "Shortcut to show Mangonel:"
-msgstr ""
+msgstr "Ŝparvojo por montri Mangonel:"
 
 #: Config.cpp:55
 #, kde-format
 msgid "Automatically launch Mangonel on login:"
-msgstr ""
+msgstr "Aŭtomate lanĉu Mangonel ĉe ensaluto:"
 
 #: main.cpp:47
 #, kde-format
@@ -51,7 +51,7 @@ msgstr "Mangonel"
 #: main.cpp:49
 #, kde-format
 msgid "A simple application launcher by KDE."
-msgstr ""
+msgstr "Simpla aplikaĵlanĉilo de KDE."
 
 #: main.cpp:52
 #, kde-format
@@ -66,38 +66,38 @@ msgstr "Ellaboranto"
 #: main.cpp:53
 #, kde-format
 msgid "Bart Kroon"
-msgstr ""
+msgstr "Bart Kroon"
 
 #: main.cpp:53
 #, kde-format
 msgid "Developer, original author"
-msgstr ""
+msgstr "Ellaboranto, origina aŭtoro"
 
 #: Mangonel.cpp:101
 #, kde-format
 msgid "Show Mangonel"
-msgstr ""
+msgstr "Montri Mangonel"
 
 #: Mangonel.cpp:131
 #, kde-kuit-format
 msgctxt "@info"
 msgid "Press <shortcut>%1</shortcut> to show Mangonel."
-msgstr ""
+msgstr "Premi <shortcut>%1</shortcut> por montri Mangonel."
 
 #: providers/Applications.cpp:75
 #, kde-format
 msgid "Open control module"
-msgstr ""
+msgstr "Malfermi kontrolmodulon"
 
 #: providers/Applications.cpp:77
 #, kde-format
 msgid "Run application"
-msgstr ""
+msgstr "Ruli aplikaĵon"
 
 #: providers/Calculator.cpp:93
 #, kde-format
 msgid "Calculation"
-msgstr ""
+msgstr "Kalkulo"
 
 #: providers/calculator/constants.cpp:562
 #, kde-format
@@ -108,47 +108,47 @@ msgstr "Universala"
 #: providers/calculator/constants.cpp:564
 #, kde-format
 msgid "Archimedes' constant Pi"
-msgstr ""
+msgstr "La konstanta Pi de Arkimedo"
 
 #: providers/calculator/constants.cpp:565
 #, kde-format
 msgid "Euler's number"
-msgstr ""
+msgstr "numero de Euler"
 
 #: providers/calculator/constants.cpp:566
 #, kde-format
 msgid "Golden ratio"
-msgstr ""
+msgstr "Ora proporcio"
 
 #: providers/calculator/constants.cpp:569
 #, kde-format
 msgid "General Physics"
-msgstr ""
+msgstr "Ĝenerala Fiziko"
 
 #: providers/calculator/constants.cpp:571
 #, kde-format
 msgid "Characteristic Impedance of Vacuum"
-msgstr ""
+msgstr "Karakteriza Impedanco de Malplena"
 
 #: providers/calculator/constants.cpp:572
 #, kde-format
 msgid "Dirac's Constant"
-msgstr ""
+msgstr "La Konstanto de Dirac"
 
 #: providers/calculator/constants.cpp:573
 #, kde-format
 msgid "Electric Constant"
-msgstr ""
+msgstr "Elektra Konstanto"
 
 #: providers/calculator/constants.cpp:574
 #, kde-format
 msgid "Gravitation Constant"
-msgstr ""
+msgstr "Gravita Konstanto"
 
 #: providers/calculator/constants.cpp:575
 #, kde-format
 msgid "Magnetic Constant"
-msgstr ""
+msgstr "Magneta Konstanto"
 
 #: providers/calculator/constants.cpp:576
 #, kde-format
@@ -158,32 +158,32 @@ msgstr "Konstanto de Planck"
 #: providers/calculator/constants.cpp:577
 #, kde-format
 msgid "Speed of Light in Vacuum"
-msgstr ""
+msgstr "Rapido de Lumo en Vakuo"
 
 #: providers/calculator/constants.cpp:578
 #, kde-format
 msgid "Standard Gravity"
-msgstr ""
+msgstr "Norma Gravito"
 
 #: providers/calculator/constants.cpp:582
 #, kde-format
 msgid "Electromagnetic"
-msgstr ""
+msgstr "Elektromagneta"
 
 #: providers/calculator/constants.cpp:584
 #, kde-format
 msgid "Bohr-Procopiu Magneton"
-msgstr ""
+msgstr "Bohr-Procopiu Magneton"
 
 #: providers/calculator/constants.cpp:585
 #, kde-format
 msgid "Conductance Quantum"
-msgstr ""
+msgstr "Kondukta Kvanto"
 
 #: providers/calculator/constants.cpp:586
 #, kde-format
 msgid "Coulomb's Constant"
-msgstr ""
+msgstr "Konstanto de Coulomb"
 
 #: providers/calculator/constants.cpp:587
 #, kde-format
@@ -193,17 +193,17 @@ msgstr "Elementa Ŝarĝo"
 #: providers/calculator/constants.cpp:588
 #, kde-format
 msgid "Conventional value of Josephson Constant"
-msgstr ""
+msgstr "Konvencia valoro de Josephson Constant"
 
 #: providers/calculator/constants.cpp:589
 #, kde-format
 msgid "Josephson Constant"
-msgstr ""
+msgstr "Josephson Constant"
 
 #: providers/calculator/constants.cpp:590
 #, kde-format
 msgid "Magnetic Flux Quantum"
-msgstr ""
+msgstr "Magneta Fluo Kvanto"
 
 #: providers/calculator/constants.cpp:591
 #, kde-format
@@ -213,77 +213,77 @@ msgstr "Nuklea Magnetono"
 #: providers/calculator/constants.cpp:592
 #, kde-format
 msgid "Resistance Quantum"
-msgstr ""
+msgstr "Rezisto Kvantumo"
 
 #: providers/calculator/constants.cpp:593
 #, kde-format
 msgid "Conventional value of von Klitzing Constant"
-msgstr ""
+msgstr "Konvencia valoro de von Klitzing Constant"
 
 #: providers/calculator/constants.cpp:594
 #, kde-format
 msgid "von Klitzing Constant"
-msgstr ""
+msgstr "von Klitzing Constant"
 
 #: providers/calculator/constants.cpp:597
 #, kde-format
 msgid "Atomic & Nuclear"
-msgstr ""
+msgstr "Atoma & Nuklea"
 
 #: providers/calculator/constants.cpp:599
 #, kde-format
 msgid "Bohr Radius"
-msgstr ""
+msgstr "Bohr Radiuso"
 
 #: providers/calculator/constants.cpp:600
 #, kde-format
 msgid "Fermi Coupling Constant"
-msgstr ""
+msgstr "Fermi Coupling Konstanto"
 
 #: providers/calculator/constants.cpp:601
 #, kde-format
 msgid "Fine-structure Constant"
-msgstr ""
+msgstr "Fine-struktura Konstanto"
 
 #: providers/calculator/constants.cpp:602
 #, kde-format
 msgid "Hartree Energy"
-msgstr ""
+msgstr "Hartree Energio"
 
 #: providers/calculator/constants.cpp:603
 #, kde-format
 msgid "Hartree Energy in eV"
-msgstr ""
+msgstr "Hartree Energio en eV"
 
 #: providers/calculator/constants.cpp:604
 #, kde-format
 msgid "Quantum of Circulation"
-msgstr ""
+msgstr "Kvanto de Cirkulado"
 
 #: providers/calculator/constants.cpp:605
 #, kde-format
 msgid "Quantum of Circulation times 2"
-msgstr ""
+msgstr "Kvanto de cirkulado tempoj 2"
 
 #: providers/calculator/constants.cpp:606
 #, kde-format
 msgid "Rydberg Constant"
-msgstr ""
+msgstr "Konstanto de Rydberg"
 
 #: providers/calculator/constants.cpp:607
 #, kde-format
 msgid "Thomson Cross Section"
-msgstr ""
+msgstr "Thomson Transversa Sekcio"
 
 #: providers/calculator/constants.cpp:608
 #, kde-format
 msgid "Weak Mixing Angle"
-msgstr ""
+msgstr "Malforta Miksa Angulo"
 
 #: providers/calculator/constants.cpp:611
 #, kde-format
 msgid "Physico-chemical"
-msgstr ""
+msgstr "Fiziko-kemiaj"
 
 #: providers/calculator/constants.cpp:613
 #, kde-format
@@ -303,57 +303,57 @@ msgstr "Konstanto de Boltzmann"
 #: providers/calculator/constants.cpp:616
 #, kde-format
 msgid "Compton wavelength"
-msgstr ""
+msgstr "Compton ondolongo"
 
 #: providers/calculator/constants.cpp:617
 #, kde-format
 msgid "Compton wavelength over 2 pi"
-msgstr ""
+msgstr "Compton ondolongo pli ol 2 pi"
 
 #: providers/calculator/constants.cpp:618
 #, kde-format
 msgid "Electron volt"
-msgstr ""
+msgstr "Elektronvolto"
 
 #: providers/calculator/constants.cpp:619
 #, kde-format
 msgid "Faraday Constant"
-msgstr ""
+msgstr "Faraday Konstanto"
 
 #: providers/calculator/constants.cpp:620
 #, kde-format
 msgid "First Radiation Constant"
-msgstr ""
+msgstr "Unua Konstanto de Radiado"
 
 #: providers/calculator/constants.cpp:621
 #, kde-format
 msgid "First Radiation Constant for Spectral Radiance"
-msgstr ""
+msgstr "Unua Konstanto de Radiado por Spektra Radiado"
 
 #: providers/calculator/constants.cpp:622
 #, kde-format
 msgid "Gas Constant"
-msgstr ""
+msgstr "Gaskonstanto"
 
 #: providers/calculator/constants.cpp:623
 #, kde-format
 msgid "Loschmidt constant (273.15 K, 100 kPa)"
-msgstr ""
+msgstr "Loschmidt-konstanto (273.15 K, 100 kPa)"
 
 #: providers/calculator/constants.cpp:624
 #, kde-format
 msgid "Loschmidt constant (273.15 K, 101.325 kPa)"
-msgstr ""
+msgstr "Loschmidt-konstanto (273.15 K, 101.325 kPa)"
 
 #: providers/calculator/constants.cpp:625
 #, kde-format
 msgid "Molar Planck Constant"
-msgstr ""
+msgstr "Molara Konstanto de Planck"
 
 #: providers/calculator/constants.cpp:626
 #, kde-format
 msgid "Second Radiation Constant"
-msgstr ""
+msgstr "Dua Konstanto de Radiado"
 
 #: providers/calculator/constants.cpp:627
 #, kde-format
@@ -363,7 +363,7 @@ msgstr "Stefan-Boltzmann Constant"
 #: providers/calculator/constants.cpp:628
 #, kde-format
 msgid "{220} Lattice Spacing of Silicon"
-msgstr ""
+msgstr "{220} Krada Interspaco de Silicio"
 
 #: providers/calculator/constants.cpp:631
 #, kde-format
@@ -373,12 +373,12 @@ msgstr "Astronomio"
 #: providers/calculator/constants.cpp:633
 #, kde-format
 msgid "Astronomical Unit"
-msgstr ""
+msgstr "Astronomia Unuo"
 
 #: providers/calculator/constants.cpp:634
 #, kde-format
 msgid "Light Year"
-msgstr ""
+msgstr "Luma Jaro"
 
 #: providers/calculator/constants.cpp:635
 #, kde-format
@@ -393,7 +393,7 @@ msgstr "tagoj"
 #: providers/calculator/constants.cpp:639
 #, kde-format
 msgid "Gregorian Year"
-msgstr ""
+msgstr "Gregoria Jaro"
 
 #: providers/calculator/constants.cpp:640
 #, kde-format
@@ -403,47 +403,47 @@ msgstr "Julia Jaro"
 #: providers/calculator/constants.cpp:641
 #, kde-format
 msgid "Sidereal Year"
-msgstr ""
+msgstr "Sidera Jaro"
 
 #: providers/calculator/constants.cpp:642
 #, kde-format
 msgid "Tropical Year"
-msgstr ""
+msgstr "Tropika Jaro"
 
 #: providers/calculator/constants.cpp:644
 #, kde-format
 msgid "Earth Mass"
-msgstr ""
+msgstr "Tera Maso"
 
 #: providers/calculator/constants.cpp:645
 #, kde-format
 msgid "Mean Earth Radius"
-msgstr ""
+msgstr "Meza Tera Radiuso"
 
 #: providers/calculator/constants.cpp:646
 #, kde-format
 msgid "Sun Mass"
-msgstr ""
+msgstr "Suna Meso"
 
 #: providers/calculator/constants.cpp:647
 #, kde-format
 msgid "Sun Radius"
-msgstr ""
+msgstr "Sunradiuso"
 
 #: providers/calculator/constants.cpp:648
 #, kde-format
 msgid "Sun Luminosity"
-msgstr ""
+msgstr "Suna Lumo"
 
 #: providers/calculator/constants.cpp:652
 #, kde-format
 msgid "Molar Mass"
-msgstr ""
+msgstr "Molara maso"
 
 #: providers/calculator/constants.cpp:654
 #, kde-format
 msgid "Aluminium"
-msgstr ""
+msgstr "Aluminio"
 
 #: providers/calculator/constants.cpp:655
 #, kde-format
@@ -458,7 +458,7 @@ msgstr "Argono"
 #: providers/calculator/constants.cpp:657
 #, kde-format
 msgid "Arsenic"
-msgstr ""
+msgstr "Arseniko"
 
 #: providers/calculator/constants.cpp:658
 #, kde-format
@@ -478,12 +478,12 @@ msgstr "Bizmuto"
 #: providers/calculator/constants.cpp:661
 #, kde-format
 msgid "Boron"
-msgstr ""
+msgstr "Boro"
 
 #: providers/calculator/constants.cpp:662
 #, kde-format
 msgid "Bromine"
-msgstr ""
+msgstr "Bromo"
 
 #: providers/calculator/constants.cpp:663
 #, kde-format
@@ -523,12 +523,12 @@ msgstr "Kromo"
 #: providers/calculator/constants.cpp:670
 #, kde-format
 msgid "Cobalt"
-msgstr ""
+msgstr "Kobalto"
 
 #: providers/calculator/constants.cpp:671
 #, kde-format
 msgid "Copper"
-msgstr ""
+msgstr "Kupro"
 
 #: providers/calculator/constants.cpp:672
 #, kde-format
@@ -563,7 +563,7 @@ msgstr "Galio"
 #: providers/calculator/constants.cpp:678
 #, kde-format
 msgid "Germanium"
-msgstr ""
+msgstr "Germaniumo"
 
 #: providers/calculator/constants.cpp:679
 #, kde-format
@@ -578,17 +578,17 @@ msgstr "Hafnio"
 #: providers/calculator/constants.cpp:681
 #, kde-format
 msgid "Helium"
-msgstr ""
+msgstr "Heliumo"
 
 #: providers/calculator/constants.cpp:682
 #, kde-format
 msgid "Holmium"
-msgstr ""
+msgstr "Holmio"
 
 #: providers/calculator/constants.cpp:683
 #, kde-format
 msgid "Hydrogen"
-msgstr ""
+msgstr "Hidrogeno"
 
 #: providers/calculator/constants.cpp:684
 #, kde-format
@@ -608,7 +608,7 @@ msgstr "Iridium"
 #: providers/calculator/constants.cpp:687
 #, kde-format
 msgid "Iron"
-msgstr ""
+msgstr "Fero"
 
 #: providers/calculator/constants.cpp:688
 #, kde-format
@@ -618,7 +618,7 @@ msgstr "Kriptono"
 #: providers/calculator/constants.cpp:689
 #, kde-format
 msgid "Lanthanum"
-msgstr ""
+msgstr "Lantano"
 
 #: providers/calculator/constants.cpp:690
 #, kde-format
@@ -643,7 +643,7 @@ msgstr "Magnezio"
 #: providers/calculator/constants.cpp:694
 #, kde-format
 msgid "Manganese"
-msgstr ""
+msgstr "Mangano"
 
 #: providers/calculator/constants.cpp:695
 #, kde-format
@@ -698,7 +698,7 @@ msgstr "Paladio"
 #: providers/calculator/constants.cpp:705
 #, kde-format
 msgid "Phosphorus"
-msgstr ""
+msgstr "Fosforo"
 
 #: providers/calculator/constants.cpp:706
 #, kde-format
@@ -753,7 +753,7 @@ msgstr "Seleno"
 #: providers/calculator/constants.cpp:716
 #, kde-format
 msgid "Silicon"
-msgstr ""
+msgstr "Silicio"
 
 #: providers/calculator/constants.cpp:717
 #, kde-format
@@ -808,7 +808,7 @@ msgstr "Tulio"
 #: providers/calculator/constants.cpp:727
 #, kde-format
 msgid "Tin"
-msgstr ""
+msgstr "Stano"
 
 #: providers/calculator/constants.cpp:728
 #, kde-format
@@ -848,7 +848,7 @@ msgstr "Itrio"
 #: providers/calculator/constants.cpp:735
 #, kde-format
 msgid "Zinc"
-msgstr ""
+msgstr "Zinko"
 
 #: providers/calculator/constants.cpp:736
 #, kde-format
@@ -858,107 +858,107 @@ msgstr "Zirkonio"
 #: providers/calculator/constants.cpp:741
 #, kde-format
 msgid "Particle Masses"
-msgstr ""
+msgstr "Partiklaj Masoj"
 
 #: providers/calculator/constants.cpp:743
 #, kde-format
 msgid "Electron Mass"
-msgstr ""
+msgstr "Elektrona maso"
 
 #: providers/calculator/constants.cpp:744
 #, kde-format
 msgid "Muon Mass"
-msgstr ""
+msgstr "Muona Meso"
 
 #: providers/calculator/constants.cpp:745
 #, kde-format
 msgid "Tau Mass"
-msgstr ""
+msgstr "Tau-Maso"
 
 #: providers/calculator/constants.cpp:746
 #, kde-format
 msgid "Up-Quark Mass"
-msgstr ""
+msgstr "Up-Quark Maso"
 
 #: providers/calculator/constants.cpp:747
 #, kde-format
 msgid "Down-Quark Mass"
-msgstr ""
+msgstr "Down-Quark Maso"
 
 #: providers/calculator/constants.cpp:748
 #, kde-format
 msgid "Charm-Quark Mass"
-msgstr ""
+msgstr "Ĉarma-Kvarka Meso"
 
 #: providers/calculator/constants.cpp:749
 #, kde-format
 msgid "Strange-Quark Mass"
-msgstr ""
+msgstr "Strange-Kvarka Meso"
 
 #: providers/calculator/constants.cpp:750
 #, kde-format
 msgid "Top-Quark Mass"
-msgstr ""
+msgstr "Top-Quark Maso"
 
 #: providers/calculator/constants.cpp:751
 #, kde-format
 msgid "Bottom-Quark Mass"
-msgstr ""
+msgstr "Malsupra-Kvarka Maso"
 
 #: providers/calculator/constants.cpp:752
 #, kde-format
 msgid "W-Boson Mass"
-msgstr ""
+msgstr "W-Bosona Meso"
 
 #: providers/calculator/constants.cpp:753
 #, kde-format
 msgid "Z-Boson Mass"
-msgstr ""
+msgstr "Z-Bosona Meso"
 
 #: providers/calculator/constants.cpp:754
 #, kde-format
 msgid "Higgs-Boson Mass"
-msgstr ""
+msgstr "Higgs-Bosona Meso"
 
 #: providers/calculator/constants.cpp:755
 #, kde-format
 msgid "Proton Mass"
-msgstr ""
+msgstr "Protona maso"
 
 #: providers/calculator/constants.cpp:756
 #, kde-format
 msgid "Neutron Mass"
-msgstr ""
+msgstr "Neŭtrona maso"
 
 #: providers/calculator/constants.cpp:757
 #, kde-format
 msgid "Electron Mass (SI)"
-msgstr ""
+msgstr "Elektrona maso (SI)"
 
 #: providers/calculator/constants.cpp:758
 #, kde-format
 msgid "Proton Mass (SI)"
-msgstr ""
+msgstr "Protona maso (SI)"
 
 #: providers/calculator/constants.cpp:759
 #, kde-format
 msgid "Neutron Mass (SI)"
-msgstr ""
+msgstr "Neŭtrona maso (SI)"
 
 #: providers/calculator/evaluator.cpp:81
 #, kde-format
 msgid "cannot operate on a NaN"
-msgstr ""
+msgstr "ne povas funkcii sur NaN"
 
 #: providers/calculator/evaluator.cpp:84
 #, kde-format
 msgid "underflow - tiny result is out number range"
-msgstr ""
+msgstr "subfluo - eta rezulto estas ekster nombro-intervalo"
 
 #: providers/calculator/evaluator.cpp:87 providers/calculator/evaluator.cpp:142
 #, kde-format
 msgid "overflow - huge result is out of number range"
-msgstr ""
+msgstr "superfluo - grandega rezulto estas ekstere de nombro"
 
 #: providers/calculator/evaluator.cpp:90 providers/calculator/evaluator.cpp:155
 #, kde-format
@@ -968,17 +968,17 @@ msgstr "divido per nulo"
 #: providers/calculator/evaluator.cpp:93 providers/calculator/evaluator.cpp:148
 #, kde-format
 msgid "overflow - logic result exceeds maximum of 256 bits"
-msgstr ""
+msgstr "superfluo - logika rezulto superas maksimumon de 256 bitoj"
 
 #: providers/calculator/evaluator.cpp:97
 #, kde-format
 msgid "overflow - integer result exceeds maximum limit for integers"
-msgstr ""
+msgstr "superfluo - entjera rezulto superas maksimuman limon por entjeroj"
 
 #: providers/calculator/evaluator.cpp:101
 #, kde-format
 msgid "too time consuming - computation was rejected"
-msgstr ""
+msgstr "tro tempopostula - komputado estis malakceptita"
 
 #: providers/calculator/evaluator.cpp:108
 #: providers/calculator/evaluator.cpp:172
@@ -991,54 +991,54 @@ msgstr ""
 #: providers/calculator/evaluator.cpp:113
 #, kde-format
 msgid "invalid dimension - operation might require dimensionless arguments"
-msgstr ""
+msgstr "nevalida dimensio - operacio povus postuli sendimensiajn argumentojn"
 
 #: providers/calculator/evaluator.cpp:117
 #: providers/calculator/evaluator.cpp:158
 #, kde-format
 msgid "Computation aborted - encountered numerical instability"
-msgstr ""
+msgstr "Komputado abortita - renkontita nombra malstabileco"
 
 #: providers/calculator/evaluator.cpp:136
 #, kde-format
 msgid "wrong number of arguments"
-msgstr ""
+msgstr "malĝusta nombro da argumentoj"
 
 #: providers/calculator/evaluator.cpp:139
 #, kde-format
 msgid "does not take NaN as an argument"
-msgstr ""
+msgstr "ne prenas NaN kiel argumenton"
 
 #: providers/calculator/evaluator.cpp:145
 #, kde-format
 msgid "underflow - tiny result is out of number range"
-msgstr ""
+msgstr "subfluo - eta rezulto estas ekstere de nombro"
 
 #: providers/calculator/evaluator.cpp:152
 #, kde-format
 msgid "result out of range"
-msgstr ""
+msgstr "rezulto ekster intervalo"
 
 #: providers/calculator/evaluator.cpp:162
 #, kde-format
 msgid "undefined for argument domain"
-msgstr ""
+msgstr "nedifinita por argumenta domajno"
 
 #: providers/calculator/evaluator.cpp:165
 #, kde-format
 msgid "computation too expensive"
-msgstr ""
+msgstr "komputado tro multekosta"
 
 #: providers/calculator/evaluator.cpp:168
 #, kde-format
 msgid "invalid dimension - function might require dimensionless arguments"
-msgstr ""
+msgstr "nevalida dimensio - funkcio povus postuli sendimensiajn argumentojn"
 
 #: providers/calculator/evaluator.cpp:180
 #, kde-format
 msgctxt "Internal error in the calculator"
 msgid "internal error, please report a bug"
-msgstr ""
+msgstr "interna eraro, bonvolu raporti cimon"
 
 #: providers/calculator/evaluator.cpp:183
 #, kde-format
@@ -1050,13 +1050,13 @@ msgstr "eraro"
 #, kde-format
 msgctxt "Invalid input from user to calculator"
 msgid "invalid expression"
-msgstr ""
+msgstr "nevalida esprimo"
 
 #: providers/calculator/evaluator.cpp:1716
 #, kde-format
 msgctxt "Unknown calculator error during evaluation of user input"
 msgid "compile error"
-msgstr ""
+msgstr "kompila eraro"
 
 #: providers/calculator/evaluator.cpp:1754
 #: providers/calculator/evaluator.cpp:1766
@@ -1076,119 +1076,119 @@ msgstr ""
 #: providers/calculator/evaluator.cpp:2001
 #, kde-format
 msgid "invalid expression"
-msgstr ""
+msgstr "nevalida esprimo"
 
 #: providers/calculator/evaluator.cpp:1903
 #, kde-format
 msgid "unit must not be zero"
-msgstr ""
+msgstr "unuo ne devas esti nulo"
 
 #: providers/calculator/evaluator.cpp:1907
 #, kde-format
 msgid "Conversion failed - dimension mismatch"
-msgstr ""
+msgstr "Konvertiĝo malsukcesis - dimensia miskongruo"
 
 #: providers/calculator/evaluator.cpp:1936
 #: providers/calculator/evaluator.cpp:1954
 #, kde-format
 msgid "unknown function or variable"
-msgstr ""
+msgstr "nekonata funkcio aŭ variablo"
 
 #: providers/calculator/functions.cpp:1070
 #, kde-format
 msgid "max; trials; probability"
-msgstr ""
+msgstr "maks; provoj; probablo"
 
 #: providers/calculator/functions.cpp:1071
 #: providers/calculator/functions.cpp:1073
 #, kde-format
 msgid "trials; probability"
-msgstr ""
+msgstr "provoj; probablo"
 
 #: providers/calculator/functions.cpp:1072
 #, kde-format
 msgid "hits; trials; probability"
-msgstr ""
+msgstr "sukcesoj; provoj; probablo"
 
 #: providers/calculator/functions.cpp:1074
 #, kde-format
 msgid "max; total; hits; trials"
-msgstr ""
+msgstr "maks; totala; sukcesoj; provoj"
 
 #: providers/calculator/functions.cpp:1075
 #: providers/calculator/functions.cpp:1077
 #, kde-format
 msgid "total; hits; trials"
-msgstr ""
+msgstr "totala; sukcesoj; provoj"
 
 #: providers/calculator/functions.cpp:1076
 #, kde-format
 msgid "count; total; hits; trials"
-msgstr ""
+msgstr "kalkuli; totala; sukcesoj; provoj"
 
 #: providers/calculator/functions.cpp:1078
 #, kde-format
 msgid "dividend; divisor"
-msgstr ""
+msgstr "dividendo; dividanto"
 
 #: providers/calculator/functions.cpp:1079
 #: providers/calculator/functions.cpp:1080
 #, kde-format
 msgid "x; exponent_bits; significand_bits [; exponent_bias]"
-msgstr ""
+msgstr "x; eksponento_bitoj; signifaj_bitoj [; eksponento_biaso]"
 
 #: providers/calculator/functions.cpp:1081
 #, kde-format
 msgctxt "Calculator logarithmic parameter"
 msgid "base; x"
-msgstr ""
+msgstr "bazo; x"
 
 #: providers/calculator/functions.cpp:1082
 #, kde-format
 msgctxt "Calculator bitmask parameter"
 msgid "n; bits"
-msgstr ""
+msgstr "n; pecetoj"
 
 #: providers/calculator/functions.cpp:1083
 #, kde-format
 msgid "value; modulo"
-msgstr ""
+msgstr "valoro; modulo"
 
 #: providers/calculator/functions.cpp:1084
 #: providers/calculator/functions.cpp:1086
 #, kde-format
 msgid "events; average_events"
-msgstr ""
+msgstr "eventoj; averaĝaj_okazaĵoj"
 
 #: providers/calculator/functions.cpp:1085
 #: providers/calculator/functions.cpp:1087
 #, kde-format
 msgid "average_events"
-msgstr ""
+msgstr "averaĝaj_okazaĵoj"
 
 #: providers/calculator/functions.cpp:1088
 #, kde-format
 msgctxt "Calculator rounding parameter"
 msgid "x [; precision]"
-msgstr ""
+msgstr "x [; precizeco]"
 
 #: providers/calculator/functions.cpp:1089
 #, kde-format
 msgctxt "n; bits"
 msgid "Calculator shl function parameter"
-msgstr ""
+msgstr "Kalkulilo shl funkcio parametro"
 
 #: providers/calculator/functions.cpp:1090
 #, kde-format
 msgctxt "n; bits"
 msgid "Calculator shr function parameter"
-msgstr ""
+msgstr "Kalkulilo shr funkcio parametro"
 
 #: providers/calculator/functions.cpp:1091
 #, kde-format
 msgctxt "Calculator unmask function parameter"
 msgid "n; bits"
-msgstr ""
+msgstr "n; pecetoj"
 
 #: providers/calculator/functions.cpp:1096
 #, kde-format
@@ -1198,37 +1198,37 @@ msgstr "Absoluta Valoro"
 #: providers/calculator/functions.cpp:1097
 #, kde-format
 msgid "Absolute Deviation"
-msgstr ""
+msgstr "Absoluta Devio"
 
 #: providers/calculator/functions.cpp:1098
 #, kde-format
 msgid "Arc Cosine"
-msgstr ""
+msgstr "Arko-kosinuso"
 
 #: providers/calculator/functions.cpp:1099
 #, kde-format
 msgid "Logical AND"
-msgstr ""
+msgstr "Logika KAJ"
 
 #: providers/calculator/functions.cpp:1100
 #, kde-format
 msgid "Area Hyperbolic Cosine"
-msgstr ""
+msgstr "Areo Hiperbola Kosinuso"
 
 #: providers/calculator/functions.cpp:1101
 #, kde-format
 msgid "Area Hyperbolic Sine"
-msgstr ""
+msgstr "Areo Hiperbola Sinuso"
 
 #: providers/calculator/functions.cpp:1102
 #, kde-format
 msgid "Area Hyperbolic Tangent"
-msgstr ""
+msgstr "Areo Hiperbola Tangento"
 
 #: providers/calculator/functions.cpp:1103
 #, kde-format
 msgid "Arc Sine"
-msgstr ""
+msgstr "Arko Sine"
 
 #: providers/calculator/functions.cpp:1104
 #, kde-format
@@ -1238,57 +1238,57 @@ msgstr "Arko Tangento"
 #: providers/calculator/functions.cpp:1105
 #, kde-format
 msgid "Arc Tangent with two Arguments"
-msgstr ""
+msgstr "Arko Tangento kun du Argumentoj"
 
 #: providers/calculator/functions.cpp:1106
 #, kde-format
 msgid "Average (Arithmetic Mean)"
-msgstr ""
+msgstr "Mezumo (aritmetika meznombro)"
 
 #: providers/calculator/functions.cpp:1107
 #, kde-format
 msgid "Convert to Binary Representation"
-msgstr ""
+msgstr "Konverti al Binara Reprezento"
 
 #: providers/calculator/functions.cpp:1108
 #, kde-format
 msgid "Binomial Cumulative Distribution Function"
-msgstr ""
+msgstr "Binoma Akumula Distribua Funkcio"
 
 #: providers/calculator/functions.cpp:1109
 #, kde-format
 msgid "Binomial Distribution Mean"
-msgstr ""
+msgstr "Dunoma Distribua Meznomo"
 
 #: providers/calculator/functions.cpp:1110
 #, kde-format
 msgid "Binomial Probability Mass Function"
-msgstr ""
+msgstr "Binoma Verŝajna Masa Funkcio"
 
 #: providers/calculator/functions.cpp:1111
 #, kde-format
 msgid "Binomial Distribution Variance"
-msgstr ""
+msgstr "Binoma Distribua Varianco"
 
 #: providers/calculator/functions.cpp:1112
 #, kde-format
 msgid "Convert to Cartesian Notation"
-msgstr ""
+msgstr "Konverti al kartezia notado"
 
 #: providers/calculator/functions.cpp:1113
 #, kde-format
 msgid "Cube Root"
-msgstr ""
+msgstr "Kuba Radiko"
 
 #: providers/calculator/functions.cpp:1114
 #, kde-format
 msgid "Ceiling"
-msgstr ""
+msgstr "Plafono"
 
 #: providers/calculator/functions.cpp:1115
 #, kde-format
 msgid "Complex Conjugate"
-msgstr ""
+msgstr "Kompleksa Konjugacio"
 
 #: providers/calculator/functions.cpp:1116
 #, kde-format
@@ -1298,7 +1298,7 @@ msgstr "Kosinuso"
 #: providers/calculator/functions.cpp:1117
 #, kde-format
 msgid "Hyperbolic Cosine"
-msgstr ""
+msgstr "Hiperbola Kosinuso"
 
 #: providers/calculator/functions.cpp:1118
 #, kde-format
@@ -1313,12 +1313,12 @@ msgstr "Cosecant"
 #: providers/calculator/functions.cpp:1120
 #, kde-format
 msgid "Convert to Decimal Representation"
-msgstr ""
+msgstr "Konverti al Decimala Reprezento"
 
 #: providers/calculator/functions.cpp:1121
 #, kde-format
 msgid "Degrees of Arc"
-msgstr ""
+msgstr "Gradoj de Arko"
 
 #: providers/calculator/functions.cpp:1122
 #, kde-format
@@ -1328,7 +1328,7 @@ msgstr "Erara Funkcio"
 #: providers/calculator/functions.cpp:1123
 #, kde-format
 msgid "Complementary Error Function"
-msgstr ""
+msgstr "Komplementa Erara Funkcio"
 
 #: providers/calculator/functions.cpp:1124
 #, kde-format
@@ -1343,17 +1343,17 @@ msgstr "Planko"
 #: providers/calculator/functions.cpp:1126
 #, kde-format
 msgid "Fractional Part"
-msgstr ""
+msgstr "Frakcia Parto"
 
 #: providers/calculator/functions.cpp:1127
 #, kde-format
 msgid "Extension of Factorials [= (x-1)!]"
-msgstr ""
+msgstr "Etendo de Faktoriloj [= (x-1)!]"
 
 #: providers/calculator/functions.cpp:1128
 #, kde-format
 msgid "Greatest Common Divisor"
-msgstr ""
+msgstr "Plej granda Ofta Divizo"
 
 #: providers/calculator/functions.cpp:1129
 #, kde-format
@@ -1363,42 +1363,42 @@ msgstr "Geometria Mezo"
 #: providers/calculator/functions.cpp:1130
 #, kde-format
 msgid "Gradians of arc"
-msgstr ""
+msgstr "Gradianoj de arko"
 
 #: providers/calculator/functions.cpp:1131
 #, kde-format
 msgid "Convert to Hexadecimal Representation"
-msgstr ""
+msgstr "Konverti al Deksesuma Reprezento"
 
 #: providers/calculator/functions.cpp:1132
 #, kde-format
 msgid "Hypergeometric Cumulative Distribution Function"
-msgstr ""
+msgstr "Hipergeometria Akumula Distribua Funkcio"
 
 #: providers/calculator/functions.cpp:1133
 #, kde-format
 msgid "Hypergeometric Distribution Mean"
-msgstr ""
+msgstr "Hipergeometria Distribua Mezo"
 
 #: providers/calculator/functions.cpp:1134
 #, kde-format
 msgid "Hypergeometric Probability Mass Function"
-msgstr ""
+msgstr "Hipergeometria Probableca Masa Funkcio"
 
 #: providers/calculator/functions.cpp:1135
 #, kde-format
 msgid "Hypergeometric Distribution Variance"
-msgstr ""
+msgstr "Hipergeometria Distribua Varianco"
 
 #: providers/calculator/functions.cpp:1136
 #, kde-format
 msgid "Integer Quotient"
-msgstr ""
+msgstr "Entjera kvociento"
 
 #: providers/calculator/functions.cpp:1137
 #, kde-format
 msgid "Integer Part"
-msgstr ""
+msgstr "Entjera Parto"
 
 #: providers/calculator/functions.cpp:1138
 #, kde-format
@@ -1408,77 +1408,77 @@ msgstr "Imaga Parto"
 #: providers/calculator/functions.cpp:1139
 #, kde-format
 msgid "Decode IEEE-754 Binary Value"
-msgstr ""
+msgstr "Malkodi IEEE-754 Binara Valoro"
 
 #: providers/calculator/functions.cpp:1140
 #, kde-format
 msgid "Encode IEEE-754 Binary Value"
-msgstr ""
+msgstr "Kodi IEEE-754 Binara Valoro"
 
 #: providers/calculator/functions.cpp:1141
 #, kde-format
 msgid "Decode 16-bit Half-Precision Value"
-msgstr ""
+msgstr "Malkodi 16-bitan Duon-Precizecan Valoron"
 
 #: providers/calculator/functions.cpp:1142
 #, kde-format
 msgid "Encode 16-bit Half-Precision Value"
-msgstr ""
+msgstr "Kodi 16-bitan Duon-Precizecan Valoron"
 
 #: providers/calculator/functions.cpp:1143
 #, kde-format
 msgid "Decode 32-bit Single-Precision Value"
-msgstr ""
+msgstr "Malkodi 32-bitan Unu-Precizecan Valoron"
 
 #: providers/calculator/functions.cpp:1144
 #, kde-format
 msgid "Encode 32-bit Single-Precision Value"
-msgstr ""
+msgstr "Kodi 32-bitan Unu-Precizecan Valoron"
 
 #: providers/calculator/functions.cpp:1145
 #, kde-format
 msgid "Decode 64-bit Double-Precision Value"
-msgstr ""
+msgstr "Malkodi 64-bitan Duoblan Precizecan Valoron"
 
 #: providers/calculator/functions.cpp:1146
 #, kde-format
 msgid "Encode 64-bit Double-Precision Value"
-msgstr ""
+msgstr "Kodi 64-bitan Duoblan Precizecan Valoron"
 
 #: providers/calculator/functions.cpp:1147
 #, kde-format
 msgid "Decode 128-bit Quad-Precision Value"
-msgstr ""
+msgstr "Malkodi 128-bitan Kvar-Precizecan Valoron"
 
 #: providers/calculator/functions.cpp:1148
 #, kde-format
 msgid "Encode 128-bit Quad-Precision Value"
-msgstr ""
+msgstr "Kodi 128-bitan Kvarprecizecan Valoron"
 
 #: providers/calculator/functions.cpp:1149
 #, kde-format
 msgid "Binary Logarithm"
-msgstr ""
+msgstr "Binara Logaritmo"
 
 #: providers/calculator/functions.cpp:1150
 #, kde-format
 msgid "Common Logarithm"
-msgstr ""
+msgstr "Komuna Logaritmo"
 
 #: providers/calculator/functions.cpp:1151
 #, kde-format
 msgid "Natural Logarithm"
-msgstr ""
+msgstr "Natura Logaritmo"
 
 #: providers/calculator/functions.cpp:1153
 #, kde-format
 msgid "Logarithm to Arbitrary Base"
-msgstr ""
+msgstr "Logaritmo al Arbitra Bazo"
 
 #: providers/calculator/functions.cpp:1154
 #, kde-format
 msgid "Mask to a bit size"
-msgstr ""
+msgstr "Masko al iom grandeco"
 
 #: providers/calculator/functions.cpp:1155
 #, kde-format
@@ -1489,7 +1489,7 @@ msgstr "Maksimumo"
 #: providers/calculator/functions.cpp:1156
 #, kde-format
 msgid "Median Value (50th Percentile)"
-msgstr ""
+msgstr "Mezvaloro (50-a percentilo)"
 
 #: providers/calculator/functions.cpp:1157
 #, kde-format
@@ -1505,57 +1505,57 @@ msgstr "Modulo"
 #: providers/calculator/functions.cpp:1159
 #, kde-format
 msgid "Combination (Binomial Coefficient)"
-msgstr ""
+msgstr "Kombinaĵo (Binoma Koeficiento)"
 
 #: providers/calculator/functions.cpp:1160
 #, kde-format
 msgid "Logical NOT"
-msgstr ""
+msgstr "Logika NE"
 
 #: providers/calculator/functions.cpp:1161
 #, kde-format
 msgid "Permutation (Arrangement)"
-msgstr ""
+msgstr "Permuto (aranĝo)"
 
 #: providers/calculator/functions.cpp:1162
 #, kde-format
 msgid "Convert to Octal Representation"
-msgstr ""
+msgstr "Konverti al Okta Reprezento"
 
 #: providers/calculator/functions.cpp:1163
 #, kde-format
 msgid "Logical OR"
-msgstr ""
+msgstr "Logika AŬ"
 
 #: providers/calculator/functions.cpp:1164
 #, kde-format
 msgid "Phase of Complex Number"
-msgstr ""
+msgstr "Fazo de Kompleksa Nombro"
 
 #: providers/calculator/functions.cpp:1165
 #, kde-format
 msgid "Poissonian Cumulative Distribution Function"
-msgstr ""
+msgstr "Venena Akumula Distribua Funkcio"
 
 #: providers/calculator/functions.cpp:1166
 #, kde-format
 msgid "Poissonian Distribution Mean"
-msgstr ""
+msgstr "Venena Distribua Mezo"
 
 #: providers/calculator/functions.cpp:1167
 #, kde-format
 msgid "Poissonian Probability Mass Function"
-msgstr ""
+msgstr "Poissoniana Probabla Masa Funkcio"
 
 #: providers/calculator/functions.cpp:1168
 #, kde-format
 msgid "Poissonian Distribution Variance"
-msgstr ""
+msgstr "Venena Distribua Varianco"
 
 #: providers/calculator/functions.cpp:1169
 #, kde-format
 msgid "Convert to Polar Notation"
-msgstr ""
+msgstr "Konverti al Polusa Notacio"
 
 #: providers/calculator/functions.cpp:1170
 #, kde-format
@@ -1585,17 +1585,17 @@ msgstr "Sekanto"
 #: providers/calculator/functions.cpp:1175
 #, kde-format
 msgid "Arithmetic Shift Left"
-msgstr ""
+msgstr "Aritmetika Movo Maldekstre"
 
 #: providers/calculator/functions.cpp:1176
 #, kde-format
 msgid "Arithmetic Shift Right"
-msgstr ""
+msgstr "Aritmetika Movo Dekstre"
 
 #: providers/calculator/functions.cpp:1177
 #, kde-format
 msgid "Signum"
-msgstr ""
+msgstr "Signum"
 
 #: providers/calculator/functions.cpp:1178
 #, kde-format
@@ -1605,7 +1605,7 @@ msgstr "Sinuso"
 #: providers/calculator/functions.cpp:1179
 #, kde-format
 msgid "Hyperbolic Sine"
-msgstr ""
+msgstr "Hiperbola Sinuso"
 
 #: providers/calculator/functions.cpp:1180
 #, kde-format
@@ -1615,7 +1615,7 @@ msgstr "Kvadrata Radiko"
 #: providers/calculator/functions.cpp:1181
 #, kde-format
 msgid "Standard Deviation (Square Root of Variance)"
-msgstr ""
+msgstr "Norma Devio (kvadrata radiko de varianco)"
 
 #: providers/calculator/functions.cpp:1182
 #, kde-format
@@ -1635,12 +1635,12 @@ msgstr "Hiperbola Tangento"
 #: providers/calculator/functions.cpp:1185
 #, kde-format
 msgid "Truncation"
-msgstr ""
+msgstr "Detranĉiĝo"
 
 #: providers/calculator/functions.cpp:1186
 #, kde-format
 msgid "Sign-extend a value"
-msgstr ""
+msgstr "Antaŭsigno-etendi valoron"
 
 #: providers/calculator/functions.cpp:1187
 #, kde-format
@@ -1651,25 +1651,25 @@ msgstr "Varianco"
 #: providers/calculator/functions.cpp:1188
 #, kde-format
 msgid "Logical XOR"
-msgstr ""
+msgstr "Logika XOR"
 
 #: providers/Paths.cpp:163
 #, kde-format
 msgid "Open path"
-msgstr ""
+msgstr "Malferma pado"
 
 #: providers/Shell.cpp:120
 #, kde-format
 msgid "Shell command"
-msgstr ""
+msgstr "Ŝelkomando"
 
 #: providers/Units.cpp:126
 #, kde-format
 msgctxt "conversion from one unit to another"
 msgid "%1 %2 is %3 %4"
-msgstr ""
+msgstr "%1 %2 estas %3 %4"
 
 #: providers/Units.cpp:129
 #, kde-format
 msgid "Unit conversion"
-msgstr ""
+msgstr "Unuokonverto"
